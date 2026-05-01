@@ -27,7 +27,7 @@ import { LinkNode, AutoLinkNode, TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexic
 import { $setBlocksType } from "@lexical/selection";
 import { mergeRegister, $getNearestNodeOfType } from "@lexical/utils";
 import { TRANSFORMERS } from "@lexical/markdown";
-import { $createImageNode, ImageNode } from "./lexical/ImageNode";
+import { $createImageNode, ImageNode } from "@/lexical/ImageNode";
 import {
 	$createParagraphNode,
 	$getRoot,

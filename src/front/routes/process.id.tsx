@@ -1,7 +1,7 @@
 import { Form, useLoaderData, useRevalidator, useSearchParams } from "react-router";
 import { useState } from "react";
 import type { Route } from "./+types/process.id";
-import { LexicalEditor } from "../components/LexicalEditor";
+import { LexicalEditor } from "@/LexicalEditor";
 import type { StepRow, FileRow } from "../.server/process/process.id";
 import { systemNameFromMatches } from "../lib/systemName";
 

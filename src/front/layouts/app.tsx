@@ -1,10 +1,10 @@
 import { NavLink, Outlet, useLoaderData } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
 import { useState } from "react";
-import { SearchProvider } from "../components/SearchContext";
-import { CalendarPanel } from "../components/CalendarPanel";
-import { ChatPanel } from "../components/ChatPanel";
-import { ProfileButton } from "../components/ProfileButton";
+import { SearchProvider } from "@/SearchContext";
+import { CalendarPanel } from "@/CalendarPanel";
+import { ChatPanel } from "@/ChatPanel";
+import { ProfileButton } from "@/ProfileButton";
 import { getSettings, requireUser, type SessionUser } from "../.server/auth";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {

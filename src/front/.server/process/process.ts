@@ -3,6 +3,7 @@
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { db } from "../db";
+import { requireUser } from "../auth";
 import randomHEX from "../../lib/randomHEX";
 import queries from "./database.json";
 
@@ -18,6 +19,7 @@ export type ProcessRow = {
 };
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
+	await requireUser(request, context);
 	const url = new URL(request.url);
 	const q = (url.searchParams.get("q") ?? "").trim();
 	const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
@@ -45,6 +47,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
+	await requireUser(request, context);
 	const conn = db(context);
 	const form = await request.formData();
 	const intent = String(form.get("intent") ?? "");

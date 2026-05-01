@@ -1,6 +1,7 @@
 // CRUD simples de configurações chave/valor. SQL em ./database.json.
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 import { db } from "../db";
+import { requireUser } from "../auth";
 import randomHEX from "../../lib/randomHEX";
 import queries from "./database.json";
 
@@ -12,7 +13,8 @@ export type VersionInfo = {
 	timestamp?: string;
 };
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
+	await requireUser(request, context);
 	const { results } = await db(context).prepare(queries.list).all<Setting>();
 	const v = context?.cloudflare?.env?.CF_VERSION_METADATA;
 	const version: VersionInfo = {
@@ -24,6 +26,7 @@ export async function loader({ context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
+	await requireUser(request, context);
 	const conn = db(context);
 	const form = await request.formData();
 	const intent = String(form.get("intent") ?? "upsert");

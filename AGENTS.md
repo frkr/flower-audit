@@ -2,6 +2,7 @@
 
 > Este arquivo 'AGENTS.md' é a fonte de verdade absoluta para agentes de IA
 
+- Todas as ações no backend devem checar se o usuario esta logado.
 - Mantenha o README.md com as principais funcionalidades do sistema atualizadas.
 - Mantenha o schema.sql atualizado com as estruturas de dados necessárias.
 - O sistema tem um pequeno menu à esquerda no topo, com os links para 'Começar', 'Fluxos' e 'Configuração'

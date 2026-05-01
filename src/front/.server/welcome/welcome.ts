@@ -2,6 +2,7 @@
 // Lista os 10 fluxos e 10 processos mais recentes.
 import type { LoaderFunctionArgs } from "react-router";
 import { db } from "../db";
+import { requireUser } from "../auth";
 import queries from "./database.json";
 
 export type RecentRow = {
@@ -11,7 +12,8 @@ export type RecentRow = {
 	updated_at: string;
 };
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
+	await requireUser(request, context);
 	const conn = db(context);
 	const [fluxes, processes] = await Promise.all([
 		conn.prepare(queries.listRecentFluxes).all<RecentRow>(),

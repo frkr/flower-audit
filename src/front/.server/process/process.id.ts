@@ -3,6 +3,7 @@
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { db } from "../db";
+import { requireUser } from "../auth";
 import queries from "./database.json";
 
 export type StepRow = {
@@ -25,7 +26,8 @@ export type FileRow = {
 	uploaded_at: string;
 };
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ request, params, context }: LoaderFunctionArgs) {
+	await requireUser(request, context);
 	const id = String(params.id);
 	const conn = db(context);
 	const row = await conn.prepare(queries.getById).bind(id).first();
@@ -47,6 +49,7 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params, context }: ActionFunctionArgs) {
+	await requireUser(request, context);
 	const id = String(params.id);
 	const conn = db(context);
 	const form = await request.formData();

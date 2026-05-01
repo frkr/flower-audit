@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Form, Link } from "react-router";
 import type { Route } from "./+types/start";
-import { useSearch } from "../components/SearchContext";
+import { useSearch } from "@/SearchContext";
 import { systemNameFromMatches } from "../lib/systemName";
 
 export { loader } from "../.server/start/start";
