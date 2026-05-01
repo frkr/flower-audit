@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { Route } from "./+types/process";
 import type { ProcessRow } from "../.server/process/process";
 import { systemNameFromMatches } from "../lib/systemName";
+import { formatDateTime } from "../lib/formatDate";
 
 export { loader, action } from "../.server/process/process";
 
@@ -86,7 +87,7 @@ export default function Processos() {
 							{p.description ? (
 								<div className="text-sm text-gray-600 dark:text-gray-400 truncate">{p.description}</div>
 							) : null}
-							<div className="text-xs text-gray-500">Atualizado: {p.updated_at}</div>
+							<div className="text-xs text-gray-500">Atualizado: {formatDateTime(p.updated_at)}</div>
 						</div>
 						<Form method="post">
 							<input type="hidden" name="intent" value="delete" />

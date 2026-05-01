@@ -3,6 +3,7 @@ import type { Route } from "./+types/flow";
 import { useState } from "react";
 import type { FluxRow } from "../.server/flow/flow";
 import { systemNameFromMatches } from "../lib/systemName";
+import { formatDateTime } from "../lib/formatDate";
 
 export { loader, action } from "../.server/flow/flow";
 
@@ -95,7 +96,7 @@ export default function Fluxos() {
 							{f.description ? (
 								<div className="text-sm text-gray-600 dark:text-gray-400 truncate">{f.description}</div>
 							) : null}
-							<div className="text-xs text-gray-500">Atualizado: {f.updated_at}</div>
+							<div className="text-xs text-gray-500">Atualizado: {formatDateTime(f.updated_at)}</div>
 						</div>
 						<Form method="post">
 							<input type="hidden" name="intent" value="delete" />

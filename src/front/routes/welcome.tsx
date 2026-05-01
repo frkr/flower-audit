@@ -3,6 +3,7 @@ import { Form, Link, useLoaderData } from "react-router";
 import type { Route } from "./+types/welcome";
 import type { RecentRow } from "../.server/welcome/welcome";
 import { systemNameFromMatches } from "../lib/systemName";
+import { formatDateTime } from "../lib/formatDate";
 
 export { loader } from "../.server/welcome/welcome";
 
@@ -88,7 +89,7 @@ export default function Welcome() {
 								{p.description ? (
 									<div className="text-sm text-gray-600 dark:text-gray-400">{p.description}</div>
 								) : null}
-								<div className="text-xs text-gray-500 mt-1">Atualizado: {p.updated_at}</div>
+								<div className="text-xs text-gray-500 mt-1">Atualizado: {formatDateTime(p.updated_at)}</div>
 							</li>
 						))}
 					</ul>

@@ -4,6 +4,7 @@ import type { Route } from "./+types/process.id";
 import { LexicalEditor } from "@/LexicalEditor";
 import type { StepRow, FileRow } from "../.server/process/process.id";
 import { systemNameFromMatches } from "../lib/systemName";
+import { formatDateTime } from "../lib/formatDate";
 
 export { loader, action } from "../.server/process/process.id";
 
@@ -394,7 +395,7 @@ function ReadOnlyStep({
 					<h2 className="text-base font-medium">{step.name}</h2>
 					{step.completed_at ? (
 						<div className="text-xs text-green-700 dark:text-green-400">
-							✓ concluído em {step.completed_at}
+							✓ concluído em {formatDateTime(step.completed_at)}
 						</div>
 					) : null}
 				</div>

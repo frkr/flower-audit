@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { Route } from "./+types/setup";
 import type { Setting, VersionInfo } from "../.server/setup/setup";
 import { systemNameFromMatches } from "../lib/systemName";
+import { formatDateTime } from "../lib/formatDate";
 
 export { loader, action } from "../.server/setup/setup";
 
@@ -78,16 +79,6 @@ export default function Configuracao() {
 	);
 }
 
-function formatDate(iso: string): string {
-	try {
-		const d = new Date(iso);
-		if (isNaN(d.getTime())) return iso;
-		return d.toLocaleString();
-	} catch {
-		return iso;
-	}
-}
-
 function VersionFooter({ version }: { version: VersionInfo }) {
 	if (!version?.timestamp && !version?.id) return null;
 	return (
@@ -95,7 +86,7 @@ function VersionFooter({ version }: { version: VersionInfo }) {
 			{version?.timestamp && (
 				<span className="text-gray-400 normal-case" title={version.id}>
 					Version: {version?.tag && "v" + version.tag + " "}
-					{formatDate(version.timestamp)}
+					{formatDateTime(version.timestamp)}
 					{" :: "}
 				</span>
 			)}
