@@ -5,6 +5,7 @@ import { redirect } from "react-router";
 import { db } from "../db";
 import { requireUser } from "../auth";
 import randomHEX from "../../lib/randomHEX";
+import { formatDateTime } from "../../lib/formatDate";
 import queries from "./database.json";
 
 const PAGE_SIZE = 10;
@@ -82,7 +83,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 			.all<{ id_order: number; name: string }>();
 
 		const newId = await randomHEX(16);
-		const stamp = new Date().toISOString().replace("T", " ").slice(0, 19);
+		const stamp = formatDateTime(new Date().toISOString());
 		const procName = `${flux.name} — ${stamp}`;
 		await conn.prepare(queries.insert).bind(newId, idFluxo, procName, flux.description).run();
 
