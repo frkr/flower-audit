@@ -1,11 +1,13 @@
 // Busca: primeiro 10 em flux, depois 10 em process. SQL em ./database.json (regra do AGENTS.md).
 import type { LoaderFunctionArgs } from "react-router";
 import { db } from "../db";
+import { requireUser } from "../auth";
 import queries from "./database.json";
 
 type Hit = { id: string; name: string; description: string; kind: "flux" | "process" };
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
+	await requireUser(request, context);
 	const url = new URL(request.url);
 	const q = (url.searchParams.get("q") ?? "").trim();
 	const phase = url.searchParams.get("phase") === "process" ? "process" : "flux";

@@ -52,6 +52,12 @@
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
 	 */
 	// "services": [  {   "binding": "MY_SERVICE",   "service": "my-service"  } ],
+	"routes": [
+		{
+			"pattern": "flower.ideias.casa",
+			"custom_domain": true
+		}
+	],
 	"r2_buckets": [
 		{
 			"binding": "FLOWER",

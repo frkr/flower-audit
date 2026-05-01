@@ -2,9 +2,11 @@
 // SQL em ./database.json (regra do AGENTS.md).
 import type { LoaderFunctionArgs } from "react-router";
 import { db } from "../db";
+import { requireUser } from "../auth";
 import queries from "./database.json";
 
 export async function loader({ context, request }: LoaderFunctionArgs) {
+	await requireUser(request, context);
 	const url = new URL(request.url);
 	const year = Number(url.searchParams.get("year")) || new Date().getUTCFullYear();
 	const month = Number(url.searchParams.get("month")) || new Date().getUTCMonth() + 1;

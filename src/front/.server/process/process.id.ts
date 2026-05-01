@@ -13,6 +13,18 @@ export type StepRow = {
 	completed_at: string | null;
 };
 
+export type FileRow = {
+	id: string;
+	id_step: string;
+	name: string;
+	description: string;
+	finder: string;
+	mime_type: string;
+	size_bytes: number;
+	is_image: number;
+	uploaded_at: string;
+};
+
 export async function loader({ params, context }: LoaderFunctionArgs) {
 	const id = String(params.id);
 	const conn = db(context);
@@ -22,7 +34,16 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
 	const { results: fluxes } = await conn
 		.prepare(queries.listFluxes)
 		.all<{ id: string; name: string }>();
-	return Response.json({ process: row, steps: steps ?? [], fluxes: fluxes ?? [] });
+	const { results: files } = await conn
+		.prepare(queries.listFilesByProcess)
+		.bind(id)
+		.all<FileRow>();
+	return Response.json({
+		process: row,
+		steps: steps ?? [],
+		fluxes: fluxes ?? [],
+		files: files ?? [],
+	});
 }
 
 export async function action({ request, params, context }: ActionFunctionArgs) {

@@ -1,8 +1,8 @@
-import { Form, useLoaderData, useSearchParams } from "react-router";
+import { Form, useLoaderData, useRevalidator, useSearchParams } from "react-router";
 import { useState } from "react";
 import type { Route } from "./+types/process.id";
 import { LexicalEditor } from "../components/LexicalEditor";
-import type { StepRow } from "../.server/process/process.id";
+import type { StepRow, FileRow } from "../.server/process/process.id";
 
 export { loader, action } from "../.server/process/process.id";
 
@@ -21,10 +21,12 @@ type Data = {
 	};
 	steps: StepRow[];
 	fluxes: { id: string; name: string }[];
+	files: FileRow[];
 };
 
 export default function ProcessoEdit() {
 	const data = useLoaderData() as Data;
+	const revalidator = useRevalidator();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [showMeta, setShowMeta] = useState(false);
 
@@ -74,6 +76,7 @@ export default function ProcessoEdit() {
 							step={viewing}
 							processId={data.process.id}
 							positionLabel={`Passo ${viewIdx + 1} de ${total}`}
+							onUploaded={() => revalidator.revalidate()}
 						/>
 					) : (
 						<ReadOnlyStep
@@ -91,6 +94,12 @@ export default function ProcessoEdit() {
 					✓ Todos os passos concluídos.
 				</div>
 			) : null}
+
+			<AttachmentsList
+				files={data.files}
+				steps={data.steps}
+				onChanged={() => revalidator.revalidate()}
+			/>
 		</div>
 	);
 }
@@ -217,10 +226,12 @@ function CurrentStepForm({
 	step,
 	processId,
 	positionLabel,
+	onUploaded,
 }: {
 	step: StepRow;
 	processId: string;
 	positionLabel: string;
+	onUploaded: () => void;
 }) {
 	return (
 		<Form method="post" className="flex flex-col h-full min-h-0">
@@ -254,9 +265,112 @@ function CurrentStepForm({
 				defaultHtml={step.content ?? ""}
 				placeholder={`Conteúdo do passo "${step.name}"…`}
 				tall
+				uploadContext={{ processId, stepId: step.id }}
+				onUploaded={onUploaded}
 			/>
 			<input type="hidden" name="process_id" value={processId} />
 		</Form>
+	);
+}
+
+function AttachmentsList({
+	files,
+	steps,
+	onChanged,
+}: {
+	files: FileRow[];
+	steps: StepRow[];
+	onChanged: () => void;
+}) {
+	if (files.length === 0) return null;
+
+	const stepName = (id: string) => steps.find((s) => s.id === id)?.name ?? "—";
+
+	function fmtSize(b: number) {
+		if (b < 1024) return `${b} B`;
+		if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`;
+		return `${(b / (1024 * 1024)).toFixed(1)} MB`;
+	}
+
+	function openInPopup(id: string, name: string) {
+		const url = `/api/files?id=${encodeURIComponent(id)}&download=1`;
+		const w = window.open(url, `flower-file-${id}`, "width=520,height=320");
+		if (!w) window.location.href = url;
+	}
+
+	async function deleteFile(id: string, name: string) {
+		if (!confirm(`Excluir o arquivo "${name}"?`)) return;
+		const res = await fetch(`/api/files?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+		const json = (await res.json()) as { ok: boolean; error?: string };
+		if (!json.ok) {
+			alert("Falha ao excluir: " + (json.error ?? "desconhecido"));
+			return;
+		}
+		onChanged();
+	}
+
+	return (
+		<section className="mt-6 border-t border-gray-200 dark:border-gray-800 pt-3">
+			<h3 className="text-sm font-semibold mb-2">Anexos ({files.length})</h3>
+			<ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+				{files.map((f) => (
+					<li
+						key={f.id}
+						className="flex items-center gap-3 border border-gray-200 dark:border-gray-700 rounded p-2"
+					>
+						{f.is_image ? (
+							<img
+								src={`/api/files?id=${encodeURIComponent(f.id)}`}
+								alt={f.name}
+								className="w-12 h-12 object-cover rounded border border-gray-200 dark:border-gray-700"
+							/>
+						) : (
+							<div className="w-12 h-12 flex items-center justify-center rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-xl">
+								📄
+							</div>
+						)}
+						<div className="min-w-0 flex-1">
+							<div className="text-sm font-medium truncate" title={f.name}>
+								{f.name}
+							</div>
+							<div className="text-xs text-gray-500 truncate">
+								{f.mime_type || "binário"} · {fmtSize(f.size_bytes)} · passo: {stepName(f.id_step)}
+							</div>
+						</div>
+						<div className="flex gap-1">
+							{f.is_image ? (
+								<a
+									href={`/api/files?id=${encodeURIComponent(f.id)}`}
+									target="_blank"
+									rel="noreferrer"
+									className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+									title="Abrir imagem"
+								>
+									Abrir
+								</a>
+							) : (
+								<button
+									type="button"
+									onClick={() => openInPopup(f.id, f.name)}
+									className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+									title="Baixar arquivo"
+								>
+									Baixar
+								</button>
+							)}
+							<button
+								type="button"
+								onClick={() => deleteFile(f.id, f.name)}
+								className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+								title="Excluir"
+							>
+								✕
+							</button>
+						</div>
+					</li>
+				))}
+			</ul>
+		</section>
 	);
 }
 

@@ -1,0 +1,4 @@
+{
+	"listRecentFluxes": "SELECT id, name, description, updated_at FROM flux WHERE active = 1 ORDER BY updated_at DESC LIMIT 10",
+	"listRecentProcesses": "SELECT id, name, description, updated_at FROM process WHERE active = 1 ORDER BY updated_at DESC LIMIT 10"
+}

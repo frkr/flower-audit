@@ -92,12 +92,16 @@ erDiagram
         TEXT at
     }
     process_step_files {
-        TEXT id PK
-        TEXT id_process FK
-        TEXT id_step FK
-        TEXT name
-        TEXT description
-        TEXT finder
+        TEXT    id PK
+        TEXT    id_process FK
+        TEXT    id_step FK
+        TEXT    name
+        TEXT    description
+        TEXT    finder
+        TEXT    mime_type
+        INTEGER size_bytes
+        INTEGER is_image
+        TEXT    uploaded_at
     }
 
     settings {
@@ -206,12 +210,16 @@ erDiagram
         TEXT at
     }
     process_step_files {
-        TEXT id PK
-        TEXT id_process FK
-        TEXT id_step FK
-        TEXT name
-        TEXT description
-        TEXT finder
+        TEXT    id PK
+        TEXT    id_process FK
+        TEXT    id_step FK
+        TEXT    name
+        TEXT    description
+        TEXT    finder
+        TEXT    mime_type
+        INTEGER size_bytes
+        INTEGER is_image
+        TEXT    uploaded_at
     }
 ```
 

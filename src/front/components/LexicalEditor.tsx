@@ -27,6 +27,7 @@ import { LinkNode, AutoLinkNode, TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexic
 import { $setBlocksType } from "@lexical/selection";
 import { mergeRegister, $getNearestNodeOfType } from "@lexical/utils";
 import { TRANSFORMERS } from "@lexical/markdown";
+import { $createImageNode, ImageNode } from "./lexical/ImageNode";
 import {
 	$createParagraphNode,
 	$getRoot,
@@ -49,6 +50,17 @@ type Props = {
 	defaultHtml?: string;
 	placeholder?: string;
 	tall?: boolean;
+	uploadContext?: { processId: string; stepId: string };
+	onUploaded?: (file: UploadedFile) => void;
+};
+
+export type UploadedFile = {
+	id: string;
+	name: string;
+	mime_type: string;
+	size_bytes: number;
+	is_image: number;
+	url: string;
 };
 
 const theme = {
@@ -86,11 +98,20 @@ const NODES = [
 	CodeHighlightNode,
 	LinkNode,
 	AutoLinkNode,
+	ImageNode,
 ];
 
-export function LexicalEditor({ name, defaultHtml = "", placeholder = "Escreva aqui…", tall = false }: Props) {
+export function LexicalEditor({
+	name,
+	defaultHtml = "",
+	placeholder = "Escreva aqui…",
+	tall = false,
+	uploadContext,
+	onUploaded,
+}: Props) {
 	const [html, setHtml] = useState(defaultHtml);
 	const [maximized, setMaximized] = useState(false);
+	const [showSource, setShowSource] = useState(false);
 
 	const initialConfig = {
 		namespace: "FlowerEditor",
@@ -114,13 +135,22 @@ export function LexicalEditor({ name, defaultHtml = "", placeholder = "Escreva a
 	return (
 		<div className={wrapClasses}>
 			<LexicalComposer initialConfig={initialConfig}>
-				<Toolbar maximized={maximized} onToggleMaximize={() => setMaximized((v) => !v)} />
+				<Toolbar
+					maximized={maximized}
+					onToggleMaximize={() => setMaximized((v) => !v)}
+					uploadContext={uploadContext}
+					onUploaded={onUploaded}
+					showSource={showSource}
+					onToggleSource={() => setShowSource((v) => !v)}
+				/>
 				<input type="hidden" name={name} value={html} />
 				<div className="relative flex-1 min-h-0 flex flex-col">
 					<RichTextPlugin
 						contentEditable={
 							<ContentEditable
-								className={editableClasses}
+								className={
+									editableClasses + (showSource ? " hidden" : "")
+								}
 								aria-placeholder={placeholder}
 								placeholder={
 									<div className="absolute top-2 left-3 text-gray-400 pointer-events-none select-none">
@@ -131,6 +161,23 @@ export function LexicalEditor({ name, defaultHtml = "", placeholder = "Escreva a
 						}
 						ErrorBoundary={LexicalErrorBoundary}
 					/>
+					{showSource ? (
+						<pre
+							className={
+								(maximized
+									? "flex-1 overflow-auto px-4 py-3"
+									: tall
+										? "flex-1 min-h-0 overflow-auto px-3 py-2"
+										: "min-h-64 overflow-auto px-3 py-2") +
+								" text-xs font-mono whitespace-pre-wrap break-all bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300"
+							}
+						>
+							{html || "(vazio)"}
+						</pre>
+					) : null}
+					{uploadContext && !showSource ? (
+						<DropZone uploadContext={uploadContext} onUploaded={onUploaded} />
+					) : null}
 				</div>
 				<HistoryPlugin />
 				<ListPlugin />
@@ -152,6 +199,100 @@ export function LexicalEditor({ name, defaultHtml = "", placeholder = "Escreva a
 	);
 }
 
+async function uploadFile(
+	file: File,
+	uploadContext: { processId: string; stepId: string }
+): Promise<UploadedFile> {
+	const fd = new FormData();
+	fd.append("file", file);
+	fd.append("process_id", uploadContext.processId);
+	fd.append("step_id", uploadContext.stepId);
+	const res = await fetch("/api/files", { method: "POST", body: fd });
+	const json = (await res.json()) as { ok: boolean; error?: string; file?: UploadedFile };
+	if (!json.ok || !json.file) {
+		throw new Error(json.error || "upload failed");
+	}
+	return json.file;
+}
+
+function DropZone({
+	uploadContext,
+	onUploaded,
+}: {
+	uploadContext: { processId: string; stepId: string };
+	onUploaded?: (f: UploadedFile) => void;
+}) {
+	const [editor] = useLexicalComposerContext();
+	const [over, setOver] = useState(false);
+	const [busy, setBusy] = useState(false);
+
+	async function onDrop(e: React.DragEvent) {
+		e.preventDefault();
+		setOver(false);
+		const files = Array.from(e.dataTransfer.files);
+		if (files.length === 0) return;
+		setBusy(true);
+		try {
+			for (const f of files) {
+				const up = await uploadFile(f, uploadContext);
+				if (up.is_image) insertImageInEditor(editor, up);
+				onUploaded?.(up);
+			}
+		} catch (err) {
+			alert("Falha no upload: " + (err as Error).message);
+		} finally {
+			setBusy(false);
+		}
+	}
+
+	if (!over && !busy) {
+		return (
+			<div
+				className="absolute inset-0 pointer-events-none"
+				onDragEnter={() => setOver(true)}
+			>
+				<div
+					className="absolute inset-0 pointer-events-auto"
+					style={{ background: "transparent" }}
+					onDragEnter={(e) => {
+						e.preventDefault();
+						setOver(true);
+					}}
+					onDragOver={(e) => {
+						e.preventDefault();
+					}}
+					onDrop={onDrop}
+				/>
+			</div>
+		);
+	}
+
+	return (
+		<div
+			className="absolute inset-0 z-20 flex items-center justify-center bg-blue-100/70 dark:bg-blue-900/40 border-2 border-dashed border-blue-400 rounded pointer-events-auto"
+			onDragOver={(e) => e.preventDefault()}
+			onDragLeave={() => setOver(false)}
+			onDrop={onDrop}
+		>
+			<div className="text-blue-900 dark:text-blue-100 text-sm">
+				{busy ? "Enviando…" : "Solte para anexar"}
+			</div>
+		</div>
+	);
+}
+
+function insertImageInEditor(editor: ReturnType<typeof useLexicalComposerContext>[0], up: UploadedFile) {
+	editor.update(() => {
+		const sel = $getSelection();
+		const node = $createImageNode({ src: up.url, alt: up.name, fileId: up.id });
+		if ($isRangeSelection(sel)) {
+			sel.insertNodes([node]);
+		} else {
+			$getRoot().append($createParagraphNode().append(node));
+		}
+	});
+}
+
 type BlockType = "paragraph" | "h1" | "h2" | "h3" | "quote" | "code" | "ul" | "ol" | "check";
 
 const BLOCK_LABELS: Record<BlockType, string> = {
@@ -169,9 +310,17 @@ const BLOCK_LABELS: Record<BlockType, string> = {
 function Toolbar({
 	maximized,
 	onToggleMaximize,
+	uploadContext,
+	onUploaded,
+	showSource,
+	onToggleSource,
 }: {
 	maximized: boolean;
 	onToggleMaximize: () => void;
+	uploadContext?: { processId: string; stepId: string };
+	onUploaded?: (f: UploadedFile) => void;
+	showSource: boolean;
+	onToggleSource: () => void;
 }) {
 	const [editor] = useLexicalComposerContext();
 	const [canUndo, setCanUndo] = useState(false);
@@ -360,11 +509,80 @@ function Toolbar({
 			<TbBtn label="Limpar formatação" onClick={clearFormatting}>
 				⌫
 			</TbBtn>
+			{uploadContext ? (
+				<>
+					<Sep />
+					<UploadBtn uploadContext={uploadContext} onUploaded={onUploaded} editor={editor} />
+				</>
+			) : null}
 			<div className="flex-1" />
+			<TbBtn
+				label={showSource ? "Voltar para o editor" : "Ver código HTML"}
+				active={showSource}
+				onClick={onToggleSource}
+			>
+				{"<>"}
+			</TbBtn>
 			<TbBtn label={maximized ? "Minimizar" : "Maximizar"} onClick={onToggleMaximize}>
 				{maximized ? "✕" : "⛶"}
 			</TbBtn>
 		</div>
+	);
+}
+
+function UploadBtn({
+	uploadContext,
+	onUploaded,
+	editor,
+}: {
+	uploadContext: { processId: string; stepId: string };
+	onUploaded?: (f: UploadedFile) => void;
+	editor: ReturnType<typeof useLexicalComposerContext>[0];
+}) {
+	const [busy, setBusy] = useState(false);
+	const inputId = `lex-upload-${uploadContext.stepId}`;
+
+	async function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+		const files = Array.from(e.target.files ?? []);
+		if (files.length === 0) return;
+		setBusy(true);
+		try {
+			for (const f of files) {
+				const up = await uploadFile(f, uploadContext);
+				if (up.is_image) insertImageInEditor(editor, up);
+				onUploaded?.(up);
+			}
+		} catch (err) {
+			alert("Falha no upload: " + (err as Error).message);
+		} finally {
+			setBusy(false);
+			e.target.value = "";
+		}
+	}
+
+	return (
+		<>
+			<input
+				id={inputId}
+				type="file"
+				multiple
+				className="hidden"
+				onChange={onChange}
+				disabled={busy}
+			/>
+			<label
+				htmlFor={inputId}
+				title={busy ? "Enviando…" : "Anexar imagem ou arquivo"}
+				className={
+					"min-w-7 h-7 px-1.5 rounded text-xs flex items-center justify-center border border-transparent " +
+					(busy
+						? "opacity-50 cursor-wait"
+						: "hover:bg-gray-200 dark:hover:bg-gray-800 cursor-pointer")
+				}
+			>
+				{busy ? "⏳" : "📎"}
+			</label>
+		</>
 	);
 }
 

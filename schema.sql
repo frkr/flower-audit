@@ -110,7 +110,11 @@ CREATE TABLE IF NOT EXISTS process_step_files (
     id_step     TEXT NOT NULL REFERENCES process_steps(id) ON DELETE CASCADE,
     name        TEXT NOT NULL,
     description TEXT NOT NULL DEFAULT '',
-    finder      TEXT NOT NULL DEFAULT ''
+    finder      TEXT NOT NULL DEFAULT '',         -- chave do objeto no R2 (bucket FLOWER)
+    mime_type   TEXT NOT NULL DEFAULT '',
+    size_bytes  INTEGER NOT NULL DEFAULT 0,
+    is_image    INTEGER NOT NULL DEFAULT 0,
+    uploaded_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_process_step_files_step ON process_step_files(id_step);
 

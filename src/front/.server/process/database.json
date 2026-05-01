@@ -17,5 +17,6 @@
 	"reopenStep": "UPDATE process_steps SET completed_at = NULL WHERE id = ?1 AND id_process = ?2",
 	"touchProcess": "UPDATE process SET updated_at = datetime('now') WHERE id = ?1",
 	"deleteSteps": "DELETE FROM process_steps WHERE id_process = ?1",
-	"insertStep": "INSERT INTO process_steps (id, id_order, id_process, id_flux, name, content) VALUES (?1, ?2, ?3, ?4, ?5, ?6)"
+	"insertStep": "INSERT INTO process_steps (id, id_order, id_process, id_flux, name, content) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+	"listFilesByProcess": "SELECT id, id_step, name, description, finder, mime_type, size_bytes, is_image, uploaded_at FROM process_step_files WHERE id_process = ?1 ORDER BY uploaded_at DESC"
 }

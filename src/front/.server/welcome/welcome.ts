@@ -1,0 +1,24 @@
+// Loader da tela de boas-vindas (index "/").
+// Lista os 10 fluxos e 10 processos mais recentes.
+import type { LoaderFunctionArgs } from "react-router";
+import { db } from "../db";
+import queries from "./database.json";
+
+export type RecentRow = {
+	id: string;
+	name: string;
+	description: string;
+	updated_at: string;
+};
+
+export async function loader({ context }: LoaderFunctionArgs) {
+	const conn = db(context);
+	const [fluxes, processes] = await Promise.all([
+		conn.prepare(queries.listRecentFluxes).all<RecentRow>(),
+		conn.prepare(queries.listRecentProcesses).all<RecentRow>(),
+	]);
+	return Response.json({
+		fluxes: fluxes.results ?? [],
+		processes: processes.results ?? [],
+	});
+}

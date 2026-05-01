@@ -29,87 +29,152 @@ export default function Configuracao() {
 			</div>
 
 			{adding ? (
-				<Form method="post" className="border border-gray-200 dark:border-gray-700 rounded p-4 space-y-3 mb-4">
+				<Form
+					method="post"
+					className="border border-gray-200 dark:border-gray-700 rounded p-4 space-y-3 mb-4"
+				>
 					<input type="hidden" name="intent" value="upsert" />
 					<div className="grid grid-cols-2 gap-3">
 						<div>
 							<label className="block text-sm mb-1">Nome (chave)</label>
-							<input name="name" required className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
+							<input
+								name="name"
+								required
+								className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+							/>
 						</div>
 						<div>
 							<label className="block text-sm mb-1">Valor</label>
-							<input name="value" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
+							<input
+								name="value"
+								className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+							/>
 						</div>
 					</div>
 					<div>
 						<label className="block text-sm mb-1">Descrição</label>
-						<input name="description" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
+						<input
+							name="description"
+							className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+						/>
 					</div>
 					<button className="px-3 py-2 rounded bg-blue-600 text-white">Salvar</button>
 				</Form>
 			) : null}
 
-			<div className="border border-gray-200 dark:border-gray-700 rounded overflow-hidden">
-				<table className="w-full text-sm">
-					<thead className="bg-gray-50 dark:bg-gray-900">
-						<tr>
-							<th className="text-left px-3 py-2">Nome</th>
-							<th className="text-left px-3 py-2">Valor</th>
-							<th className="text-left px-3 py-2">Descrição</th>
-							<th className="px-3 py-2"></th>
-						</tr>
-					</thead>
-					<tbody>
-						{data.items.length === 0 ? (
-							<tr>
-								<td colSpan={4} className="px-3 py-4 text-center text-gray-500">
-									Sem configurações cadastradas.
-								</td>
-							</tr>
-						) : (
-							data.items.map((s) => (
-								<tr key={s.id} className="border-t border-gray-200 dark:border-gray-800">
-									<td className="px-3 py-2">
-										<Form method="post" className="contents">
-											<input type="hidden" name="intent" value="upsert" />
-											<input type="hidden" name="id" value={s.id} />
-											<input name="name" defaultValue={s.name} className="w-full bg-transparent outline-none" />
-									</Form>
-									</td>
-									<td className="px-3 py-2">
-										<Form method="post" className="contents">
-											<input type="hidden" name="intent" value="upsert" />
-											<input type="hidden" name="id" value={s.id} />
-											<input type="hidden" name="name" value={s.name} />
-											<input
-												name="value"
-												defaultValue={s.value}
-												className="w-full bg-transparent outline-none"
-											/>
-										</Form>
-									</td>
-									<td className="px-3 py-2 text-gray-500">{s.description}</td>
-									<td className="px-3 py-2 text-right">
-										<Form method="post">
-											<input type="hidden" name="intent" value="delete" />
-											<input type="hidden" name="id" value={s.id} />
-											<button
-												type="submit"
-												onClick={(e) => {
-													if (!confirm("Excluir esta configuração?")) e.preventDefault();
-												}}
-												className="text-xs text-red-600 hover:underline"
-											>
-												excluir
-											</button>
-										</Form>
-									</td>
-								</tr>
-							))
-						)}
-					</tbody>
-				</table>
-			</div>
+			<ul className="space-y-2">
+				{data.items.length === 0 ? (
+					<li className="text-sm text-gray-500 border border-dashed border-gray-300 dark:border-gray-700 rounded p-4 text-center">
+						Sem configurações cadastradas.
+					</li>
+				) : (
+					data.items.map((s) => <SettingRow key={s.id} item={s} />)
+				)}
+			</ul>
 		</div>
 	);
+}
+
+function SettingRow({ item }: { item: Setting }) {
+	const [editing, setEditing] = useState(false);
+
+	if (!editing) {
+		return (
+			<li className="border border-gray-200 dark:border-gray-700 rounded p-3 flex items-start justify-between gap-3">
+				<div className="min-w-0 flex-1">
+					<div className="text-xs uppercase text-gray-500">{item.name}</div>
+					<div
+						className="text-sm font-mono break-all"
+						title={item.value}
+					>
+						{maskValue(item.name, item.value)}
+					</div>
+					{item.description ? (
+						<div className="text-xs text-gray-500 mt-1">{item.description}</div>
+					) : null}
+				</div>
+				<div className="flex flex-col gap-1">
+					<button
+						type="button"
+						onClick={() => setEditing(true)}
+						className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+					>
+						Editar
+					</button>
+					<Form method="post">
+						<input type="hidden" name="intent" value="delete" />
+						<input type="hidden" name="id" value={item.id} />
+						<button
+							type="submit"
+							onClick={(e) => {
+								if (!confirm(`Excluir "${item.name}"?`)) e.preventDefault();
+							}}
+							className="w-full text-xs px-2 py-1 rounded bg-red-600 text-white"
+						>
+							Excluir
+						</button>
+					</Form>
+				</div>
+			</li>
+		);
+	}
+
+	return (
+		<li className="border border-blue-300 dark:border-blue-700 rounded p-3">
+			<Form method="post" className="space-y-2" onSubmit={() => setEditing(false)}>
+				<input type="hidden" name="intent" value="upsert" />
+				<input type="hidden" name="id" value={item.id} />
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+					<label className="text-sm">
+						<span className="block text-xs uppercase text-gray-500 mb-1">Nome</span>
+						<input
+							name="name"
+							defaultValue={item.name}
+							required
+							className="w-full px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+						/>
+					</label>
+					<label className="text-sm">
+						<span className="block text-xs uppercase text-gray-500 mb-1">Valor</span>
+						<input
+							name="value"
+							defaultValue={item.value}
+							className="w-full px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 font-mono"
+						/>
+					</label>
+				</div>
+				<label className="text-sm block">
+					<span className="block text-xs uppercase text-gray-500 mb-1">Descrição</span>
+					<input
+						name="description"
+						defaultValue={item.description}
+						className="w-full px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+					/>
+				</label>
+				<div className="flex justify-end gap-2">
+					<button
+						type="button"
+						onClick={() => setEditing(false)}
+						className="text-xs px-3 py-1 rounded border border-gray-300 dark:border-gray-700"
+					>
+						Cancelar
+					</button>
+					<button
+						type="submit"
+						className="text-xs px-3 py-1 rounded bg-blue-600 text-white"
+					>
+						Salvar
+					</button>
+				</div>
+			</Form>
+		</li>
+	);
+}
+
+function maskValue(name: string, value: string): string {
+	if (!value) return "(vazio)";
+	const sensitive = /(secret|password|token|key)/i.test(name);
+	if (!sensitive) return value;
+	if (value.length <= 8) return "•".repeat(value.length);
+	return value.slice(0, 4) + "…" + value.slice(-4);
 }
