@@ -10,6 +10,7 @@ Outras línguas: [English](./README.md) · [Español](./README.es.md)
 
 ## Funcionalidades principais
 
+- **Boas-vindas (`/landing`)** — hero page pública exibida após o logout, com a lista de funcionalidades do sistema e um botão **Entrar** que inicia o fluxo de login.
 - **Começar** — caixa de pesquisa centralizada estilo Google que se anima até o topo após a pesquisa. Busca primeiro em `flux` (10 resultados) e em seguida em `process` (10 resultados).
 - **Fluxos** — CRUD simples com pesquisa e paginação de 10 por vez. Cada fluxo tem nome, descrição e uma lista editável de passos.
 - **Processos** — CRUD simples onde cada processo pertence a um fluxo. O campo `Conteúdo` de cada passo é um editor WYSIWYG baseado em Lexical com botão para maximizar em tela cheia.

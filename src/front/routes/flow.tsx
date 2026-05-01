@@ -17,7 +17,6 @@ export default function Fluxos() {
 	const data = useLoaderData() as Data;
 	const [params, setParams] = useSearchParams();
 	const [creating, setCreating] = useState(false);
-	const [steps, setSteps] = useState<string[]>([""]);
 	const totalPages = Math.max(1, Math.ceil(data.total / data.pageSize));
 
 	return (
@@ -52,36 +51,7 @@ export default function Fluxos() {
 						<label className="block text-sm mb-1">Descrição</label>
 						<textarea name="description" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
 					</div>
-					<div>
-						<label className="block text-sm mb-1">Passos</label>
-						<div className="space-y-2">
-							{steps.map((s, i) => (
-								<div key={i} className="flex gap-2">
-									<input
-										name="step"
-										value={s}
-										onChange={(e) => setSteps(steps.map((x, j) => (i === j ? e.target.value : x)))}
-										placeholder={`Passo ${i + 1}`}
-										className="flex-1 px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-									/>
-									<button
-										type="button"
-										onClick={() => setSteps(steps.filter((_, j) => j !== i))}
-										className="px-2 rounded bg-red-100 text-red-700"
-									>
-										×
-									</button>
-								</div>
-							))}
-							<button
-								type="button"
-								onClick={() => setSteps([...steps, ""])}
-								className="text-sm text-blue-600 hover:underline"
-							>
-								+ Adicionar passo
-							</button>
-						</div>
-					</div>
+					<p className="text-xs text-gray-500">Os passos do fluxo são adicionados na próxima tela, depois que o fluxo for salvo.</p>
 					<button className="px-3 py-2 rounded bg-blue-600 text-white">Criar</button>
 				</Form>
 			) : null}

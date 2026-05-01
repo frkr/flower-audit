@@ -1,4 +1,4 @@
-// /logout: limpa o cookie de sessão e volta para a tela de login.
+// /logout: limpa o cookie de sessão e volta para a hero page pública.
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 import { buildClearSessionCookie, isSecureRequest } from "../auth";
 
@@ -6,7 +6,7 @@ function clearAndRedirect(request: Request) {
 	return new Response(null, {
 		status: 302,
 		headers: {
-			Location: "/login",
+			Location: "/landing",
 			"Set-Cookie": buildClearSessionCookie(isSecureRequest(request)),
 		},
 	});

@@ -1,4 +1,7 @@
-// Detalhe/atualização/exclusão de um fluxo. SQL em ./database.json.
+// Detalhe / atualização / exclusão de um fluxo.
+// Cada operação é uma intent independente — passos são manipulados um a um
+// (addStep / renameStep / removeStep) para evitar a duplicação de registros
+// que o padrão "desativar todos e reinserir" causava. SQL em ./database.json.
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { db } from "../db";
@@ -21,7 +24,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 	const id = String(params.id);
 	const conn = db(context);
 	const form = await request.formData();
-	const intent = String(form.get("intent") ?? "update");
+	const intent = String(form.get("intent") ?? "updateFlux");
 
 	if (intent === "delete") {
 		await conn.prepare(queries.deactivate).bind(id).run();
@@ -29,17 +32,44 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 		return redirect("/flow");
 	}
 
-	const name = String(form.get("name") ?? "").trim();
-	const description = String(form.get("description") ?? "").trim();
-	if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
-
-	await conn.prepare(queries.update).bind(name, description, id).run();
-	await conn.prepare(queries.deactivateSteps).bind(id).run();
-
-	const steps = form.getAll("step").map(String).filter((s) => s.trim());
-	for (let i = 0; i < steps.length; i++) {
-		await conn.prepare(queries.insertStep).bind(await randomHEX(16), id, i, steps[i]).run();
+	if (intent === "updateFlux") {
+		const name = String(form.get("name") ?? "").trim();
+		const description = String(form.get("description") ?? "").trim();
+		if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
+		await conn.prepare(queries.update).bind(name, description, id).run();
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
+		return Response.json({ ok: true });
 	}
-	await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
-	return Response.json({ ok: true });
+
+	if (intent === "addStep") {
+		const name = String(form.get("name") ?? "").trim();
+		if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
+		const max = await conn.prepare(queries.maxStepOrder).bind(id).first<{ m: number }>();
+		const nextOrder = (max?.m ?? -1) + 1;
+		await conn.prepare(queries.insertStep).bind(await randomHEX(16), id, nextOrder, name).run();
+		await conn.prepare(queries.touchFlux).bind(id).run();
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
+		return Response.json({ ok: true });
+	}
+
+	if (intent === "renameStep") {
+		const stepId = String(form.get("stepId") ?? "");
+		const name = String(form.get("name") ?? "").trim();
+		if (!stepId || !name) return Response.json({ ok: false, error: "stepId/name required" }, { status: 422 });
+		await conn.prepare(queries.updateStep).bind(name, stepId, id).run();
+		await conn.prepare(queries.touchFlux).bind(id).run();
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
+		return Response.json({ ok: true });
+	}
+
+	if (intent === "removeStep") {
+		const stepId = String(form.get("stepId") ?? "");
+		if (!stepId) return Response.json({ ok: false, error: "stepId required" }, { status: 422 });
+		await conn.prepare(queries.deactivateStep).bind(stepId, id).run();
+		await conn.prepare(queries.touchFlux).bind(id).run();
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
+		return Response.json({ ok: true });
+	}
+
+	return Response.json({ ok: false, error: "unknown intent" }, { status: 400 });
 }

@@ -1,6 +1,8 @@
-// CRUD de Fluxos — listagem com paginação 10/pesquisa.png, criação, atualização, exclusão.
+// CRUD de Fluxos — listagem com paginação 10/pesquisa, criação e exclusão.
+// Os passos são gerenciados na página de edição (/flow/:id), não aqui.
 // SQL em ./database.json (regra do AGENTS.md).
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
+import { redirect } from "react-router";
 import { db } from "../db";
 import { requireUser } from "../auth";
 import randomHEX from "../../lib/randomHEX";
@@ -53,12 +55,8 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		const description = String(form.get("description") ?? "").trim();
 		if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
 		await conn.prepare(queries.insert).bind(id, name, description).run();
-		const steps = form.getAll("step").map(String).filter((s) => s.trim());
-		for (let i = 0; i < steps.length; i++) {
-			await conn.prepare(queries.insertStep).bind(await randomHEX(16), id, i, steps[i]).run();
-		}
 		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
-		return Response.json({ ok: true, id });
+		return redirect(`/flow/${id}`);
 	}
 
 	if (intent === "delete") {

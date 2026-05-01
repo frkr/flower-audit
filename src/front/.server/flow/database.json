@@ -4,11 +4,14 @@
 	"countSearch": "SELECT COUNT(*) AS c FROM flux WHERE active = 1 AND (LOWER(name) LIKE LOWER(?1) OR LOWER(description) LIKE LOWER(?1))",
 	"countAll": "SELECT COUNT(*) AS c FROM flux WHERE active = 1",
 	"insert": "INSERT INTO flux (id, name, description) VALUES (?1, ?2, ?3)",
-	"insertStep": "INSERT INTO flux_steps (id, id_fluxo, id_order, name) VALUES (?1, ?2, ?3, ?4)",
 	"deactivate": "UPDATE flux SET active = 0, updated_at = datetime('now') WHERE id = ?1",
 	"getById": "SELECT * FROM flux WHERE id = ?1 AND active = 1",
-	"listSteps": "SELECT id, id_order, name FROM flux_steps WHERE id_fluxo = ?1 AND active = 1 ORDER BY id_order ASC",
+	"listSteps": "SELECT id, id_order, name FROM flux_steps WHERE id_fluxo = ?1 AND active = 1 ORDER BY id_order ASC, ROWID ASC",
 	"update": "UPDATE flux SET name = ?1, description = ?2, updated_at = datetime('now') WHERE id = ?3",
-	"deactivateSteps": "UPDATE flux_steps SET active = 0 WHERE id_fluxo = ?1 AND active = 1",
+	"insertStep": "INSERT INTO flux_steps (id, id_fluxo, id_order, name) VALUES (?1, ?2, ?3, ?4)",
+	"updateStep": "UPDATE flux_steps SET name = ?1 WHERE id = ?2 AND id_fluxo = ?3 AND active = 1",
+	"deactivateStep": "UPDATE flux_steps SET active = 0 WHERE id = ?1 AND id_fluxo = ?2 AND active = 1",
+	"maxStepOrder": "SELECT COALESCE(MAX(id_order), -1) AS m FROM flux_steps WHERE id_fluxo = ?1 AND active = 1",
+	"touchFlux": "UPDATE flux SET updated_at = datetime('now') WHERE id = ?1",
 	"insertAuthor": "INSERT INTO flux_authors (id, id_fluxo, author) VALUES (?1, ?2, ?3)"
 }

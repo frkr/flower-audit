@@ -10,6 +10,7 @@ export default [
 		route("process/:id", "routes/process.id.tsx"),
 		route("setup", "routes/setup.tsx"),
 	]),
+	route("landing", "routes/landing.tsx"),
 	route("login", "routes/login.ts"),
 	route("login/callback", "routes/login.callback.ts"),
 	route("logout", "routes/logout.ts"),

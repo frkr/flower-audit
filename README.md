@@ -10,6 +10,7 @@ Translations: [Português (Brasil)](./README.pt-br.md) · [Español](./README.es
 
 ## Main features
 
+- **Landing (`/landing`)** — public hero page shown after logout, listing the system features and providing an **Entrar** button that starts the login flow.
 - **Go** — Google-style centered search bar that animates to the top after a query, then searches `flux` (10 results) and `process` (10 results).
 - **Flows** — simple CRUD with search and pagination of 10 items per page. Each flow has a name, description, and an editable list of steps.
 - **Processes** — simple CRUD where each process belongs to a flow. The `Content` field of each step is a Lexical-based WYSIWYG editor with a maximize-to-fullscreen button.

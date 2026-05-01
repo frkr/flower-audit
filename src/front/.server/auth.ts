@@ -20,7 +20,7 @@ const COOKIE_NAME = "flower_session";
 const STATE_COOKIE = "flower_oauth_state";
 const DEFAULT_SESSION_TTL_HOURS = 6;
 
-const PUBLIC_PATHS = new Set(["/login", "/login/callback", "/logout"]);
+const PUBLIC_PATHS = new Set(["/landing", "/login", "/login/callback", "/logout"]);
 
 function parseTtlSeconds(raw: string | undefined): number {
 	const hours = Number(raw);
@@ -244,5 +244,5 @@ export async function requireUser(
 	if (user) return user;
 	const url = new URL(request.url);
 	const back = url.pathname + url.search;
-	throw redirect(`/login?redirect=${encodeURIComponent(back)}`);
+	throw redirect(`/landing?redirect=${encodeURIComponent(back)}`);
 }
