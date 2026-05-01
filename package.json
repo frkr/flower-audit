@@ -1,0 +1,39 @@
+{
+	"name": "flower-audit",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "pnpm run typecheck && react-router build",
+		"cf-typegen": "wrangler types",
+		"deploy": "pnpm run build && wrangler deploy",
+		"dev": "react-router dev",
+		"postinstall": "pnpm run cf-typegen",
+		"preview": "pnpm run build && vite preview",
+		"test": "vitest run",
+		"test:e2e": "playwright test",
+		"typecheck": "pnpm run cf-typegen && react-router typegen && tsc -b"
+	},
+	"dependencies": {
+		"isbot": "^5.1.38",
+		"react": "^19.2.5",
+		"react-dom": "^19.2.5",
+		"react-router": "^7.14.1"
+	},
+	"devDependencies": {
+		"@cloudflare/vite-plugin": "^1.32.3",
+		"@cloudflare/vitest-pool-workers": "^0.14.7",
+		"@playwright/test": "^1.59.1",
+		"@react-router/dev": "^7.14.1",
+		"@tailwindcss/vite": "^4.2.2",
+		"@types/node": "^25.6.0",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+		"tailwindcss": "^4.2.2",
+		"typescript": "^6.0.2",
+		"vite": "^8.0.8",
+		"vite-tsconfig-paths": "^6.1.1",
+		"vitest": "^4.1.4",
+		"wrangler": "^4.83.0"
+	}
+}

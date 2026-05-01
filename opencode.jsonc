@@ -1,0 +1,26 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": false,
+  "share": "auto",
+  "instructions": [
+    "AGENTS.md"
+  ],
+  "model": "opencode/minimax-m25",
+  "small_model": "opencode/minimax-m25",
+  "tools": {
+    "todowrite": true,
+    "todoread": true,
+    "webfetch": true
+  },
+  "permission": {
+    "external_directory": "deny",
+    "doom_loop": "deny"
+  },
+  "mcp": {
+    "mcp_cf_doc": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://docs.mcp.cloudflare.com/mcp"
+    }
+  }
+}

@@ -1,0 +1,1 @@
+> Quando tiver qualquer teste e2e neste diretorio, favor deletar esse arquivo README.md
