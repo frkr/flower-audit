@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { Form, Link } from "react-router";
 import type { Route } from "./+types/start";
 import { useSearch } from "../components/SearchContext";
+import { systemNameFromMatches } from "../lib/systemName";
 
 export { loader } from "../.server/start/start";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ matches }: Route.MetaArgs) {
 	return [
-		{ title: "Flower — Começar" },
+		{ title: `${systemNameFromMatches(matches)} — Começar` },
 		{ name: "description", content: "Pesquise fluxos e processos" },
 	];
 }

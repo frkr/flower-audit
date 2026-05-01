@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -144,41 +144,16 @@ export function LexicalEditor({
 					onToggleSource={() => setShowSource((v) => !v)}
 				/>
 				<input type="hidden" name={name} value={html} />
-				<div className="relative flex-1 min-h-0 flex flex-col">
-					<RichTextPlugin
-						contentEditable={
-							<ContentEditable
-								className={
-									editableClasses + (showSource ? " hidden" : "")
-								}
-								aria-placeholder={placeholder}
-								placeholder={
-									<div className="absolute top-2 left-3 text-gray-400 pointer-events-none select-none">
-										{placeholder}
-									</div>
-								}
-							/>
-						}
-						ErrorBoundary={LexicalErrorBoundary}
-					/>
-					{showSource ? (
-						<pre
-							className={
-								(maximized
-									? "flex-1 overflow-auto px-4 py-3"
-									: tall
-										? "flex-1 min-h-0 overflow-auto px-3 py-2"
-										: "min-h-64 overflow-auto px-3 py-2") +
-								" text-xs font-mono whitespace-pre-wrap break-all bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300"
-							}
-						>
-							{html || "(vazio)"}
-						</pre>
-					) : null}
-					{uploadContext && !showSource ? (
-						<DropZone uploadContext={uploadContext} onUploaded={onUploaded} />
-					) : null}
-				</div>
+				<EditorBody
+					editableClasses={editableClasses}
+					placeholder={placeholder}
+					showSource={showSource}
+					html={html}
+					maximized={maximized}
+					tall={tall}
+					uploadContext={uploadContext}
+					onUploaded={onUploaded}
+				/>
 				<HistoryPlugin />
 				<ListPlugin />
 				<CheckListPlugin />
@@ -215,68 +190,121 @@ async function uploadFile(
 	return json.file;
 }
 
-function DropZone({
+function EditorBody({
+	editableClasses,
+	placeholder,
+	showSource,
+	html,
+	maximized,
+	tall,
 	uploadContext,
 	onUploaded,
 }: {
-	uploadContext: { processId: string; stepId: string };
+	editableClasses: string;
+	placeholder: string;
+	showSource: boolean;
+	html: string;
+	maximized: boolean;
+	tall: boolean;
+	uploadContext?: { processId: string; stepId: string };
 	onUploaded?: (f: UploadedFile) => void;
 }) {
 	const [editor] = useLexicalComposerContext();
-	const [over, setOver] = useState(false);
-	const [busy, setBusy] = useState(false);
+	const [dragOver, setDragOver] = useState(false);
+	const [uploading, setUploading] = useState(false);
+	const dragCounter = useRef(0);
 
-	async function onDrop(e: React.DragEvent) {
+	const dragEnabled = !!uploadContext && !showSource;
+
+	function hasFiles(e: React.DragEvent) {
+		const types = e.dataTransfer?.types;
+		if (!types) return false;
+		// `types` é um DOMStringList; usar Array.from para checar.
+		return Array.from(types).includes("Files");
+	}
+
+	function onDragEnter(e: React.DragEvent) {
+		if (!dragEnabled || !hasFiles(e)) return;
 		e.preventDefault();
-		setOver(false);
+		dragCounter.current += 1;
+		if (!dragOver) setDragOver(true);
+	}
+	function onDragLeave(e: React.DragEvent) {
+		if (!dragEnabled) return;
+		dragCounter.current -= 1;
+		if (dragCounter.current <= 0) {
+			dragCounter.current = 0;
+			setDragOver(false);
+		}
+	}
+	function onDragOver(e: React.DragEvent) {
+		if (!dragEnabled || !hasFiles(e)) return;
+		e.preventDefault();
+	}
+	async function onDrop(e: React.DragEvent) {
+		if (!dragEnabled) return;
 		const files = Array.from(e.dataTransfer.files);
 		if (files.length === 0) return;
-		setBusy(true);
+		e.preventDefault();
+		dragCounter.current = 0;
+		setDragOver(false);
+		setUploading(true);
 		try {
 			for (const f of files) {
-				const up = await uploadFile(f, uploadContext);
+				const up = await uploadFile(f, uploadContext!);
 				if (up.is_image) insertImageInEditor(editor, up);
 				onUploaded?.(up);
 			}
 		} catch (err) {
 			alert("Falha no upload: " + (err as Error).message);
 		} finally {
-			setBusy(false);
+			setUploading(false);
 		}
-	}
-
-	if (!over && !busy) {
-		return (
-			<div
-				className="absolute inset-0 pointer-events-none"
-				onDragEnter={() => setOver(true)}
-			>
-				<div
-					className="absolute inset-0 pointer-events-auto"
-					style={{ background: "transparent" }}
-					onDragEnter={(e) => {
-						e.preventDefault();
-						setOver(true);
-					}}
-					onDragOver={(e) => {
-						e.preventDefault();
-					}}
-					onDrop={onDrop}
-				/>
-			</div>
-		);
 	}
 
 	return (
 		<div
-			className="absolute inset-0 z-20 flex items-center justify-center bg-blue-100/70 dark:bg-blue-900/40 border-2 border-dashed border-blue-400 rounded pointer-events-auto"
-			onDragOver={(e) => e.preventDefault()}
-			onDragLeave={() => setOver(false)}
+			className="relative flex-1 min-h-0 flex flex-col"
+			onDragEnter={onDragEnter}
+			onDragLeave={onDragLeave}
+			onDragOver={onDragOver}
 			onDrop={onDrop}
 		>
-			<div className="text-blue-900 dark:text-blue-100 text-sm">
-				{busy ? "Enviando…" : "Solte para anexar"}
-			</div>
+			<RichTextPlugin
+				contentEditable={
+					<ContentEditable
+						className={editableClasses + (showSource ? " hidden" : "")}
+						aria-placeholder={placeholder}
+						placeholder={
+							<div className="absolute top-2 left-3 text-gray-400 pointer-events-none select-none">
+								{placeholder}
+							</div>
+						}
+					/>
+				}
+				ErrorBoundary={LexicalErrorBoundary}
+			/>
+			{showSource ? (
+				<pre
+					className={
+						(maximized
+							? "flex-1 overflow-auto px-4 py-3"
+							: tall
+								? "flex-1 min-h-0 overflow-auto px-3 py-2"
+								: "min-h-64 overflow-auto px-3 py-2") +
+						" text-xs font-mono whitespace-pre-wrap break-all bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300"
+					}
+				>
+					{html || "(vazio)"}
+				</pre>
+			) : null}
+			{dragEnabled && (dragOver || uploading) ? (
+				<div className="absolute inset-0 z-20 flex items-center justify-center bg-blue-100/70 dark:bg-blue-900/40 border-2 border-dashed border-blue-400 rounded pointer-events-none">
+					<div className="text-blue-900 dark:text-blue-100 text-sm font-medium">
+						{uploading ? "Enviando…" : "Solte para anexar"}
+					</div>
+				</div>
+			) : null}
 		</div>
 	);
 }
@@ -452,7 +480,7 @@ function Toolbar({
 	}
 
 	return (
-		<div className="flex flex-wrap items-center gap-1 px-2 py-1 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-xs">
+		<div className="flex flex-wrap items-center gap-1 px-2 py-1 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm">
 			<TbBtn label="Desfazer" onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)} disabled={!canUndo}>
 				↶
 			</TbBtn>
@@ -463,7 +491,7 @@ function Toolbar({
 			<select
 				value={blockType}
 				onChange={(e) => applyBlock(e.target.value as BlockType)}
-				className="text-xs border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded px-1 py-1"
+				className="text-sm border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 rounded px-2 py-1.5"
 				title="Estilo do bloco"
 			>
 				{(Object.keys(BLOCK_LABELS) as BlockType[]).map((b) => (
@@ -574,7 +602,7 @@ function UploadBtn({
 				htmlFor={inputId}
 				title={busy ? "Enviando…" : "Anexar imagem ou arquivo"}
 				className={
-					"min-w-7 h-7 px-1.5 rounded text-xs flex items-center justify-center border border-transparent " +
+					"min-w-9 h-9 px-2 rounded text-base flex items-center justify-center border border-transparent " +
 					(busy
 						? "opacity-50 cursor-wait"
 						: "hover:bg-gray-200 dark:hover:bg-gray-800 cursor-pointer")
@@ -608,7 +636,7 @@ function TbBtn({
 			onMouseDown={(e) => e.preventDefault()}
 			onClick={onClick}
 			className={
-				"min-w-7 h-7 px-1.5 rounded text-xs flex items-center justify-center border " +
+				"min-w-9 h-9 px-2 rounded text-base flex items-center justify-center border " +
 				(disabled
 					? "opacity-30 cursor-not-allowed border-transparent"
 					: active
@@ -622,7 +650,7 @@ function TbBtn({
 }
 
 function Sep() {
-	return <div className="w-px h-5 bg-gray-300 dark:bg-gray-700 mx-1" />;
+	return <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1" />;
 }
 
 function InitFromHtml({ html }: { html: string }) {

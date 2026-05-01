@@ -2,11 +2,12 @@ import { Form, Link, useLoaderData, useSearchParams } from "react-router";
 import { useState } from "react";
 import type { Route } from "./+types/process";
 import type { ProcessRow } from "../.server/process/process";
+import { systemNameFromMatches } from "../lib/systemName";
 
 export { loader, action } from "../.server/process/process";
 
-export function meta({}: Route.MetaArgs) {
-	return [{ title: "Flower — Processos" }];
+export function meta({ matches }: Route.MetaArgs) {
+	return [{ title: `${systemNameFromMatches(matches)} — Processos` }];
 }
 
 type Data = {

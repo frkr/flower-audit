@@ -42,7 +42,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
 
 	if (id) {
-		await conn.prepare(queries.updateById).bind(name, value, description, id).run();
+		if (!value && /secret/i.test(name)) {
+			await conn.prepare(queries.updateByIdKeepValue).bind(name, description, id).run();
+		} else {
+			await conn.prepare(queries.updateById).bind(name, value, description, id).run();
+		}
 	} else {
 		await conn.prepare(queries.upsertByName).bind(await randomHEX(16), name, value, description).run();
 	}

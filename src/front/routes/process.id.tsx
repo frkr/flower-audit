@@ -3,11 +3,12 @@ import { useState } from "react";
 import type { Route } from "./+types/process.id";
 import { LexicalEditor } from "../components/LexicalEditor";
 import type { StepRow, FileRow } from "../.server/process/process.id";
+import { systemNameFromMatches } from "../lib/systemName";
 
 export { loader, action } from "../.server/process/process.id";
 
-export function meta({}: Route.MetaArgs) {
-	return [{ title: "Flower — Processo" }];
+export function meta({ matches }: Route.MetaArgs) {
+	return [{ title: `${systemNameFromMatches(matches)} — Processo` }];
 }
 
 type Data = {

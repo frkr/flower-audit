@@ -2,12 +2,13 @@
 import { Form, Link, useLoaderData } from "react-router";
 import type { Route } from "./+types/welcome";
 import type { RecentRow } from "../.server/welcome/welcome";
+import { systemNameFromMatches } from "../lib/systemName";
 
 export { loader } from "../.server/welcome/welcome";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ matches }: Route.MetaArgs) {
 	return [
-		{ title: "Flower" },
+		{ title: systemNameFromMatches(matches) },
 		{ name: "description", content: "Últimos fluxos e processos modificados" },
 	];
 }

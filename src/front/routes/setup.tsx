@@ -2,11 +2,12 @@ import { Form, useLoaderData } from "react-router";
 import { useState } from "react";
 import type { Route } from "./+types/setup";
 import type { Setting, VersionInfo } from "../.server/setup/setup";
+import { systemNameFromMatches } from "../lib/systemName";
 
 export { loader, action } from "../.server/setup/setup";
 
-export function meta({}: Route.MetaArgs) {
-	return [{ title: "Flower — Configuração" }];
+export function meta({ matches }: Route.MetaArgs) {
+	return [{ title: `${systemNameFromMatches(matches)} — Configuração` }];
 }
 
 type Data = { items: Setting[]; version: VersionInfo };
@@ -109,6 +110,7 @@ function VersionFooter({ version }: { version: VersionInfo }) {
 
 function SettingRow({ item }: { item: Setting }) {
 	const [editing, setEditing] = useState(false);
+	const secret = isSecret(item.name);
 
 	if (!editing) {
 		return (
@@ -117,7 +119,7 @@ function SettingRow({ item }: { item: Setting }) {
 					<div className="text-xs uppercase text-gray-500">{item.name}</div>
 					<div
 						className="text-sm font-mono break-all"
-						title={item.value}
+						title={secret ? undefined : item.value}
 					>
 						{maskValue(item.name, item.value)}
 					</div>
@@ -170,7 +172,10 @@ function SettingRow({ item }: { item: Setting }) {
 						<span className="block text-xs uppercase text-gray-500 mb-1">Valor</span>
 						<input
 							name="value"
-							defaultValue={item.value}
+							type={secret ? "password" : "text"}
+							defaultValue={secret ? "" : item.value}
+							placeholder={secret ? "(novo valor — atual oculto)" : undefined}
+							autoComplete={secret ? "new-password" : undefined}
 							className="w-full px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 font-mono"
 						/>
 					</label>
@@ -203,10 +208,12 @@ function SettingRow({ item }: { item: Setting }) {
 	);
 }
 
+function isSecret(name: string): boolean {
+	return /secret/i.test(name);
+}
+
 function maskValue(name: string, value: string): string {
 	if (!value) return "(vazio)";
-	const sensitive = /(secret|password|token|key)/i.test(name);
-	if (!sensitive) return value;
-	if (value.length <= 8) return "•".repeat(value.length);
-	return value.slice(0, 4) + "…" + value.slice(-4);
+	if (!isSecret(name)) return value;
+	return "*".repeat(Math.max(value.length, 8));
 }

@@ -2,11 +2,12 @@ import { Form, Link, useLoaderData, useSearchParams } from "react-router";
 import type { Route } from "./+types/flow";
 import { useState } from "react";
 import type { FluxRow } from "../.server/flow/flow";
+import { systemNameFromMatches } from "../lib/systemName";
 
 export { loader, action } from "../.server/flow/flow";
 
-export function meta({}: Route.MetaArgs) {
-	return [{ title: "Flower — Fluxos" }];
+export function meta({ matches }: Route.MetaArgs) {
+	return [{ title: `${systemNameFromMatches(matches)} — Fluxos` }];
 }
 
 type Data = { q: string; page: number; pageSize: number; total: number; items: FluxRow[] };

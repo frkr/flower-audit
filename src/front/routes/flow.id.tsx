@@ -2,11 +2,12 @@ import { Form, useLoaderData } from "react-router";
 import { useState } from "react";
 
 import type { Route } from "./+types/flow.id";
+import { systemNameFromMatches } from "../lib/systemName";
 
 export { loader, action } from "../.server/flow/flow.id";
 
-export function meta({}: Route.MetaArgs) {
-	return [{ title: "Flower — Fluxo" }];
+export function meta({ matches }: Route.MetaArgs) {
+	return [{ title: `${systemNameFromMatches(matches)} — Fluxo` }];
 }
 
 type Step = { id: string; id_order: number; name: string };
