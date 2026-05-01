@@ -1,0 +1,4 @@
+{
+	"searchFlux": "SELECT id, name, description FROM flux WHERE active = 1 AND visible = 1 AND (LOWER(name) LIKE LOWER(?1) OR LOWER(description) LIKE LOWER(?1)) ORDER BY updated_at DESC LIMIT 10",
+	"searchProcess": "SELECT id, name, description FROM process WHERE active = 1 AND visible = 1 AND (LOWER(name) LIKE LOWER(?1) OR LOWER(description) LIKE LOWER(?1)) ORDER BY updated_at DESC LIMIT 10"
+}

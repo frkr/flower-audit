@@ -62,6 +62,7 @@
 		{
 			"binding": "DB",
 			"database_name": "flower-audit",
+			"database_id": "b068258f-0a2f-4e9d-af96-ab3a6a6c9d27"
 		}
 	],
 	"version_metadata": {

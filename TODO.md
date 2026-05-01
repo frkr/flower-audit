@@ -1,0 +1,5 @@
+# Fazer essa lista de tarefas e depois deletar esse arquivo
+
+- a primeira tela de boas vindas, deve listar os ultimos 10 fluxos alterados em ordem decrescente de data de modificacao. E os 10 processos atualizados em ordem decrescente de data de modificacao. E nenhuma caixa para digitar, mas a pesquisa deve ter seus links para entrar nos registros igual já esta feito em 'Começar'
+- quando clicar no menu 'Começar', deve ter a mesma logica atual que aparece a caixa de texto para procurar
+- no editor lexical, vamos fazer uma integracao com upload de imagens e arquivos. Quando for uma imagem, faça upload para o Bucket do R2 que ja esta configurado e adicione o markdown no documento para que funcione o arquivo de imagem, se for um arquivo binario, faca referencia para abrir em um popup para que seja feito o download em outra janela. Lembre-se os downloads devem ser feitos na hora. E serem adicionados em uma lista no final da pagina. Para que o usuario possa deletar os arquivos.

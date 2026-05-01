@@ -96,12 +96,16 @@
 - Os nomes dos arquivos "README" são um exemplo como toda documentação deve ser feita em arquivos Markdown (Gráficos em Mermaid JS) e traduzidas nessas línguas usando esse formato de arquivo.
 - wrangler.jsonc - tem os recursos e variáveis de ambiente desse projeto conectado na Cloudflare.
 - Variáveis de ambiente da Cloudflare (bindings) devem estar em MAIÚSCULO e os nomes dos recursos (bucket/queue) em minúsculo. Exemplo: (Queue) foi renomeada para `mqcfgateway` (Binding: `MQCFGATEWAY`).
-- Entrypoint de todas as request: "src/front/api/mainroute.ts"
+- Entrypoint de todas as request: "src/front/api/index.ts"
 - Todas as Rotas do React Router: "src/front/routes.ts"
 - Todas as rotas do React Router tem um arquivo de inicialização aqui: "src/front/routes"
-- O Arquivo de inicialização "src/front/routes" deve conter apenas um facade para referenciar funções externas. Use o exemplo "mainroute.ts" e o "welcome.tsx" para entender como fazer.
-- Os modulos do backend devem ficar em "src/front/.server" use de exemplo o Panel: "src/front/.server/panel"
+- O Arquivo de inicialização "src/front/routes" deve conter apenas um facade para referenciar funções externas. Use o exemplo "src/front/api/index.ts" para entender como fazer.
+- Os modulos do backend devem ficar em "src/front/.server".
+- **Nomes de rotas, paths de URL e nomes de arquivos de rota devem estar SEMPRE em inglês**, mesmo que os textos exibidos para o usuário estejam em português. Exemplos: `/flow` (não `/fluxos`), `/process` (não `/processos`), `/setup` (não `/configuracao`), `/api/index` (não `/api/mainroute`). Os módulos correspondentes em `src/front/.server/<nome>/` também seguem o mesmo nome em inglês. Apenas os rótulos visíveis na UI seguem a regra de tradução por idioma.
 - Ao criar ou modificar testes unitários, os resultados da execução desses testes devem ser incluídos no corpo do pull request. No entanto, arquivos `.log` ou `.txt` (como `pr_comments.txt` ou saídas de log) usados para armazenar temporariamente esses resultados NÃO devem ser "comitados", para não sujar o histórico do git.
+- Sempre deixe atualizado um arquivo chamado schema.md com o mermaidjs do arquivo schema.sql
+- **SEMPRE que precisar fazer qualquer consulta SQL no banco de dados, extraia o SQL para um arquivo `database.json` colocado no MESMO diretório do arquivo `.ts`/`.tsx` que o usa.** Não deixe strings SQL espalhadas pelo código TypeScript. O `database.json` é um objeto cujas chaves nomeiam a query (em camelCase, descritivo) e os valores são as strings SQL parametrizadas (`?1`, `?2`, …). No código TS use `import queries from "./database.json"` e `conn.prepare(queries.nomeDaQuery)`. Cada diretório `src/front/.server/<modulo>/` que executa SQL deve ter o seu próprio `database.json`.
+- **Para fazer deploy, sempre rode `pnpm run deploy`** — nunca `wrangler deploy` direto. O script `deploy` do `package.json` faz primeiro `pnpm run build` (que inclui `typecheck` + `react-router build`) e só então chama `wrangler deploy`, garantindo que o bundle compilado e os tipos estejam atualizados antes do upload.
 
 # Cloudflare Workers - Agents Section
 
