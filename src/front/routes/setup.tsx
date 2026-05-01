@@ -1,7 +1,7 @@
 import { Form, useLoaderData } from "react-router";
 import { useState } from "react";
 import type { Route } from "./+types/setup";
-import type { Setting } from "../.server/setup/setup";
+import type { Setting, VersionInfo } from "../.server/setup/setup";
 
 export { loader, action } from "../.server/setup/setup";
 
@@ -9,7 +9,7 @@ export function meta({}: Route.MetaArgs) {
 	return [{ title: "Flower — Configuração" }];
 }
 
-type Data = { items: Setting[] };
+type Data = { items: Setting[]; version: VersionInfo };
 
 export default function Configuracao() {
 	const data = useLoaderData() as Data;
@@ -71,7 +71,39 @@ export default function Configuracao() {
 					data.items.map((s) => <SettingRow key={s.id} item={s} />)
 				)}
 			</ul>
+
+			<VersionFooter version={data.version} />
 		</div>
+	);
+}
+
+function formatDate(iso: string): string {
+	try {
+		const d = new Date(iso);
+		if (isNaN(d.getTime())) return iso;
+		return d.toLocaleString();
+	} catch {
+		return iso;
+	}
+}
+
+function VersionFooter({ version }: { version: VersionInfo }) {
+	if (!version?.timestamp && !version?.id) return null;
+	return (
+		<footer className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-800 text-xs text-gray-500 dark:text-gray-400 text-center uppercase tracking-wide">
+			{version?.timestamp && (
+				<span className="text-gray-400 normal-case" title={version.id}>
+					Version: {version?.tag && "v" + version.tag + " "}
+					{formatDate(version.timestamp)}
+					{" :: "}
+				</span>
+			)}
+			{!version?.timestamp && version?.id ? (
+				<span className="text-gray-400 normal-case" title={version.id}>
+					Version: {version.id.slice(0, 8)}
+				</span>
+			) : null}
+		</footer>
 	);
 }
 

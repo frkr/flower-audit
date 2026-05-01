@@ -6,9 +6,21 @@ import queries from "./database.json";
 
 export type Setting = { id: string; name: string; value: string; description: string; updated_at: string };
 
+export type VersionInfo = {
+	id?: string;
+	tag?: string;
+	timestamp?: string;
+};
+
 export async function loader({ context }: LoaderFunctionArgs) {
 	const { results } = await db(context).prepare(queries.list).all<Setting>();
-	return Response.json({ items: results ?? [] });
+	const v = context?.cloudflare?.env?.CF_VERSION_METADATA;
+	const version: VersionInfo = {
+		id: v?.id,
+		tag: v?.tag,
+		timestamp: v?.timestamp,
+	};
+	return Response.json({ items: results ?? [], version });
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
