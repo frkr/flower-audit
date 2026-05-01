@@ -5,9 +5,10 @@
 	"countAll": "SELECT COUNT(*) AS c FROM flux WHERE active = 1",
 	"insert": "INSERT INTO flux (id, name, description) VALUES (?1, ?2, ?3)",
 	"insertStep": "INSERT INTO flux_steps (id, id_fluxo, id_order, name) VALUES (?1, ?2, ?3, ?4)",
-	"deactivate": "UPDATE flux SET active = 0 WHERE id = ?1",
+	"deactivate": "UPDATE flux SET active = 0, updated_at = datetime('now') WHERE id = ?1",
 	"getById": "SELECT * FROM flux WHERE id = ?1 AND active = 1",
-	"listSteps": "SELECT id, id_order, name FROM flux_steps WHERE id_fluxo = ?1 ORDER BY id_order ASC",
+	"listSteps": "SELECT id, id_order, name FROM flux_steps WHERE id_fluxo = ?1 AND active = 1 ORDER BY id_order ASC",
 	"update": "UPDATE flux SET name = ?1, description = ?2, updated_at = datetime('now') WHERE id = ?3",
-	"deleteSteps": "DELETE FROM flux_steps WHERE id_fluxo = ?1"
+	"deactivateSteps": "UPDATE flux_steps SET active = 0 WHERE id_fluxo = ?1 AND active = 1",
+	"insertAuthor": "INSERT INTO flux_authors (id, id_fluxo, author) VALUES (?1, ?2, ?3)"
 }

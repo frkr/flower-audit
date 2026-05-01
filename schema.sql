@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS flux_steps (
     id        TEXT PRIMARY KEY,
     id_fluxo  TEXT NOT NULL REFERENCES flux(id) ON DELETE CASCADE,
     id_order  INTEGER NOT NULL DEFAULT 0,
-    name      TEXT NOT NULL
+    name      TEXT NOT NULL,
+    active    INTEGER NOT NULL DEFAULT 1
 );
 CREATE INDEX IF NOT EXISTS idx_flux_steps_flux ON flux_steps(id_fluxo);
 
@@ -114,7 +115,8 @@ CREATE TABLE IF NOT EXISTS process_step_files (
     mime_type   TEXT NOT NULL DEFAULT '',
     size_bytes  INTEGER NOT NULL DEFAULT 0,
     is_image    INTEGER NOT NULL DEFAULT 0,
-    uploaded_at TEXT NOT NULL DEFAULT (datetime('now'))
+    uploaded_at TEXT NOT NULL DEFAULT (datetime('now')),
+    active      INTEGER NOT NULL DEFAULT 1
 );
 CREATE INDEX IF NOT EXISTS idx_process_step_files_step ON process_step_files(id_step);
 

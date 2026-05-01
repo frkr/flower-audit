@@ -1,7 +1,7 @@
 {
 	"insert": "INSERT INTO process_step_files (id, id_process, id_step, name, description, finder, mime_type, size_bytes, is_image) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
-	"listByStep": "SELECT id, name, description, finder, mime_type, size_bytes, is_image, uploaded_at FROM process_step_files WHERE id_step = ?1 ORDER BY uploaded_at DESC",
-	"getByIdAndStep": "SELECT id, id_step, id_process, name, finder, mime_type, size_bytes, is_image FROM process_step_files WHERE id = ?1 AND id_step = ?2",
-	"getById": "SELECT id, id_step, id_process, name, finder, mime_type, size_bytes, is_image FROM process_step_files WHERE id = ?1",
-	"deleteById": "DELETE FROM process_step_files WHERE id = ?1"
+	"listByStep": "SELECT id, name, description, finder, mime_type, size_bytes, is_image, uploaded_at FROM process_step_files WHERE id_step = ?1 AND active = 1 ORDER BY uploaded_at DESC",
+	"getByIdAndStep": "SELECT id, id_step, id_process, name, finder, mime_type, size_bytes, is_image FROM process_step_files WHERE id = ?1 AND id_step = ?2 AND active = 1",
+	"getById": "SELECT id, id_step, id_process, name, finder, mime_type, size_bytes, is_image FROM process_step_files WHERE id = ?1 AND active = 1",
+	"deactivateById": "UPDATE process_step_files SET active = 0 WHERE id = ?1"
 }

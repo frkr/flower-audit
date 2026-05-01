@@ -17,7 +17,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params, context }: ActionFunctionArgs) {
-	await requireUser(request, context);
+	const user = await requireUser(request, context);
 	const id = String(params.id);
 	const conn = db(context);
 	const form = await request.formData();
@@ -25,6 +25,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 
 	if (intent === "delete") {
 		await conn.prepare(queries.deactivate).bind(id).run();
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
 		return redirect("/flow");
 	}
 
@@ -33,11 +34,12 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 	if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
 
 	await conn.prepare(queries.update).bind(name, description, id).run();
-	await conn.prepare(queries.deleteSteps).bind(id).run();
+	await conn.prepare(queries.deactivateSteps).bind(id).run();
 
 	const steps = form.getAll("step").map(String).filter((s) => s.trim());
 	for (let i = 0; i < steps.length; i++) {
 		await conn.prepare(queries.insertStep).bind(await randomHEX(16), id, i, steps[i]).run();
 	}
+	await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
 	return Response.json({ ok: true });
 }

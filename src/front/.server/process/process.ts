@@ -47,7 +47,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
-	await requireUser(request, context);
+	const user = await requireUser(request, context);
 	const conn = db(context);
 	const form = await request.formData();
 	const intent = String(form.get("intent") ?? "");
@@ -59,6 +59,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		const idFluxo = String(form.get("id_fluxo") ?? "").trim() || null;
 		if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
 		await conn.prepare(queries.insert).bind(id, idFluxo, name, description).run();
+		await conn
+			.prepare(queries.insertProcessAuthor)
+			.bind(await randomHEX(16), id, idFluxo, user.email)
+			.run();
 		return Response.json({ ok: true, id });
 	}
 
@@ -89,6 +93,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
 				.run();
 		}
 
+		await conn
+			.prepare(queries.insertProcessAuthor)
+			.bind(await randomHEX(16), newId, idFluxo, user.email)
+			.run();
+
 		return redirect(`/process/${newId}`);
 	}
 
@@ -96,6 +105,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		const id = String(form.get("id") ?? "");
 		if (!id) return Response.json({ ok: false }, { status: 422 });
 		await conn.prepare(queries.deactivate).bind(id).run();
+		await conn
+			.prepare(queries.insertProcessAuthor)
+			.bind(await randomHEX(16), id, null, user.email)
+			.run();
 		return Response.json({ ok: true });
 	}
 

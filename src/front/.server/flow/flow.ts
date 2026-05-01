@@ -42,7 +42,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
-	await requireUser(request, context);
+	const user = await requireUser(request, context);
 	const conn = db(context);
 	const form = await request.formData();
 	const intent = String(form.get("intent") ?? "");
@@ -57,6 +57,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		for (let i = 0; i < steps.length; i++) {
 			await conn.prepare(queries.insertStep).bind(await randomHEX(16), id, i, steps[i]).run();
 		}
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
 		return Response.json({ ok: true, id });
 	}
 
@@ -64,6 +65,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		const id = String(form.get("id") ?? "");
 		if (!id) return Response.json({ ok: false }, { status: 422 });
 		await conn.prepare(queries.deactivate).bind(id).run();
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
 		return Response.json({ ok: true });
 	}
 

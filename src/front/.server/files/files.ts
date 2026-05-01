@@ -64,7 +64,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		const row = await conn.prepare(queries.getById).bind(id).first<FileRow>();
 		if (!row) return Response.json({ ok: false, error: "not found" }, { status: 404 });
 		await bucket.delete(row.finder);
-		await conn.prepare(queries.deleteById).bind(id).run();
+		await conn.prepare(queries.deactivateById).bind(id).run();
 		return Response.json({ ok: true });
 	}
 
@@ -78,7 +78,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 			const row = await conn.prepare(queries.getById).bind(id).first<FileRow>();
 			if (!row) return Response.json({ ok: false, error: "not found" }, { status: 404 });
 			await bucket.delete(row.finder);
-			await conn.prepare(queries.deleteById).bind(id).run();
+			await conn.prepare(queries.deactivateById).bind(id).run();
 			return Response.json({ ok: true });
 		}
 

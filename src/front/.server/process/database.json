@@ -5,9 +5,9 @@
 	"countAll": "SELECT COUNT(*) AS c FROM process WHERE active = 1",
 	"listFluxes": "SELECT id, name FROM flux WHERE active = 1 ORDER BY name LIMIT 200",
 	"insert": "INSERT INTO process (id, id_fluxo, name, description) VALUES (?1, ?2, ?3, ?4)",
-	"deactivate": "UPDATE process SET active = 0 WHERE id = ?1",
+	"deactivate": "UPDATE process SET active = 0, updated_at = datetime('now') WHERE id = ?1",
 	"getFluxForStart": "SELECT id, name, description FROM flux WHERE id = ?1 AND active = 1",
-	"listFluxStepsForStart": "SELECT id_order, name FROM flux_steps WHERE id_fluxo = ?1 ORDER BY id_order ASC",
+	"listFluxStepsForStart": "SELECT id_order, name FROM flux_steps WHERE id_fluxo = ?1 AND active = 1 ORDER BY id_order ASC",
 	"insertStepFromFlux": "INSERT INTO process_steps (id, id_order, id_process, id_flux, name, content) VALUES (?1, ?2, ?3, ?4, ?5, '')",
 	"getById": "SELECT * FROM process WHERE id = ?1 AND active = 1",
 	"listSteps": "SELECT id, id_order, name, content, completed_at FROM process_steps WHERE id_process = ?1 ORDER BY id_order ASC",
@@ -16,7 +16,8 @@
 	"completeStep": "UPDATE process_steps SET content = ?1, completed_at = datetime('now') WHERE id = ?2 AND id_process = ?3 AND completed_at IS NULL",
 	"reopenStep": "UPDATE process_steps SET completed_at = NULL WHERE id = ?1 AND id_process = ?2",
 	"touchProcess": "UPDATE process SET updated_at = datetime('now') WHERE id = ?1",
-	"deleteSteps": "DELETE FROM process_steps WHERE id_process = ?1",
 	"insertStep": "INSERT INTO process_steps (id, id_order, id_process, id_flux, name, content) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
-	"listFilesByProcess": "SELECT id, id_step, name, description, finder, mime_type, size_bytes, is_image, uploaded_at FROM process_step_files WHERE id_process = ?1 ORDER BY uploaded_at DESC"
+	"listFilesByProcess": "SELECT id, id_step, name, description, finder, mime_type, size_bytes, is_image, uploaded_at FROM process_step_files WHERE id_process = ?1 AND active = 1 ORDER BY uploaded_at DESC",
+	"insertProcessAuthor": "INSERT INTO process_authors (id, id_process, id_fluxo, author) VALUES (?1, ?2, ?3, ?4)",
+	"insertStepAuthor": "INSERT INTO process_step_authors (id, id_step, id_fluxo, author) VALUES (?1, ?2, ?3, ?4)"
 }

@@ -48,6 +48,7 @@ erDiagram
         TEXT    id_fluxo FK
         INTEGER id_order
         TEXT    name
+        INTEGER active
     }
 
     process {
@@ -102,6 +103,7 @@ erDiagram
         INTEGER size_bytes
         INTEGER is_image
         TEXT    uploaded_at
+        INTEGER active
     }
 
     settings {
@@ -147,6 +149,7 @@ erDiagram
         TEXT    id_fluxo FK
         INTEGER id_order
         TEXT    name
+        INTEGER active
     }
 ```
 
@@ -220,6 +223,7 @@ erDiagram
         INTEGER size_bytes
         INTEGER is_image
         TEXT    uploaded_at
+        INTEGER active
     }
 ```
 

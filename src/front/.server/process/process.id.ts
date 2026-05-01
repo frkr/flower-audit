@@ -4,6 +4,7 @@ import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
 import { redirect } from "react-router";
 import { db } from "../db";
 import { requireUser } from "../auth";
+import randomHEX from "../../lib/randomHEX";
 import queries from "./database.json";
 
 export type StepRow = {
@@ -25,6 +26,32 @@ export type FileRow = {
 	is_image: number;
 	uploaded_at: string;
 };
+
+type ProcessRow = { id: string; id_fluxo: string | null };
+
+async function recordProcessAuthor(
+	conn: D1Database,
+	processId: string,
+	idFluxo: string | null,
+	email: string
+) {
+	await conn
+		.prepare(queries.insertProcessAuthor)
+		.bind(await randomHEX(16), processId, idFluxo, email)
+		.run();
+}
+
+async function recordStepAuthor(
+	conn: D1Database,
+	stepId: string,
+	idFluxo: string | null,
+	email: string
+) {
+	await conn
+		.prepare(queries.insertStepAuthor)
+		.bind(await randomHEX(16), stepId, idFluxo, email)
+		.run();
+}
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
 	await requireUser(request, context);
@@ -49,14 +76,21 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params, context }: ActionFunctionArgs) {
-	await requireUser(request, context);
+	const user = await requireUser(request, context);
 	const id = String(params.id);
 	const conn = db(context);
 	const form = await request.formData();
 	const intent = String(form.get("intent") ?? "");
 
+	const proc = await conn
+		.prepare(queries.getById)
+		.bind(id)
+		.first<ProcessRow>();
+	const idFluxo = proc?.id_fluxo ?? null;
+
 	if (intent === "delete") {
 		await conn.prepare(queries.deactivate).bind(id).run();
+		await recordProcessAuthor(conn, id, idFluxo, user.email);
 		return redirect("/process");
 	}
 
@@ -65,6 +99,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 		const description = String(form.get("description") ?? "").trim();
 		if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
 		await conn.prepare(queries.updateMeta).bind(name, description, id).run();
+		await recordProcessAuthor(conn, id, idFluxo, user.email);
 		return Response.json({ ok: true });
 	}
 
@@ -81,6 +116,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 			);
 		}
 		await conn.prepare(queries.touchProcess).bind(id).run();
+		await recordStepAuthor(conn, stepId, idFluxo, user.email);
 		return redirect(`/process/${id}`);
 	}
 
@@ -89,6 +125,7 @@ export async function action({ request, params, context }: ActionFunctionArgs) {
 		if (!stepId) return Response.json({ ok: false, error: "step_id required" }, { status: 422 });
 		await conn.prepare(queries.reopenStep).bind(stepId, id).run();
 		await conn.prepare(queries.touchProcess).bind(id).run();
+		await recordStepAuthor(conn, stepId, idFluxo, user.email);
 		return redirect(`/process/${id}`);
 	}
 
