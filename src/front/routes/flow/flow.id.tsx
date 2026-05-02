@@ -1,6 +1,9 @@
 import { Form, useLoaderData, useSubmit } from "react-router";
 import { useState } from "react";
 import { ConfirmModal } from "@/ConfirmModal";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 
 import type { Route } from "./+types/flow.id";
 import { systemNameFromMatches } from "../../lib/systemName";
@@ -23,66 +26,88 @@ export default function FluxoEdit() {
 	const [confirmDelete, setConfirmDelete] = useState(false);
 
 	return (
-		<div className="max-w-4xl mx-auto space-y-6">
+		<div className="max-w-3xl mx-auto space-y-6">
 			<div className="flex items-center justify-between">
-				<h1 className="text-xl font-semibold">Editar fluxo</h1>
+				<div>
+					<h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+						{data.flux.name}
+					</h1>
+					{data.flux.description && (
+						<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+							{data.flux.description}
+						</p>
+					)}
+				</div>
 				<Form method="post" action="/process">
 					<input type="hidden" name="intent" value="startFromFlow" />
 					<input type="hidden" name="id_fluxo" value={data.flux.id} />
-					<button className="text-sm px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700">
-						▶ Iniciar processo a partir deste fluxo
-					</button>
+					<Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+						▶ Iniciar processo
+					</Button>
 				</Form>
 			</div>
 
-			<section className="border border-gray-200 dark:border-gray-700 rounded p-4">
-				<h2 className="text-sm font-semibold mb-3">Dados do fluxo</h2>
-				<Form method="post" className="space-y-3">
-					<input type="hidden" name="intent" value="updateFlux" />
-					<div>
-						<label className="block text-sm mb-1">Nome do Fluxo</label>
-						<input
-							name="name"
-							required
-							defaultValue={data.flux.name}
-							className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-						/>
-					</div>
-					<div>
-						<label className="block text-sm mb-1">Descrição</label>
-						<textarea
-							name="description"
-							defaultValue={data.flux.description}
-							className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-						/>
-					</div>
-					<div className="flex justify-between">
-						<button className="px-3 py-2 rounded bg-blue-600 text-white">Salvar</button>
-						<button
-							type="button"
-							onClick={() => setConfirmDelete(true)}
-							className="px-3 py-2 rounded bg-red-600 text-white"
-						>
-							Excluir
-						</button>
-					</div>
-				</Form>
-			</section>
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-base">Dados do fluxo</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<Form method="post" className="space-y-4">
+						<input type="hidden" name="intent" value="updateFlux" />
+						<div className="space-y-1.5">
+							<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+								Nome do Fluxo
+							</label>
+							<Input name="name" required defaultValue={data.flux.name} />
+						</div>
+						<div className="space-y-1.5">
+							<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+								Descrição
+							</label>
+							<textarea
+								name="description"
+								defaultValue={data.flux.description}
+								className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder:text-slate-500 dark:focus-visible:ring-slate-300"
+							/>
+						</div>
+						<div className="flex justify-between pt-1">
+							<Button type="submit">Salvar alterações</Button>
+							<Button
+								type="button"
+								variant="destructive"
+								onClick={() => setConfirmDelete(true)}
+							>
+								Excluir fluxo
+							</Button>
+						</div>
+					</Form>
+				</CardContent>
+			</Card>
 
-			<section className="border border-gray-200 dark:border-gray-700 rounded p-4">
-				<h2 className="text-sm font-semibold mb-3">Passos</h2>
-				{data.steps.length === 0 ? (
-					<p className="text-sm text-gray-500 mb-3">Nenhum passo ainda. Adicione o primeiro abaixo.</p>
-				) : (
-					<ul className="space-y-2 mb-4">
-						{data.steps.map((s, i) => (
-							<StepRow key={s.id} step={s} index={i} />
-						))}
-					</ul>
-				)}
-
-				<AddStepForm />
-			</section>
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-base">
+						Passos
+						<span className="ml-2 text-sm font-normal text-slate-500 dark:text-slate-400">
+							({data.steps.length})
+						</span>
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					{data.steps.length === 0 ? (
+						<p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+							Nenhum passo ainda. Adicione o primeiro abaixo.
+						</p>
+					) : (
+						<ul className="space-y-2 mb-4">
+							{data.steps.map((s, i) => (
+								<StepRow key={s.id} step={s} index={i} />
+							))}
+						</ul>
+					)}
+					<AddStepForm />
+				</CardContent>
+			</Card>
 
 			{confirmDelete && (
 				<ConfirmModal
@@ -103,35 +128,40 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 	const dirty = name !== step.name;
 	const submit = useSubmit();
 	const [confirmRemove, setConfirmRemove] = useState(false);
+
 	return (
 		<li className="flex items-center gap-2">
-			<span className="w-8 text-xs text-gray-500 text-right">{index + 1}.</span>
+			<span className="w-7 text-xs text-slate-400 dark:text-slate-500 text-right shrink-0 font-mono">
+				{index + 1}.
+			</span>
 			<Form method="post" className="flex-1 flex gap-2">
 				<input type="hidden" name="intent" value="renameStep" />
 				<input type="hidden" name="stepId" value={step.id} />
-				<input
+				<Input
 					name="name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
-					className="flex-1 px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+					className="flex-1"
 				/>
-				<button
+				<Button
 					type="submit"
+					size="sm"
+					variant="secondary"
 					disabled={!dirty || !name.trim()}
-					className="px-3 py-2 rounded bg-blue-600 text-white disabled:opacity-40"
 				>
 					Salvar
-				</button>
+				</Button>
 			</Form>
-			<button
+			<Button
 				type="button"
+				size="sm"
+				variant="ghost"
 				onClick={() => setConfirmRemove(true)}
-				className="px-2 py-2 rounded bg-red-100 text-red-700"
+				className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
 				aria-label="Remover passo"
-				title="Remover passo"
 			>
 				×
-			</button>
+			</Button>
 			{confirmRemove && (
 				<ConfirmModal
 					message="Remover este passo?"
@@ -151,25 +181,21 @@ function AddStepForm() {
 	return (
 		<Form
 			method="post"
-			className="flex gap-2"
+			className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 mt-2"
 			onSubmit={() => setTimeout(() => setName(""), 0)}
 		>
 			<input type="hidden" name="intent" value="addStep" />
-			<input
+			<Input
 				name="name"
 				required
 				value={name}
 				onChange={(e) => setName(e.target.value)}
-				placeholder="Novo passo"
-				className="flex-1 px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+				placeholder="Nome do novo passo…"
+				className="flex-1"
 			/>
-			<button
-				type="submit"
-				disabled={!name.trim()}
-				className="px-3 py-2 rounded bg-green-600 text-white disabled:opacity-40"
-			>
-				+ Adicionar passo
-			</button>
+			<Button type="submit" disabled={!name.trim()}>
+				+ Adicionar
+			</Button>
 		</Form>
 	);
 }

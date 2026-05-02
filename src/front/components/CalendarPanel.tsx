@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { cn } from "../lib/utils";
 
 type DayCount = { day: string; total: number };
 
@@ -20,7 +21,6 @@ export function CalendarPanel() {
 	}, [year, month, open]);
 
 	const grid = useMemo(() => buildGrid(year, month, days), [year, month, days]);
-
 	const monthName = new Date(year, month - 1, 1).toLocaleString("pt-BR", { month: "long" });
 
 	return (
@@ -29,9 +29,24 @@ export function CalendarPanel() {
 				type="button"
 				aria-label="Abrir calendário"
 				onClick={() => setOpen((v) => !v)}
-				className="p-1 rounded border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-800"
+				className={cn(
+					"p-1.5 rounded-md border transition-colors",
+					open
+						? "border-slate-300 bg-slate-100 dark:border-slate-600 dark:bg-slate-800"
+						: "border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:hover:bg-slate-800"
+				)}
 			>
-				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+				<svg
+					width="14"
+					height="14"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="2"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					className="text-slate-500 dark:text-slate-400"
+				>
 					<rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
 					<line x1="16" y1="2" x2="16" y2="6" />
 					<line x1="8" y1="2" x2="8" y2="6" />
@@ -40,64 +55,90 @@ export function CalendarPanel() {
 			</button>
 
 			{open ? (
-				<div className="absolute right-0 mt-2 w-72 z-50 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3">
-					<div className="flex items-center justify-between mb-2">
-						<button
-							type="button"
-							className="px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-							onClick={() => {
-								if (month === 1) {
-									setMonth(12);
-									setYear(year - 1);
-								} else setMonth(month - 1);
-							}}
-						>
-							‹
-						</button>
-						<div className="text-sm capitalize">
-							{monthName} {year}
-						</div>
-						<button
-							type="button"
-							className="px-2 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
-							onClick={() => {
-								if (month === 12) {
-									setMonth(1);
-									setYear(year + 1);
-								} else setMonth(month + 1);
-							}}
-						>
-							›
-						</button>
-					</div>
-					<div className="grid grid-cols-7 gap-1 text-xs text-center text-gray-500">
-						{["D", "S", "T", "Q", "Q", "S", "S"].map((d, i) => (
-							<div key={i}>{d}</div>
-						))}
-					</div>
-					<div className="grid grid-cols-7 gap-1 mt-1">
-						{grid.map((cell, idx) => (
-							<div
-								key={idx}
-								title={cell ? `${cell.date}: ${cell.total} fluxo(s)` : ""}
-								className={
-									"aspect-square text-xs flex items-center justify-center rounded " +
-									(cell
-										? cell.total >= 5
-											? "bg-blue-700 text-white"
-											: cell.total > 1
-												? "bg-blue-300 text-blue-900"
-												: cell.total === 1
-													? "bg-blue-50 text-blue-900"
-													: "text-gray-700 dark:text-gray-300"
-										: "")
-								}
+				<>
+					<div
+						className="fixed inset-0 z-40"
+						onClick={() => setOpen(false)}
+						aria-hidden="true"
+					/>
+					<div className="absolute right-0 mt-2 w-72 z-50 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-3">
+						<div className="flex items-center justify-between mb-3">
+							<button
+								type="button"
+								className="p-1 rounded-md text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+								onClick={() => {
+									if (month === 1) {
+										setMonth(12);
+										setYear(year - 1);
+									} else setMonth(month - 1);
+								}}
 							>
-								{cell ? cell.day : ""}
+								‹
+							</button>
+							<span className="text-sm font-medium capitalize text-slate-900 dark:text-slate-50">
+								{monthName} {year}
+							</span>
+							<button
+								type="button"
+								className="p-1 rounded-md text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+								onClick={() => {
+									if (month === 12) {
+										setMonth(1);
+										setYear(year + 1);
+									} else setMonth(month + 1);
+								}}
+							>
+								›
+							</button>
+						</div>
+
+						<div className="grid grid-cols-7 gap-1 text-xs text-center text-slate-400 dark:text-slate-500 mb-1">
+							{["D", "S", "T", "Q", "Q", "S", "S"].map((d, i) => (
+								<div key={i} className="font-medium">
+									{d}
+								</div>
+							))}
+						</div>
+
+						<div className="grid grid-cols-7 gap-1">
+							{grid.map((cell, idx) => (
+								<div
+									key={idx}
+									title={cell ? `${cell.date}: ${cell.total} fluxo(s)` : ""}
+									className={cn(
+										"aspect-square text-xs flex items-center justify-center rounded-md transition-colors",
+										cell
+											? cell.total >= 5
+												? "bg-blue-600 text-white font-medium"
+												: cell.total > 1
+													? "bg-blue-200 text-blue-900 dark:bg-blue-800 dark:text-blue-50"
+													: cell.total === 1
+														? "bg-blue-50 text-blue-800 dark:bg-blue-950 dark:text-blue-200"
+														: "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+											: ""
+									)}
+								>
+									{cell ? cell.day : ""}
+								</div>
+							))}
+						</div>
+
+						<div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 text-xs text-slate-400">
+							<div className="flex items-center gap-1">
+								<div className="w-3 h-3 rounded-sm bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800" />
+								<span>1</span>
 							</div>
-						))}
+							<div className="flex items-center gap-1">
+								<div className="w-3 h-3 rounded-sm bg-blue-200 dark:bg-blue-800" />
+								<span>2–4</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<div className="w-3 h-3 rounded-sm bg-blue-600" />
+								<span>5+</span>
+							</div>
+						</div>
 					</div>
-				</div>
+				</>
 			) : null}
 		</div>
 	);

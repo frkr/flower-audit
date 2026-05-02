@@ -2,11 +2,14 @@ import { Form, useLoaderData, useRevalidator, useSearchParams, useSubmit } from 
 import { useState } from "react";
 import { ConfirmModal } from "@/ConfirmModal";
 import { AlertModal } from "@/AlertModal";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
 import type { Route } from "./+types/process.id";
 import { LexicalEditor } from "@/LexicalEditor";
 import type { StepRow, FileRow } from "./process.id.server";
 import { systemNameFromMatches } from "../../lib/systemName";
 import { formatDateTime } from "../../lib/formatDate";
+import { cn } from "../../lib/utils";
 
 export { loader, action } from "./process.id.server";
 
@@ -59,7 +62,7 @@ export default function ProcessoEdit() {
 		return (
 			<div className="max-w-3xl mx-auto">
 				<ProcessHeader data={data} showMeta={showMeta} setShowMeta={setShowMeta} />
-				<div className="border border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 rounded p-4 text-sm">
+				<div className="border border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-800 rounded-lg p-4 text-sm text-yellow-800 dark:text-yellow-200">
 					Este processo ainda não tem passos. Use{" "}
 					<span className="font-mono">▶ Iniciar processo a partir deste fluxo</span> em um fluxo para gerar os passos.
 				</div>
@@ -94,8 +97,11 @@ export default function ProcessoEdit() {
 			</div>
 
 			{allDone ? (
-				<div className="mt-3 text-sm text-green-700 dark:text-green-400">
-					✓ Todos os passos concluídos.
+				<div className="mt-3 flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400">
+					<svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+						<path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+					Todos os passos concluídos.
 				</div>
 			) : null}
 
@@ -126,26 +132,43 @@ function ProcessHeader({
 	const [confirmDelete, setConfirmDelete] = useState(false);
 
 	return (
-		<div className="border-b border-gray-200 dark:border-gray-800 pb-2 mb-3">
-			<div className="flex items-center justify-between gap-2">
-				<h1 className="text-lg font-semibold truncate">{data.process.name}</h1>
-				<div className="flex gap-2">
-					<button
+		<div className="border-b border-slate-200 dark:border-slate-800 pb-3 mb-3">
+			<div className="flex items-start justify-between gap-2">
+				<div className="min-w-0">
+					<h1 className="text-lg font-semibold text-slate-900 dark:text-slate-50 truncate">
+						{data.process.name}
+					</h1>
+					{data.process.description ? (
+						<p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+							{data.process.description}
+						</p>
+					) : null}
+					{data.process.id_fluxo ? (
+						<p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+							Fluxo: <span className="font-medium text-slate-600 dark:text-slate-300">{fluxName(data)}</span>
+						</p>
+					) : null}
+				</div>
+				<div className="flex gap-2 shrink-0">
+					<Button
 						type="button"
+						size="sm"
+						variant="outline"
 						onClick={() => setShowMeta(!showMeta)}
-						className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
 					>
 						{showMeta ? "Ocultar dados" : "Editar dados"}
-					</button>
-					<button
+					</Button>
+					<Button
 						type="button"
+						size="sm"
+						variant="destructive"
 						onClick={() => setConfirmDelete(true)}
-						className="text-xs px-2 py-1 rounded bg-red-600 text-white"
 					>
 						Excluir
-					</button>
+					</Button>
 				</div>
 			</div>
+
 			{confirmDelete && (
 				<ConfirmModal
 					message="Excluir este processo?"
@@ -156,31 +179,15 @@ function ProcessHeader({
 					onCancel={() => setConfirmDelete(false)}
 				/>
 			)}
-			{data.process.description ? (
-				<div className="text-sm text-gray-600 dark:text-gray-400 mt-1">{data.process.description}</div>
-			) : null}
-			{data.process.id_fluxo ? (
-				<div className="text-xs text-gray-500 mt-1">
-					Fluxo: <span className="font-medium">{fluxName(data)}</span>
-				</div>
-			) : null}
+
 			{showMeta ? (
 				<Form method="post" className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
 					<input type="hidden" name="intent" value="updateMeta" />
-					<input
-						name="name"
-						defaultValue={data.process.name}
-						className="px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-					/>
-					<input
-						name="description"
-						defaultValue={data.process.description}
-						placeholder="Descrição"
-						className="px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-					/>
-					<button className="md:col-span-2 text-sm px-3 py-1 rounded bg-blue-600 text-white">
+					<Input name="name" defaultValue={data.process.name} placeholder="Nome" />
+					<Input name="description" defaultValue={data.process.description} placeholder="Descrição" />
+					<Button type="submit" size="sm" className="md:col-span-2 w-full">
 						Salvar dados do processo
-					</button>
+					</Button>
 				</Form>
 			) : null}
 		</div>
@@ -199,7 +206,7 @@ function Stepper({
 	onGo: (idx: number) => void;
 }) {
 	return (
-		<div className="flex items-center gap-1 overflow-x-auto">
+		<div className="flex items-center gap-1.5 overflow-x-auto pb-1">
 			{steps.map((s, i) => {
 				const done = !!s.completed_at;
 				const isCurrent = i === currentIdx;
@@ -213,17 +220,17 @@ function Stepper({
 						disabled={!canClick}
 						onClick={() => canClick && onGo(i)}
 						title={s.name}
-						className={
-							"flex items-center gap-1 text-xs px-2 py-1 rounded whitespace-nowrap border transition " +
-							(isViewing ? "ring-2 ring-blue-400 " : "") +
-							(done
-								? "bg-green-100 text-green-900 border-green-200 dark:bg-green-900/40 dark:text-green-100 dark:border-green-800"
+						className={cn(
+							"flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md whitespace-nowrap border transition-colors font-medium",
+							isViewing && "ring-2 ring-offset-1 ring-blue-500",
+							done
+								? "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800"
 								: isCurrent
-									? "bg-blue-600 text-white border-blue-700"
+									? "bg-blue-600 text-white border-blue-700 hover:bg-blue-700"
 									: isFuture
-										? "bg-gray-100 text-gray-500 border-gray-200 dark:bg-gray-800 dark:text-gray-500 dark:border-gray-700 cursor-not-allowed"
-										: "")
-						}
+										? "bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-800 dark:text-slate-500 dark:border-slate-700 cursor-not-allowed"
+										: ""
+						)}
 					>
 						<span className="font-mono">{done ? "✓" : i + 1}</span>
 						<span className="truncate max-w-32">{s.name}</span>
@@ -250,26 +257,24 @@ function CurrentStepForm({
 			<input type="hidden" name="step_id" value={step.id} />
 			<div className="flex items-center justify-between mb-2">
 				<div>
-					<div className="text-xs uppercase text-gray-500">{positionLabel}</div>
-					<h2 className="text-base font-medium">{step.name}</h2>
+					<p className="text-xs uppercase text-slate-400 dark:text-slate-500 font-medium tracking-wide">
+						{positionLabel}
+					</p>
+					<h2 className="text-base font-semibold text-slate-900 dark:text-slate-50">{step.name}</h2>
 				</div>
 				<div className="flex gap-2">
-					<button
-						type="submit"
-						name="intent"
-						value="saveDraft"
-						className="text-sm px-3 py-2 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-					>
+					<Button type="submit" name="intent" value="saveDraft" size="sm" variant="outline">
 						Salvar rascunho
-					</button>
-					<button
+					</Button>
+					<Button
 						type="submit"
 						name="intent"
 						value="completeStep"
-						className="text-sm px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+						size="sm"
+						className="bg-emerald-600 hover:bg-emerald-700 text-white"
 					>
 						Concluir passo →
-					</button>
+					</Button>
 				</div>
 			</div>
 			<LexicalEditor
@@ -325,62 +330,66 @@ function AttachmentsList({
 
 	return (
 		<>
-			<section className="mt-6 border-t border-gray-200 dark:border-gray-800 pt-3">
-				<h3 className="text-sm font-semibold mb-2">Anexos ({files.length})</h3>
+			<section className="mt-4 border-t border-slate-200 dark:border-slate-800 pt-3">
+				<h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+					Anexos ({files.length})
+				</h3>
 				<ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
 					{files.map((f) => (
 						<li
 							key={f.id}
-							className="flex items-center gap-3 border border-gray-200 dark:border-gray-700 rounded p-2"
+							className="flex items-center gap-3 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-slate-900"
 						>
 							{f.is_image ? (
 								<img
 									src={`/api/files?id=${encodeURIComponent(f.id)}`}
 									alt={f.name}
-									className="w-12 h-12 object-cover rounded border border-gray-200 dark:border-gray-700"
+									className="w-12 h-12 object-cover rounded-md border border-slate-200 dark:border-slate-700 shrink-0"
 								/>
 							) : (
-								<div className="w-12 h-12 flex items-center justify-center rounded border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-xl">
+								<div className="w-12 h-12 flex items-center justify-center rounded-md border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xl shrink-0">
 									📄
 								</div>
 							)}
 							<div className="min-w-0 flex-1">
-								<div className="text-sm font-medium truncate" title={f.name}>
+								<p className="text-sm font-medium text-slate-900 dark:text-slate-50 truncate" title={f.name}>
 									{f.name}
-								</div>
-								<div className="text-xs text-gray-500 truncate">
-									{f.mime_type || "binário"} · {fmtSize(f.size_bytes)} · passo: {stepName(f.id_step)}
-								</div>
+								</p>
+								<p className="text-xs text-slate-400 dark:text-slate-500 truncate">
+									{f.mime_type || "binário"} · {fmtSize(f.size_bytes)} · {stepName(f.id_step)}
+								</p>
 							</div>
-							<div className="flex gap-1">
+							<div className="flex gap-1 shrink-0">
 								{f.is_image ? (
 									<a
 										href={`/api/files?id=${encodeURIComponent(f.id)}`}
 										target="_blank"
 										rel="noreferrer"
-										className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
 										title="Abrir imagem"
 									>
-										Abrir
+										<Button size="sm" variant="outline">Abrir</Button>
 									</a>
 								) : (
-									<button
+									<Button
+										size="sm"
+										variant="outline"
 										type="button"
 										onClick={() => openInPopup(f.id, f.name)}
-										className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
 										title="Baixar arquivo"
 									>
 										Baixar
-									</button>
+									</Button>
 								)}
-								<button
+								<Button
+									size="sm"
+									variant="ghost"
 									type="button"
 									onClick={() => setConfirmFile({ id: f.id, name: f.name })}
-									className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700"
+									className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
 									title="Excluir"
 								>
 									✕
-								</button>
+								</Button>
 							</div>
 						</li>
 					))}
@@ -421,38 +430,41 @@ function ReadOnlyStep({
 		<div className="flex flex-col h-full min-h-0">
 			<div className="flex items-center justify-between mb-2">
 				<div>
-					<div className="text-xs uppercase text-gray-500">{positionLabel} (somente leitura)</div>
-					<h2 className="text-base font-medium">{step.name}</h2>
+					<p className="text-xs uppercase text-slate-400 dark:text-slate-500 font-medium tracking-wide">
+						{positionLabel} — somente leitura
+					</p>
+					<h2 className="text-base font-semibold text-slate-900 dark:text-slate-50">{step.name}</h2>
 					{step.completed_at ? (
-						<div className="text-xs text-green-700 dark:text-green-400">
-							✓ concluído em {formatDateTime(step.completed_at)}
-						</div>
+						<p className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">
+							✓ Concluído em {formatDateTime(step.completed_at)}
+						</p>
 					) : null}
 				</div>
 				<div className="flex gap-2">
 					{step.completed_at ? (
-						<button
+						<Button
 							type="button"
+							size="sm"
+							variant="outline"
 							onClick={() => setConfirmReopen(true)}
-							className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
 						>
 							Reabrir
-						</button>
+						</Button>
 					) : null}
 					{!isCurrent ? (
-						<button
-							type="button"
-							onClick={onJumpToCurrent}
-							className="text-xs px-2 py-1 rounded bg-blue-600 text-white"
-						>
+						<Button type="button" size="sm" onClick={onJumpToCurrent}>
 							Ir para passo atual
-						</button>
+						</Button>
 					) : null}
 				</div>
 			</div>
 			<div
-				className="flex-1 min-h-0 overflow-auto border border-gray-200 dark:border-gray-700 rounded px-3 py-2 prose dark:prose-invert max-w-none bg-gray-50 dark:bg-gray-900"
-				dangerouslySetInnerHTML={{ __html: step.content || "<p class='text-gray-400'>(vazio)</p>" }}
+				className="flex-1 min-h-0 overflow-auto border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 prose prose-slate dark:prose-invert max-w-none bg-white dark:bg-slate-900"
+				dangerouslySetInnerHTML={{
+					__html:
+						step.content ||
+						'<p class="text-slate-400 italic">(vazio)</p>',
+				}}
 			/>
 			{confirmReopen && (
 				<ConfirmModal
