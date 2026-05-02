@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Separator } from "./ui/separator";
 import type { SessionUser } from "../lib/auth.server";
+import { SUPPORTED_LANGUAGES, type LanguageCode, changeLanguage } from "../i18n/i18n";
 
 export function ProfileButton({ user }: { user: SessionUser }) {
 	const [open, setOpen] = useState(false);
+	const { t, i18n } = useTranslation();
 	const initials = (user.name || user.email || "?")
 		.split(/\s+/)
 		.map((p) => p[0])
@@ -11,6 +14,10 @@ export function ProfileButton({ user }: { user: SessionUser }) {
 		.slice(0, 2)
 		.join("")
 		.toUpperCase();
+
+	function handleLanguageChange(code: LanguageCode) {
+		changeLanguage(code);
+	}
 
 	return (
 		<div className="relative">
@@ -60,6 +67,31 @@ export function ProfileButton({ user }: { user: SessionUser }) {
 							</div>
 						</div>
 						<Separator className="mb-3" />
+
+						<div className="mb-3">
+							<p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wide">
+								{t("profile.language")}
+							</p>
+							<div className="grid grid-cols-1 gap-0.5 max-h-40 overflow-y-auto">
+								{SUPPORTED_LANGUAGES.map((lang) => (
+									<button
+										key={lang.code}
+										type="button"
+										onClick={() => handleLanguageChange(lang.code)}
+										className={`w-full text-left px-2 py-1.5 rounded-md text-xs transition-colors ${
+											i18n.language === lang.code
+												? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 font-medium"
+												: "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+										}`}
+									>
+										{lang.label}
+									</button>
+								))}
+							</div>
+						</div>
+
+						<Separator className="mb-3" />
+
 						<a
 							href="/logout"
 							className="flex items-center justify-center gap-2 w-full text-center text-sm px-3 py-2 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
@@ -79,7 +111,7 @@ export function ProfileButton({ user }: { user: SessionUser }) {
 								<polyline points="16 17 21 12 16 7" />
 								<line x1="21" y1="12" x2="9" y2="12" />
 							</svg>
-							Sair
+							{t("profile.logout")}
 						</a>
 					</div>
 				</>

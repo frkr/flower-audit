@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Form, Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/go";
 import { useSearch } from "@/SearchContext";
 import { systemNameFromMatches } from "../../lib/systemName";
@@ -11,8 +12,8 @@ export { loader } from "./go.server";
 
 export function meta({ matches }: Route.MetaArgs) {
 	return [
-		{ title: `${systemNameFromMatches(matches)} — Começar` },
-		{ name: "description", content: "Pesquise fluxos e processos" },
+		{ title: `${systemNameFromMatches(matches)} — Go` },
+		{ name: "description", content: "Search flows and processes" },
 	];
 }
 
@@ -22,6 +23,7 @@ export default function Comecar({}: Route.ComponentProps) {
 	const { collapsed, setCollapsed, query, setQuery } = useSearch();
 	const [hits, setHits] = useState<Hit[]>([]);
 	const [phase, setPhase] = useState<"idle" | "flux" | "process" | "done">("idle");
+	const { t } = useTranslation();
 
 	async function runSearch(q: string) {
 		setHits([]);
@@ -48,6 +50,13 @@ export default function Comecar({}: Route.ComponentProps) {
 		return () => setCollapsed(false);
 	}, [setCollapsed]);
 
+	function phaseLabel() {
+		if (phase === "flux") return t("go.searchingFlows");
+		if (phase === "process") return t("go.searchingProcesses");
+		if (phase === "done") return hits.length === 1 ? t("go.results", { count: hits.length }) : t("go.results_other", { count: hits.length });
+		return "";
+	}
+
 	return (
 		<div className="h-full">
 			<form
@@ -60,7 +69,7 @@ export default function Comecar({}: Route.ComponentProps) {
 				<div className={cn("flex gap-2 items-center", !collapsed && "flex-col sm:flex-row")}>
 					{!collapsed && (
 						<p className="text-center text-slate-500 dark:text-slate-400 text-sm mb-1 w-full">
-							Pesquise em fluxos e processos
+							{t("go.searchHint")}
 						</p>
 					)}
 					<div className="flex gap-2 w-full">
@@ -68,7 +77,7 @@ export default function Comecar({}: Route.ComponentProps) {
 							autoFocus
 							value={query}
 							onChange={(e) => setQuery(e.target.value)}
-							placeholder="Pesquisar fluxos e processos…"
+							placeholder={t("go.searchPlaceholder")}
 							className={cn(
 								"flex-1 rounded-full border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 outline-none transition-shadow dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder:text-slate-500",
 								collapsed
@@ -85,7 +94,7 @@ export default function Comecar({}: Route.ComponentProps) {
 									: "px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 text-sm"
 							)}
 						>
-							{collapsed ? "↑" : "Pesquisar"}
+							{collapsed ? "↑" : t("go.search")}
 						</button>
 					</div>
 				</div>
@@ -95,18 +104,12 @@ export default function Comecar({}: Route.ComponentProps) {
 				<section className="mt-6 max-w-3xl">
 					<div className="flex items-center justify-between mb-3">
 						<p className="text-xs text-slate-500 dark:text-slate-400">
-							{phase === "flux"
-								? "Buscando em fluxos…"
-								: phase === "process"
-									? "Buscando em processos…"
-									: phase === "done"
-										? `${hits.length} resultado${hits.length !== 1 ? "s" : ""}`
-										: ""}
+							{phaseLabel()}
 						</p>
 						{phase !== "idle" && phase !== "done" && (
 							<span className="inline-flex items-center gap-1.5 text-xs text-slate-500">
 								<span className="animate-spin w-3 h-3 border border-slate-400 border-t-transparent rounded-full" />
-								Buscando…
+								{t("go.searching")}
 							</span>
 						)}
 					</div>
@@ -120,7 +123,7 @@ export default function Comecar({}: Route.ComponentProps) {
 								<div className="min-w-0 flex-1">
 									<div className="flex items-center gap-2 mb-1">
 										<Badge variant={h.kind === "flux" ? "secondary" : "outline"}>
-											{h.kind === "flux" ? "Fluxo" : "Processo"}
+											{h.kind === "flux" ? t("go.flow") : t("go.process")}
 										</Badge>
 									</div>
 									<Link
@@ -140,7 +143,7 @@ export default function Comecar({}: Route.ComponentProps) {
 										<input type="hidden" name="intent" value="startFromFlow" />
 										<input type="hidden" name="id_fluxo" value={h.id} />
 										<Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white whitespace-nowrap">
-											▶ Iniciar
+											{t("go.start")}
 										</Button>
 									</Form>
 								) : null}
@@ -148,7 +151,7 @@ export default function Comecar({}: Route.ComponentProps) {
 						))}
 						{phase === "done" && hits.length === 0 ? (
 							<li className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">
-								Nenhum resultado encontrado.
+								{t("go.noResults")}
 							</li>
 						) : null}
 					</ul>

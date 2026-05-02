@@ -1,5 +1,6 @@
 import { Form, Link, useLoaderData, useSearchParams, useSubmit } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "@/ConfirmModal";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
@@ -13,7 +14,7 @@ import { cn } from "../../lib/utils";
 export { loader, action } from "./process.server";
 
 export function meta({ matches }: Route.MetaArgs) {
-	return [{ title: `${systemNameFromMatches(matches)} — Processos` }];
+	return [{ title: `${systemNameFromMatches(matches)} — Processes` }];
 }
 
 type Data = {
@@ -32,14 +33,15 @@ export default function Processos() {
 	const totalPages = Math.max(1, Math.ceil(data.total / data.pageSize));
 	const submit = useSubmit();
 	const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+	const { t } = useTranslation();
 
 	return (
 		<div className="max-w-4xl mx-auto space-y-4">
 			<div className="flex items-center gap-3">
 				<Form method="get" className="flex-1 flex gap-2">
-					<Input name="q" defaultValue={data.q} placeholder="Pesquisar processos…" className="flex-1" />
+					<Input name="q" defaultValue={data.q} placeholder={t("process.searchPlaceholder")} className="flex-1" />
 					<Button type="submit" variant="secondary">
-						Buscar
+						{t("process.search")}
 					</Button>
 				</Form>
 				<Button
@@ -47,7 +49,7 @@ export default function Processos() {
 					onClick={() => setCreating((v) => !v)}
 					variant={creating ? "outline" : "default"}
 				>
-					{creating ? "Cancelar" : "+ Novo processo"}
+					{creating ? t("process.cancel") : t("process.newProcess")}
 				</Button>
 			</div>
 
@@ -58,13 +60,13 @@ export default function Processos() {
 							<input type="hidden" name="intent" value="create" />
 							<div className="space-y-1.5">
 								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-									Nome do processo
+									{t("process.processName")}
 								</label>
-								<Input name="name" required placeholder="Ex: Atendimento ao cliente #123" />
+								<Input name="name" required placeholder={t("process.namePlaceholder")} />
 							</div>
 							<div className="space-y-1.5">
 								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-									Descrição
+									{t("process.description")}
 								</label>
 								<textarea
 									name="description"
@@ -73,13 +75,13 @@ export default function Processos() {
 							</div>
 							<div className="space-y-1.5">
 								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-									Fluxo (opcional)
+									{t("process.flowOptional")}
 								</label>
 								<select
 									name="id_fluxo"
 									className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:focus-visible:ring-slate-300"
 								>
-									<option value="">— sem fluxo —</option>
+									<option value="">{t("process.noFlow")}</option>
 									{data.fluxes.map((f) => (
 										<option key={f.id} value={f.id}>
 											{f.name}
@@ -88,9 +90,9 @@ export default function Processos() {
 								</select>
 							</div>
 							<div className="flex gap-2">
-								<Button type="submit">Criar processo</Button>
+								<Button type="submit">{t("process.createProcess")}</Button>
 								<Button type="button" variant="outline" onClick={() => setCreating(false)}>
-									Cancelar
+									{t("process.cancel")}
 								</Button>
 							</div>
 						</Form>
@@ -100,7 +102,7 @@ export default function Processos() {
 
 			{data.items.length === 0 ? (
 				<div className="text-center py-12 text-slate-500 dark:text-slate-400">
-					<p className="text-sm">Nenhum processo encontrado.</p>
+					<p className="text-sm">{t("process.noProcesses")}</p>
 				</div>
 			) : (
 				<ul className="space-y-2">
@@ -122,7 +124,7 @@ export default function Processos() {
 									</p>
 								) : null}
 								<p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-									Atualizado: {formatDateTime(p.updated_at)}
+									{t("process.updated")} {formatDateTime(p.updated_at)}
 								</p>
 							</div>
 							<Button
@@ -132,7 +134,7 @@ export default function Processos() {
 								onClick={() => setPendingDelete(p.id)}
 								className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 opacity-0 group-hover:opacity-100 transition-opacity"
 							>
-								Excluir
+								{t("process.delete")}
 							</Button>
 						</li>
 					))}
@@ -164,7 +166,7 @@ export default function Processos() {
 
 			{pendingDelete && (
 				<ConfirmModal
-					message="Excluir este processo?"
+					message={t("process.deleteConfirm")}
 					onConfirm={() => {
 						submit({ intent: "delete", id: pendingDelete }, { method: "post" });
 						setPendingDelete(null);

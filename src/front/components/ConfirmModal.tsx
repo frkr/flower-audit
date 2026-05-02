@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Modal } from "./Modal";
 import { Button } from "./ui/button";
 
@@ -10,6 +11,7 @@ export function ConfirmModal({
 	onConfirm: () => void;
 	onCancel: () => void;
 }) {
+	const { t } = useTranslation();
 	return (
 		<Modal onClose={onCancel}>
 			<div className="flex items-start gap-3 mb-4">
@@ -30,16 +32,16 @@ export function ConfirmModal({
 					</svg>
 				</div>
 				<div>
-					<h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">Confirmar ação</h3>
+					<h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">{t("modal.confirmTitle")}</h3>
 					<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{message}</p>
 				</div>
 			</div>
 			<div className="flex justify-end gap-2">
 				<Button type="button" variant="outline" size="sm" onClick={onCancel} autoFocus>
-					Cancelar
+					{t("modal.cancel")}
 				</Button>
 				<Button type="button" variant="destructive" size="sm" onClick={onConfirm}>
-					Confirmar
+					{t("modal.confirm")}
 				</Button>
 			</div>
 		</Modal>

@@ -38,6 +38,20 @@
 - **Não existe mais a pasta `.server` nem a pasta `api`** — toda a lógica foi migrada para módulos em `src/front/routes/<modulo>/`.
 - Utilitários compartilhados de servidor ficam em `src/front/lib/` com sufixo `.server.ts` (ex: `auth.server.ts`, `db.server.ts`).
 
+## Internacionalização (i18n)
+
+- Referência de padrão: https://github.com/sergiodxa/remix-i18next
+- Biblioteca utilizada: `i18next` + `react-i18next` (bundled resources — sem FS backend, compatível com Cloudflare Workers)
+- Idioma padrão: **Inglês** (`en`)
+- Idiomas suportados: `en`, `pt-BR`, `es`, `de`, `ru`, `zh-TW`, `zh-CN`, `ja`, `ko`
+- Detecção: `navigator.language` no cliente; preferência salva em `localStorage` (chave: `flower_language`)
+- **Nunca use rotas de URL para idioma** — somente detecção do navegador + dropdown no perfil
+- Arquivos de tradução: `src/front/i18n/locales/<código>.ts`
+- Configuração principal: `src/front/i18n/i18n.ts`
+- Provider: `I18nextProvider` em `src/front/root.tsx`
+- Hook de uso: `const { t } = useTranslation()` nos componentes React
+- Seleção de idioma: dropdown no `ProfileButton` (clicando na foto de perfil)
+
 ## Estrutura de Módulos (`src/front/routes/`)
 
 Cada módulo é uma pasta dentro de `src/front/routes/`. Arquivos de rota (facade) ficam na raiz do módulo. A lógica de backend fica em arquivos `*.server.ts` dentro do mesmo módulo.

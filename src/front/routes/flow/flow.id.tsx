@@ -1,5 +1,6 @@
 import { Form, useLoaderData, useSubmit } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "@/ConfirmModal";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
@@ -11,7 +12,7 @@ import { systemNameFromMatches } from "../../lib/systemName";
 export { loader, action } from "./flow.id.server";
 
 export function meta({ matches }: Route.MetaArgs) {
-	return [{ title: `${systemNameFromMatches(matches)} — Fluxo` }];
+	return [{ title: `${systemNameFromMatches(matches)} — Flow` }];
 }
 
 type Step = { id: string; id_order: number; name: string };
@@ -24,6 +25,7 @@ export default function FluxoEdit() {
 	const data = useLoaderData() as Data;
 	const submit = useSubmit();
 	const [confirmDelete, setConfirmDelete] = useState(false);
+	const { t } = useTranslation();
 
 	return (
 		<div className="max-w-3xl mx-auto space-y-6">
@@ -42,27 +44,27 @@ export default function FluxoEdit() {
 					<input type="hidden" name="intent" value="startFromFlow" />
 					<input type="hidden" name="id_fluxo" value={data.flux.id} />
 					<Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-						▶ Iniciar processo
+						{t("flow.startProcess")}
 					</Button>
 				</Form>
 			</div>
 
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-base">Dados do fluxo</CardTitle>
+					<CardTitle className="text-base">{t("flow.flowData")}</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Form method="post" className="space-y-4">
 						<input type="hidden" name="intent" value="updateFlux" />
 						<div className="space-y-1.5">
 							<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-								Nome do Fluxo
+								{t("flow.flowName")}
 							</label>
 							<Input name="name" required defaultValue={data.flux.name} />
 						</div>
 						<div className="space-y-1.5">
 							<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-								Descrição
+								{t("flow.description")}
 							</label>
 							<textarea
 								name="description"
@@ -71,13 +73,13 @@ export default function FluxoEdit() {
 							/>
 						</div>
 						<div className="flex justify-between pt-1">
-							<Button type="submit">Salvar alterações</Button>
+							<Button type="submit">{t("flow.saveChanges")}</Button>
 							<Button
 								type="button"
 								variant="destructive"
 								onClick={() => setConfirmDelete(true)}
 							>
-								Excluir fluxo
+								{t("flow.deleteFlow")}
 							</Button>
 						</div>
 					</Form>
@@ -87,7 +89,7 @@ export default function FluxoEdit() {
 			<Card>
 				<CardHeader>
 					<CardTitle className="text-base">
-						Passos
+						{t("flow.steps")}
 						<span className="ml-2 text-sm font-normal text-slate-500 dark:text-slate-400">
 							({data.steps.length})
 						</span>
@@ -96,7 +98,7 @@ export default function FluxoEdit() {
 				<CardContent>
 					{data.steps.length === 0 ? (
 						<p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-							Nenhum passo ainda. Adicione o primeiro abaixo.
+							{t("flow.noSteps")}
 						</p>
 					) : (
 						<ul className="space-y-2 mb-4">
@@ -111,7 +113,7 @@ export default function FluxoEdit() {
 
 			{confirmDelete && (
 				<ConfirmModal
-					message="Excluir este fluxo?"
+					message={t("flow.deleteConfirm")}
 					onConfirm={() => {
 						submit({ intent: "delete" }, { method: "post" });
 						setConfirmDelete(false);
@@ -128,6 +130,7 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 	const dirty = name !== step.name;
 	const submit = useSubmit();
 	const [confirmRemove, setConfirmRemove] = useState(false);
+	const { t } = useTranslation();
 
 	return (
 		<li className="flex items-center gap-2">
@@ -149,7 +152,7 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 					variant="secondary"
 					disabled={!dirty || !name.trim()}
 				>
-					Salvar
+					{t("flow.save")}
 				</Button>
 			</Form>
 			<Button
@@ -158,13 +161,13 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 				variant="ghost"
 				onClick={() => setConfirmRemove(true)}
 				className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
-				aria-label="Remover passo"
+				aria-label={t("flow.removeStep")}
 			>
 				×
 			</Button>
 			{confirmRemove && (
 				<ConfirmModal
-					message="Remover este passo?"
+					message={t("flow.removeStepConfirm")}
 					onConfirm={() => {
 						submit({ intent: "removeStep", stepId: step.id }, { method: "post" });
 						setConfirmRemove(false);
@@ -178,6 +181,7 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 
 function AddStepForm() {
 	const [name, setName] = useState("");
+	const { t } = useTranslation();
 	return (
 		<Form
 			method="post"
@@ -190,11 +194,11 @@ function AddStepForm() {
 				required
 				value={name}
 				onChange={(e) => setName(e.target.value)}
-				placeholder="Nome do novo passo…"
+				placeholder={t("flow.addStepPlaceholder")}
 				className="flex-1"
 			/>
 			<Button type="submit" disabled={!name.trim()}>
-				+ Adicionar
+				{t("flow.add")}
 			</Button>
 		</Form>
 	);
