@@ -217,7 +217,19 @@ export function isPublicPath(pathname: string): boolean {
 }
 
 export function isLocalRedirect(url: string): boolean {
-	return url.startsWith("/") && !url.startsWith("//") && !url.startsWith("\\");
+	return (
+		url.startsWith("/") &&
+		!url.startsWith("//") &&
+		!url.startsWith("/\\") &&
+		!url.startsWith("\\")
+	);
+}
+
+export function sanitizeRedirect(raw: string | null, fallback = "/"): string {
+	if (!raw) return fallback;
+	if (!isLocalRedirect(raw)) return fallback;
+	if (raw === "/landing" || raw.startsWith("/landing?")) return fallback;
+	return raw;
 }
 
 export function isSecureRequest(request: Request): boolean {
