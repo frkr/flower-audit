@@ -20,7 +20,6 @@
 - Os 10 primeiros resultados serão da tabela `fluxos`. Após carregar esses 10 resultados a tela vai fazer uma nova pesquisa em `processos`
 - Esta tela de processos também será um CRUD simples a princípio.
 - O campo 'Conteúdo' de `process` deve usar um campo de editor WYSIWYG (https://github.com/facebook/lexical) que deverá ser bem grande com um botão que possa maximizar para ocupar a tela inteira.
-- As IA's devem executar o `pnpm run build` para saber se o projeto esta compilando antes de commitar.
 
 
 
