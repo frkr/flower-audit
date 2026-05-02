@@ -1,5 +1,6 @@
-import { Form, useLoaderData } from "react-router";
+import { Form, useLoaderData, useSubmit } from "react-router";
 import { useState } from "react";
+import { ConfirmModal } from "@/ConfirmModal";
 
 import type { Route } from "./+types/flow.id";
 import { systemNameFromMatches } from "../../lib/systemName";
@@ -18,6 +19,8 @@ type Data = {
 
 export default function FluxoEdit() {
 	const data = useLoaderData() as Data;
+	const submit = useSubmit();
+	const [confirmDelete, setConfirmDelete] = useState(false);
 
 	return (
 		<div className="max-w-4xl mx-auto space-y-6">
@@ -56,13 +59,8 @@ export default function FluxoEdit() {
 					<div className="flex justify-between">
 						<button className="px-3 py-2 rounded bg-blue-600 text-white">Salvar</button>
 						<button
-							type="submit"
-							name="intent"
-							value="delete"
-							formNoValidate
-							onClick={(e) => {
-								if (!confirm("Excluir este fluxo?")) e.preventDefault();
-							}}
+							type="button"
+							onClick={() => setConfirmDelete(true)}
 							className="px-3 py-2 rounded bg-red-600 text-white"
 						>
 							Excluir
@@ -85,6 +83,17 @@ export default function FluxoEdit() {
 
 				<AddStepForm />
 			</section>
+
+			{confirmDelete && (
+				<ConfirmModal
+					message="Excluir este fluxo?"
+					onConfirm={() => {
+						submit({ intent: "delete" }, { method: "post" });
+						setConfirmDelete(false);
+					}}
+					onCancel={() => setConfirmDelete(false)}
+				/>
+			)}
 		</div>
 	);
 }
@@ -92,6 +101,8 @@ export default function FluxoEdit() {
 function StepRow({ step, index }: { step: Step; index: number }) {
 	const [name, setName] = useState(step.name);
 	const dirty = name !== step.name;
+	const submit = useSubmit();
+	const [confirmRemove, setConfirmRemove] = useState(false);
 	return (
 		<li className="flex items-center gap-2">
 			<span className="w-8 text-xs text-gray-500 text-right">{index + 1}.</span>
@@ -112,21 +123,25 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 					Salvar
 				</button>
 			</Form>
-			<Form method="post">
-				<input type="hidden" name="intent" value="removeStep" />
-				<input type="hidden" name="stepId" value={step.id} />
-				<button
-					type="submit"
-					onClick={(e) => {
-						if (!confirm("Remover este passo?")) e.preventDefault();
+			<button
+				type="button"
+				onClick={() => setConfirmRemove(true)}
+				className="px-2 py-2 rounded bg-red-100 text-red-700"
+				aria-label="Remover passo"
+				title="Remover passo"
+			>
+				×
+			</button>
+			{confirmRemove && (
+				<ConfirmModal
+					message="Remover este passo?"
+					onConfirm={() => {
+						submit({ intent: "removeStep", stepId: step.id }, { method: "post" });
+						setConfirmRemove(false);
 					}}
-					className="px-2 py-2 rounded bg-red-100 text-red-700"
-					aria-label="Remover passo"
-					title="Remover passo"
-				>
-					×
-				</button>
-			</Form>
+					onCancel={() => setConfirmRemove(false)}
+				/>
+			)}
 		</li>
 	);
 }

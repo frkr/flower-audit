@@ -1,5 +1,6 @@
-import { Form, useLoaderData } from "react-router";
+import { Form, useLoaderData, useSubmit } from "react-router";
 import { useState } from "react";
+import { ConfirmModal } from "@/ConfirmModal";
 import type { Route } from "./+types/setup";
 import type { Setting, VersionInfo } from "./setup.server";
 import { systemNameFromMatches } from "../../lib/systemName";
@@ -129,7 +130,9 @@ function GitHubIcon() {
 
 function SettingRow({ item }: { item: Setting }) {
 	const [editing, setEditing] = useState(false);
+	const [confirmDelete, setConfirmDelete] = useState(false);
 	const secret = isSecret(item.name);
+	const submit = useSubmit();
 
 	if (!editing) {
 		return (
@@ -154,20 +157,24 @@ function SettingRow({ item }: { item: Setting }) {
 					>
 						Editar
 					</button>
-					<Form method="post">
-						<input type="hidden" name="intent" value="delete" />
-						<input type="hidden" name="id" value={item.id} />
-						<button
-							type="submit"
-							onClick={(e) => {
-								if (!confirm(`Excluir "${item.name}"?`)) e.preventDefault();
-							}}
-							className="w-full text-xs px-2 py-1 rounded bg-red-600 text-white"
-						>
-							Excluir
-						</button>
-					</Form>
+					<button
+						type="button"
+						onClick={() => setConfirmDelete(true)}
+						className="w-full text-xs px-2 py-1 rounded bg-red-600 text-white"
+					>
+						Excluir
+					</button>
 				</div>
+				{confirmDelete && (
+					<ConfirmModal
+						message={`Excluir "${item.name}"?`}
+						onConfirm={() => {
+							submit({ intent: "delete", id: item.id }, { method: "post" });
+							setConfirmDelete(false);
+						}}
+						onCancel={() => setConfirmDelete(false)}
+					/>
+				)}
 			</li>
 		);
 	}
