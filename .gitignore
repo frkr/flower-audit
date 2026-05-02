@@ -178,6 +178,7 @@ tsconfig.node.tsbuildinfo
 # Playwright
 playwright-report/
 test-results/
+test/e2e/.auth/
 .pnpm-store/
 
 # PR comments / test logs
