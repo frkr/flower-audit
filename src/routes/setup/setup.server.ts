@@ -22,7 +22,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 		name: item.name.toUpperCase(),
 		value:
 			/secret/i.test(item.name) && item.value
-				? "*".repeat(Math.max(item.value.length, 8))
+				? "********"
 				: item.value,
 	}));
 
