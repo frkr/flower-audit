@@ -18,7 +18,7 @@ Outras línguas: [English](./README.md) · [Español](./README.es.md)
 - **Barra lateral à direita**:
   - Calendário (topo): pequeno ícone abre uma visão mensal destacando os dias em que fluxos foram iniciados. Usa três intensidades (1, 2–4, 5+) com base em `process.created_at`.
   - Chat IA (meio): painel mínimo, pronto para ser ligado em [assistant-ui](https://github.com/assistant-ui/assistant-ui).
-  - Perfil (rodapé, flutuando): ícone de perfil do usuário.
+  - Perfil (rodapé, flutuando): ícone de perfil do usuário com dropdown para informações da conta e seleção de idioma.
 
 ## Stack
 
@@ -28,6 +28,18 @@ Outras línguas: [English](./README.md) · [Español](./README.es.md)
 - Cloudflare R2 (binding `FLOWER`, recurso `flower-audit`)
 - Tailwind CSS v4
 - [Lexical](https://github.com/facebook/lexical) para o editor de texto rico
+- [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/) para internacionalização (resources bundled — sem FS backend, compatível com Cloudflare Workers)
+
+## Internacionalização (i18n)
+
+- **Idioma padrão:** Inglês (`en`)
+- **Idiomas suportados:** `en`, `pt-BR`, `es`, `de`, `ru`, `zh-TW`, `zh-CN`, `ja`, `ko`
+- **Detecção:** `navigator.language` no cliente; preferência salva em `localStorage` (chave: `flower_language`)
+- **Sem roteamento por URL** — o idioma é selecionado pela detecção do navegador ou pelo dropdown no botão de Perfil
+- **Arquivos de tradução:** `src/front/i18n/locales/<código>.ts`
+- **Configuração principal:** `src/front/i18n/i18n.ts`
+- **Provider:** `I18nextProvider` em `src/front/root.tsx`
+- **Uso nos componentes:** `const { t } = useTranslation()`
 
 ## Estrutura
 
@@ -48,6 +60,9 @@ src/
       chat/                     # /api/chat
       files/                    # /api/files
     components/                 # Componentes de UI (AlertModal, ConfirmModal, LexicalEditor, …)
+    i18n/
+      i18n.ts                   # Configuração do i18next
+      locales/                  # Arquivos de tradução (en.ts, pt-BR.ts, es.ts, de.ts, ru.ts, …)
     lib/                        # Utilitários compartilhados (auth.server.ts, db.server.ts, formatDate.ts, …)
 schema.sql                      # Schema do D1
 wrangler.jsonc                  # Bindings da Cloudflare

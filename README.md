@@ -18,7 +18,7 @@ Translations: [Português (Brasil)](./README.pt-br.md) · [Español](./README.es
 - **Right sidebar**:
   - Calendar (top): a small button opens a month view that highlights days where flows were started, using three intensity levels (1, 2–4, 5+) based on `process.created_at`.
   - AI chat (middle): minimal chat panel intended to be wired to the [assistant-ui](https://github.com/assistant-ui/assistant-ui) React library.
-  - Profile (bottom, floating): user profile button with a dropdown.
+  - Profile (bottom, floating): user profile button with a dropdown for account info and language selection.
 
 ## Stack
 
@@ -28,6 +28,18 @@ Translations: [Português (Brasil)](./README.pt-br.md) · [Español](./README.es
 - Cloudflare R2 (binding `FLOWER`, resource `flower-audit`)
 - Tailwind CSS v4
 - [Lexical](https://github.com/facebook/lexical) for the rich-text editor
+- [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/) for internationalisation (bundled resources — no FS backend, Cloudflare Workers-compatible)
+
+## Internationalisation (i18n)
+
+- **Default language:** English (`en`)
+- **Supported languages:** `en`, `pt-BR`, `es`, `de`, `ru`, `zh-TW`, `zh-CN`, `ja`, `ko`
+- **Detection:** `navigator.language` on the client; preference saved in `localStorage` (key: `flower_language`)
+- **No URL-based routing** — language is selected via browser detection or the dropdown in the Profile button
+- **Translation files:** `src/front/i18n/locales/<code>.ts`
+- **Main config:** `src/front/i18n/i18n.ts`
+- **Provider:** `I18nextProvider` in `src/front/root.tsx`
+- **Usage in components:** `const { t } = useTranslation()`
 
 ## Project layout
 
@@ -48,6 +60,9 @@ src/
       chat/                     # /api/chat
       files/                    # /api/files
     components/                 # UI components (AlertModal, ConfirmModal, LexicalEditor, …)
+    i18n/
+      i18n.ts                   # i18next configuration
+      locales/                  # Translation files (en.ts, pt-BR.ts, es.ts, de.ts, ru.ts, …)
     lib/                        # Shared utilities (auth.server.ts, db.server.ts, formatDate.ts, …)
 schema.sql                      # D1 schema (run with `wrangler d1 execute --file=`)
 wrangler.jsonc                  # Cloudflare bindings
