@@ -131,6 +131,14 @@ CREATE TABLE IF NOT EXISTS settings (
     updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS settings_authors (
+    id          TEXT PRIMARY KEY,
+    id_setting  TEXT NOT NULL REFERENCES settings(id) ON DELETE CASCADE,
+    author      TEXT NOT NULL,
+    at          TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_settings_authors_setting ON settings_authors(id_setting);
+
 -- ============================================================================
 -- Calendar source: dates where flows were started.
 -- A "flow start" is the creation of a process tied to a flux.
