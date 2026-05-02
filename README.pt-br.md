@@ -37,23 +37,18 @@ src/
   front/
     routes.ts                   # Tabela de rotas do React Router
     layouts/app.tsx             # Layout principal (menu superior + barra lateral)
-    routes/                     # Facades — só reexportam loader/action de .server/
-      start.tsx                 # /
-      flow.tsx                  # /flow
-      flow.id.tsx               # /flow/:id
-      process.tsx               # /process
-      process.id.tsx            # /process/:id
-      setup.tsx                 # /setup
-    api/                        # Resource routes (sem default export)
-      index.ts                  # /api/index (entrypoint segundo AGENTS.md)
-      calendar.ts               # /api/calendar
-      search.ts                 # /api/search
-      chat.ts                   # /api/chat
-    .server/                    # Módulos de backend (um diretório por rota)
-      db.ts                     # Helpers para os bindings D1/R2
-      <modulo>/database.json    # SQL do módulo (obrigatório; ver AGENTS.md)
-    components/                 # Componentes client-only
-    lib/                        # Utilitários puros (randomHEX, isEmpty, httpcodes)
+    routes/                     # Um diretório por módulo; facade + *.server.ts + database.json
+      landing/                  # /landing (pública), / (index após login)
+      go/                       # /go, /api/search, /api/index
+      flow/                     # /flow, /flow/:id
+      process/                  # /process, /process/:id
+      setup/                    # /setup
+      login/                    # /login, /login/callback, /logout
+      calendar/                 # /api/calendar
+      chat/                     # /api/chat
+      files/                    # /api/files
+    components/                 # Componentes de UI (AlertModal, ConfirmModal, LexicalEditor, …)
+    lib/                        # Utilitários compartilhados (auth.server.ts, db.server.ts, formatDate.ts, …)
 schema.sql                      # Schema do D1
 wrangler.jsonc                  # Bindings da Cloudflare
 ```
@@ -64,7 +59,7 @@ wrangler.jsonc                  # Bindings da Cloudflare
 pnpm install
 pnpm dev          # servidor local
 pnpm typecheck    # gerar tipos + tsc
-pnpm test         # vitest com @cloudflare/vitest-pool-workers
+pnpm test         # vitest run
 ```
 
 ## Deploy

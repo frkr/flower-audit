@@ -37,29 +37,18 @@ src/
   front/
     routes.ts                   # React Router route table
     layouts/app.tsx             # Main layout (top menu + right sidebar)
-    routes/                     # Route facades — re-export loader/action from .server/
-      start.tsx                 # /
-      flow.tsx                  # /flow
-      flow.id.tsx               # /flow/:id
-      process.tsx               # /process
-      process.id.tsx            # /process/:id
-      setup.tsx                 # /setup
-    api/                        # Resource routes (no default export)
-      index.ts                  # /api/index (request entrypoint per AGENTS.md)
-      calendar.ts               # /api/calendar
-      search.ts                 # /api/search
-      chat.ts                   # /api/chat
-    .server/                    # Backend modules (one folder per route)
-      db.ts                     # D1 / R2 binding helpers
-      <module>/database.json    # Module-scoped SQL (mandatory; see AGENTS.md)
-      index/, calendar/, api/, flow/, process/, setup/, start/
-    components/                 # Client-only UI components
-      LexicalEditor.tsx
-      CalendarPanel.tsx
-      ChatPanel.tsx
-      ProfileButton.tsx
-      SearchContext.tsx
-    lib/                        # Pure utilities (randomHEX, isEmpty, httpcodes)
+    routes/                     # One folder per module; facade + *.server.ts + database.json
+      landing/                  # /landing (public), / (index after login)
+      go/                       # /go, /api/search, /api/index
+      flow/                     # /flow, /flow/:id
+      process/                  # /process, /process/:id
+      setup/                    # /setup
+      login/                    # /login, /login/callback, /logout
+      calendar/                 # /api/calendar
+      chat/                     # /api/chat
+      files/                    # /api/files
+    components/                 # UI components (AlertModal, ConfirmModal, LexicalEditor, …)
+    lib/                        # Shared utilities (auth.server.ts, db.server.ts, formatDate.ts, …)
 schema.sql                      # D1 schema (run with `wrangler d1 execute --file=`)
 wrangler.jsonc                  # Cloudflare bindings
 ```
@@ -70,7 +59,7 @@ wrangler.jsonc                  # Cloudflare bindings
 pnpm install
 pnpm dev          # local dev server
 pnpm typecheck    # generate types + tsc
-pnpm test         # vitest with @cloudflare/vitest-pool-workers
+pnpm test         # vitest run
 ```
 
 ## Deploy
