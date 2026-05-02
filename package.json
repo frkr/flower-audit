@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@10.33.2",
+	"packageManager": "pnpm@11.0.3",
 	"scripts": {
 		"build": "pnpm run typecheck && react-router build",
 		"cf-typegen": "wrangler types",
@@ -16,8 +16,8 @@
 		"typecheck": "pnpm run cf-typegen && react-router typegen && tsc -b"
 	},
 	"dependencies": {
-		"i18next": "^25.1.2",
-		"react-i18next": "^15.5.2",
+		"i18next": "^25.10.10",
+		"react-i18next": "^15.7.4",
 		"@lexical/code": "^0.44.0",
 		"@lexical/history": "^0.44.0",
 		"@lexical/html": "^0.44.0",
@@ -28,26 +28,26 @@
 		"@lexical/rich-text": "^0.44.0",
 		"@lexical/selection": "^0.44.0",
 		"@lexical/utils": "^0.44.0",
-		"isbot": "^5.1.38",
+		"isbot": "^5.1.39",
 		"lexical": "^0.44.0",
 		"react": "^19.2.5",
 		"react-dom": "^19.2.5",
-		"react-router": "^7.14.1"
+		"react-router": "^7.14.2"
 	},
 	"devDependencies": {
-		"@cloudflare/vite-plugin": "^1.32.3",
-		"@cloudflare/vitest-pool-workers": "^0.14.7",
+		"@cloudflare/vite-plugin": "^1.35.0",
+		"@cloudflare/vitest-pool-workers": "^0.15.2",
 		"@playwright/test": "^1.59.1",
-		"@react-router/dev": "^7.14.1",
-		"@tailwindcss/vite": "^4.2.2",
+		"@react-router/dev": "^7.14.2",
+		"@tailwindcss/vite": "^4.2.4",
 		"@types/node": "^25.6.0",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
-		"tailwindcss": "^4.2.2",
-		"typescript": "^6.0.2",
-		"vite": "^8.0.8",
+		"tailwindcss": "^4.2.4",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.10",
 		"vite-tsconfig-paths": "^6.1.1",
-		"vitest": "^4.1.4",
-		"wrangler": "^4.83.0"
+		"vitest": "^4.1.5",
+		"wrangler": "^4.87.0"
 	}
 }
