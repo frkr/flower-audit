@@ -2,16 +2,18 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './test/e2e',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  retries: process.env.CI ? 1 : 0,
+  workers: 1,
+  reporter: 'list',
+  globalSetup: './test/e2e/global-setup.ts',
   globalTeardown: './test/e2e/global-teardown.ts',
-  timeout: 120000,
+  timeout: 60000,
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
+    storageState: 'test/e2e/.auth/user.json',
   },
   projects: [
     {
@@ -21,7 +23,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'pnpm run dev',
-    url: 'http://localhost:5173/panel',
+    url: 'http://localhost:5173',
     timeout: 120000,
     reuseExistingServer: !process.env.CI,
   },
