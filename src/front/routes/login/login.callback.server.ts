@@ -4,6 +4,7 @@ import {
 	buildClearStateCookie,
 	buildSessionCookie,
 	getAuthConfig,
+	isLocalRedirect,
 	isSecureRequest,
 	readStateCookie,
 	signJWT,
@@ -109,6 +110,10 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 	const headers = new Headers();
 	headers.append("Set-Cookie", buildSessionCookie(jwt, secure, sessionTtlSeconds));
 	headers.append("Set-Cookie", buildClearStateCookie(secure));
-	headers.set("Location", stored.redirectTo || "/");
+
+	let finalRedirect = stored.redirectTo || "/";
+	if (!isLocalRedirect(finalRedirect)) finalRedirect = "/";
+
+	headers.set("Location", finalRedirect);
 	return new Response(null, { status: 302, headers });
 }

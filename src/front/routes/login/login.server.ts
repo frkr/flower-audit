@@ -5,6 +5,7 @@ import {
 	buildStateCookie,
 	getAuthConfig,
 	getOptionalUser,
+	isLocalRedirect,
 	isSecureRequest,
 } from "../../lib/auth.server";
 import randomHEX from "../../lib/randomHEX";
@@ -15,7 +16,8 @@ const SCOPES = "openid email profile";
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	const existing = await getOptionalUser(request, context);
 	const url = new URL(request.url);
-	const redirectTo = url.searchParams.get("redirect") || "/";
+	let redirectTo = url.searchParams.get("redirect") || "/";
+	if (!isLocalRedirect(redirectTo)) redirectTo = "/";
 	if (existing) throw redirect(redirectTo);
 
 	const { clientId } = await getAuthConfig(context);

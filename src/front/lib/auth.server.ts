@@ -216,6 +216,10 @@ export function isPublicPath(pathname: string): boolean {
 	return PUBLIC_PATHS.has(pathname);
 }
 
+export function isLocalRedirect(url: string): boolean {
+	return url.startsWith("/") && !url.startsWith("//") && !url.startsWith("\\");
+}
+
 export function isSecureRequest(request: Request): boolean {
 	const url = new URL(request.url);
 	if (url.protocol === "https:") return true;

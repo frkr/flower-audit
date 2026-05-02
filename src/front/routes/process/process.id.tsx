@@ -10,7 +10,7 @@ import { LexicalEditor } from "@/LexicalEditor";
 import type { StepRow, FileRow } from "./process.id.server";
 import { systemNameFromMatches } from "../../lib/systemName";
 import { formatDateTime } from "../../lib/formatDate";
-import { cn } from "../../lib/utils";
+import { cn, sanitizeHtml } from "../../lib/utils";
 
 export { loader, action } from "./process.id.server";
 
@@ -463,9 +463,10 @@ function ReadOnlyStep({
 			<div
 				className="flex-1 min-h-0 overflow-auto border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 prose prose-slate dark:prose-invert max-w-none bg-white dark:bg-slate-900"
 				dangerouslySetInnerHTML={{
-					__html:
+					__html: sanitizeHtml(
 						step.content ||
-						`<p class="text-slate-400 italic">(${t("setup.empty")})</p>`,
+							`<p class="text-slate-400 italic">(${t("setup.empty")})</p>`
+					),
 				}}
 			/>
 			{confirmReopen && (
