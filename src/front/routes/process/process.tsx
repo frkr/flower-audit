@@ -54,16 +54,17 @@ export default function Processos() {
 				<Form method="post" className="border border-gray-200 dark:border-gray-700 rounded p-4 space-y-3 mb-4">
 					<input type="hidden" name="intent" value="create" />
 					<div>
-						<label className="block text-sm mb-1">Nome do processo</label>
+						<label htmlFor="new-process-name" className="block text-sm mb-1">Nome do processo</label>
 						<input
+							id="new-process-name"
 							name="name"
 							required
 							className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
 						/>
 					</div>
 					<div>
-						<label className="block text-sm mb-1">Descrição</label>
-						<textarea name="description" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
+						<label htmlFor="new-process-description" className="block text-sm mb-1">Descrição</label>
+						<textarea id="new-process-description" name="description" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
 					</div>
 					<div>
 						<label className="block text-sm mb-1">Fluxo (opcional)</label>

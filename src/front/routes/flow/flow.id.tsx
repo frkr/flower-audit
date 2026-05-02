@@ -40,8 +40,9 @@ export default function FluxoEdit() {
 				<Form method="post" className="space-y-3">
 					<input type="hidden" name="intent" value="updateFlux" />
 					<div>
-						<label className="block text-sm mb-1">Nome do Fluxo</label>
+						<label htmlFor="flow-edit-name" className="block text-sm mb-1">Nome do Fluxo</label>
 						<input
+							id="flow-edit-name"
 							name="name"
 							required
 							defaultValue={data.flux.name}
@@ -49,8 +50,9 @@ export default function FluxoEdit() {
 						/>
 					</div>
 					<div>
-						<label className="block text-sm mb-1">Descrição</label>
+						<label htmlFor="flow-edit-description" className="block text-sm mb-1">Descrição</label>
 						<textarea
+							id="flow-edit-description"
 							name="description"
 							defaultValue={data.flux.description}
 							className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
