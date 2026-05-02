@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { AlertModal } from "./AlertModal";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -212,6 +213,7 @@ function EditorBody({
 	const [editor] = useLexicalComposerContext();
 	const [dragOver, setDragOver] = useState(false);
 	const [uploading, setUploading] = useState(false);
+	const [uploadError, setUploadError] = useState<string | null>(null);
 	const dragCounter = useRef(0);
 
 	const dragEnabled = !!uploadContext && !showSource;
@@ -256,7 +258,7 @@ function EditorBody({
 				onUploaded?.(up);
 			}
 		} catch (err) {
-			alert("Falha no upload: " + (err as Error).message);
+			setUploadError("Falha no upload: " + (err as Error).message);
 		} finally {
 			setUploading(false);
 		}
@@ -270,6 +272,7 @@ function EditorBody({
 			onDragOver={onDragOver}
 			onDrop={onDrop}
 		>
+			{uploadError && <AlertModal message={uploadError} onClose={() => setUploadError(null)} />}
 			<RichTextPlugin
 				contentEditable={
 					<ContentEditable
@@ -568,6 +571,7 @@ function UploadBtn({
 	editor: ReturnType<typeof useLexicalComposerContext>[0];
 }) {
 	const [busy, setBusy] = useState(false);
+	const [uploadError, setUploadError] = useState<string | null>(null);
 	const inputId = `lex-upload-${uploadContext.stepId}`;
 
 	async function onChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -581,7 +585,7 @@ function UploadBtn({
 				onUploaded?.(up);
 			}
 		} catch (err) {
-			alert("Falha no upload: " + (err as Error).message);
+			setUploadError("Falha no upload: " + (err as Error).message);
 		} finally {
 			setBusy(false);
 			e.target.value = "";
@@ -610,6 +614,7 @@ function UploadBtn({
 			>
 				{busy ? "⏳" : "📎"}
 			</label>
+			{uploadError && <AlertModal message={uploadError} onClose={() => setUploadError(null)} />}
 		</>
 	);
 }

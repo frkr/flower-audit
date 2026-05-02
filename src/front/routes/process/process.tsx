@@ -1,5 +1,6 @@
-import { Form, Link, useLoaderData, useSearchParams } from "react-router";
+import { Form, Link, useLoaderData, useSearchParams, useSubmit } from "react-router";
 import { useState } from "react";
+import { ConfirmModal } from "@/ConfirmModal";
 import type { Route } from "./+types/process";
 import type { ProcessRow } from "./process.server";
 import { systemNameFromMatches } from "../../lib/systemName";
@@ -25,6 +26,8 @@ export default function Processos() {
 	const [params, setParams] = useSearchParams();
 	const [creating, setCreating] = useState(false);
 	const totalPages = Math.max(1, Math.ceil(data.total / data.pageSize));
+	const submit = useSubmit();
+	const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
 	return (
 		<div className="max-w-4xl mx-auto">
@@ -89,19 +92,13 @@ export default function Processos() {
 							) : null}
 							<div className="text-xs text-gray-500">Atualizado: {formatDateTime(p.updated_at)}</div>
 						</div>
-						<Form method="post">
-							<input type="hidden" name="intent" value="delete" />
-							<input type="hidden" name="id" value={p.id} />
-							<button
-								type="submit"
-								onClick={(e) => {
-									if (!confirm("Excluir este processo?")) e.preventDefault();
-								}}
-								className="text-xs text-red-600 hover:underline"
-							>
-								excluir
-							</button>
-						</Form>
+						<button
+							type="button"
+							onClick={() => setPendingDelete(p.id)}
+							className="text-xs text-red-600 hover:underline"
+						>
+							excluir
+						</button>
 					</li>
 				))}
 				{data.items.length === 0 ? <li className="text-sm text-gray-500">Nenhum processo encontrado.</li> : null}
@@ -127,6 +124,17 @@ export default function Processos() {
 					))}
 				</div>
 			) : null}
+
+			{pendingDelete && (
+				<ConfirmModal
+					message="Excluir este processo?"
+					onConfirm={() => {
+						submit({ intent: "delete", id: pendingDelete }, { method: "post" });
+						setPendingDelete(null);
+					}}
+					onCancel={() => setPendingDelete(null)}
+				/>
+			)}
 		</div>
 	);
 }
