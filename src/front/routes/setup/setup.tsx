@@ -270,12 +270,12 @@ function SettingRow({ item }: { item: Setting }) {
 	);
 }
 
-function isSecret(name: string): boolean {
+export function isSecret(name: string): boolean {
 	return /secret/i.test(name);
 }
 
-function maskValue(name: string, value: string, emptyLabel: string): string {
+export function maskValue(name: string, value: string, emptyLabel: string): string {
 	if (!value) return emptyLabel;
 	if (!isSecret(name)) return value;
-	return "*".repeat(Math.max(value.length, 8));
+	return "********";
 }
