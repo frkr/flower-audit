@@ -11,5 +11,8 @@ export function sanitizeHtml(html: string): string {
 	return html
 		.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
 		.replace(/\s+on\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]*)/gi, "")
-		.replace(/(href|src|action|data|formaction)\s*=\s*("[^"]*(javascript|data|vbscript):[^"]*"|'[^']*(javascript|data|vbscript):[^']*'|[^\s>]* (javascript|data|vbscript):[^\s>]*)/gi, "$1=\"#\"");
+		.replace(/(href|src|action|data|formaction)\s*=\s*("[^"]*(javascript|data|vbscript):[^"]*"|'[^']*(javascript|data|vbscript):[^']*'|[^\s>]* (javascript|data|vbscript):[^\s>]*)/gi, "$1=\"#\"")
+		.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
+		.replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, "")
+		.replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, "");
 }

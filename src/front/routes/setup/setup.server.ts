@@ -16,13 +16,22 @@ export type VersionInfo = {
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	await requireUser(request, context);
 	const { results } = await db(context).prepare(queries.list).all<Setting>();
+
+	const items = (results ?? []).map((item) => ({
+		...item,
+		value:
+			/secret/i.test(item.name) && item.value
+				? "*".repeat(Math.max(item.value.length, 8))
+				: item.value,
+	}));
+
 	const v = context?.cloudflare?.env?.CF_VERSION_METADATA;
 	const version: VersionInfo = {
 		id: v?.id,
 		tag: v?.tag,
 		timestamp: v?.timestamp,
 	};
-	return Response.json({ items: results ?? [], version });
+	return Response.json({ items, version });
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {

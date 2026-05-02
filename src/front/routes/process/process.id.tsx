@@ -368,7 +368,7 @@ function AttachmentsList({
 									<a
 										href={`/api/files?id=${encodeURIComponent(f.id)}`}
 										target="_blank"
-										rel="noreferrer"
+										rel="noopener noreferrer"
 									>
 										<Button size="sm" variant="outline">{t("process.open")}</Button>
 									</a>
