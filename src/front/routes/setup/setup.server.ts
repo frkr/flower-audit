@@ -19,6 +19,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 	const items = (results ?? []).map((item) => ({
 		...item,
+		name: item.name.toUpperCase(),
 		value:
 			/secret/i.test(item.name) && item.value
 				? "*".repeat(Math.max(item.value.length, 8))
@@ -49,10 +50,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	}
 
 	const id = String(form.get("id") ?? "").trim();
-	const name = String(form.get("name") ?? "").trim();
+	const name = String(form.get("name") ?? "").trim().toUpperCase();
 	const value = String(form.get("value") ?? "");
 	const description = String(form.get("description") ?? "");
 	if (!name) return Response.json({ ok: false, error: "name required" }, { status: 422 });
+	if (!/^[A-Z0-9_-]+$/.test(name)) return Response.json({ ok: false, error: "invalid name format" }, { status: 422 });
 
 	if (id) {
 		if (!value && /secret/i.test(name)) {

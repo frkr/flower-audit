@@ -55,7 +55,12 @@ export default function Configuracao() {
 									<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
 										{t("setup.key")}
 									</label>
-									<Input name="name" required placeholder={t("setup.keyPlaceholder")} />
+									<Input
+										name="name"
+										required
+										placeholder={t("setup.keyPlaceholder")}
+										onChange={(e) => { e.currentTarget.value = e.currentTarget.value.toUpperCase().replace(/[^A-Z0-9_-]/g, ""); }}
+									/>
 								</div>
 								<div className="space-y-1.5">
 									<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -225,7 +230,12 @@ function SettingRow({ item }: { item: Setting }) {
 						<label className="text-xs uppercase font-medium text-slate-500 dark:text-slate-400">
 							{t("setup.keyName")}
 						</label>
-						<Input name="name" defaultValue={item.name} required />
+						<Input
+								name="name"
+								defaultValue={item.name}
+								required
+								onChange={(e) => { e.currentTarget.value = e.currentTarget.value.toUpperCase().replace(/[^A-Z0-9_-]/g, ""); }}
+							/>
 					</div>
 					<div className="space-y-1.5">
 						<label className="text-xs uppercase font-medium text-slate-500 dark:text-slate-400">
