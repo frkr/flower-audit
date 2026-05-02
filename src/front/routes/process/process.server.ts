@@ -64,7 +64,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 			.prepare(queries.insertProcessAuthor)
 			.bind(await randomHEX(16), id, idFluxo, user.email)
 			.run();
-		return Response.json({ ok: true, id });
+		return redirect(`/process/${id}`);
 	}
 
 	if (intent === "startFromFlow") {

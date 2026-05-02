@@ -47,12 +47,12 @@ export default function Fluxos() {
 				<Form method="post" className="border border-gray-200 dark:border-gray-700 rounded p-4 space-y-3 mb-4">
 					<input type="hidden" name="intent" value="create" />
 					<div>
-						<label className="block text-sm mb-1">Nome do Fluxo</label>
-						<input name="name" required className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
+						<label htmlFor="flow-name" className="block text-sm mb-1">Nome do Fluxo</label>
+						<input id="flow-name" name="name" required className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
 					</div>
 					<div>
-						<label className="block text-sm mb-1">Descrição</label>
-						<textarea name="description" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
+						<label htmlFor="flow-description" className="block text-sm mb-1">Descrição</label>
+						<textarea id="flow-description" name="description" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
 					</div>
 					<p className="text-xs text-gray-500">Os passos do fluxo são adicionados na próxima tela, depois que o fluxo for salvo.</p>
 					<button className="px-3 py-2 rounded bg-blue-600 text-white">Criar</button>

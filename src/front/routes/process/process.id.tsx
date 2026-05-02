@@ -167,17 +167,25 @@ function ProcessHeader({
 			{showMeta ? (
 				<Form method="post" className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
 					<input type="hidden" name="intent" value="updateMeta" />
-					<input
-						name="name"
-						defaultValue={data.process.name}
-						className="px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-					/>
-					<input
-						name="description"
-						defaultValue={data.process.description}
-						placeholder="Descrição"
-						className="px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-					/>
+					<div className="flex flex-col">
+						<label htmlFor="edit-process-name" className="text-[10px] uppercase text-gray-500 px-1">Nome</label>
+						<input
+							id="edit-process-name"
+							name="name"
+							defaultValue={data.process.name}
+							className="px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+						/>
+					</div>
+					<div className="flex flex-col">
+						<label htmlFor="edit-process-description" className="text-[10px] uppercase text-gray-500 px-1">Descrição</label>
+						<input
+							id="edit-process-description"
+							name="description"
+							defaultValue={data.process.description}
+							placeholder="Descrição"
+							className="px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
+						/>
+					</div>
 					<button className="md:col-span-2 text-sm px-3 py-1 rounded bg-blue-600 text-white">
 						Salvar dados do processo
 					</button>

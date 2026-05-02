@@ -23,7 +23,7 @@ test.describe('Flow CRUD', () => {
     await page.waitForURL(/\/flow\/.+/);
     createdFlowUrl = page.url();
     await expect(page.getByRole('heading', { name: 'Editar fluxo' })).toBeVisible();
-    await expect(page.getByDisplayValue('Fluxo E2E Teste')).toBeVisible();
+    await expect(page.getByLabel('Nome do Fluxo')).toHaveValue('Fluxo E2E Teste');
   });
 
   test('edita nome e descrição do fluxo', async ({ page }) => {
@@ -37,7 +37,7 @@ test.describe('Flow CRUD', () => {
 
     // Reload and verify persistence
     await page.reload();
-    await expect(page.getByDisplayValue('Fluxo E2E Atualizado')).toBeVisible();
+    await expect(page.getByLabel('Nome do Fluxo')).toHaveValue('Fluxo E2E Atualizado');
   });
 
   test('adiciona passo ao fluxo', async ({ page }) => {
@@ -47,19 +47,19 @@ test.describe('Flow CRUD', () => {
     await page.getByPlaceholder('Novo passo').fill('Passo 1 — E2E');
     await page.getByRole('button', { name: '+ Adicionar passo' }).click();
 
-    await expect(page.getByDisplayValue('Passo 1 — E2E')).toBeVisible();
+    await expect(page.locator('input[value="Passo 1 — E2E"]')).toBeVisible();
   });
 
   test('renomeia passo do fluxo', async ({ page }) => {
     await page.goto(createdFlowUrl || '/flow');
     if (!createdFlowUrl) test.skip();
 
-    const stepInput = page.getByDisplayValue('Passo 1 — E2E');
+    const stepInput = page.locator('input[value="Passo 1 — E2E"]');
     await stepInput.fill('Passo 1 — Renomeado');
     await page.getByRole('button', { name: 'Salvar' }).last().click();
 
     await page.reload();
-    await expect(page.getByDisplayValue('Passo 1 — Renomeado')).toBeVisible();
+    await expect(page.locator('input[value="Passo 1 — Renomeado"]')).toBeVisible();
   });
 
   test('remove passo do fluxo', async ({ page }) => {
@@ -71,7 +71,7 @@ test.describe('Flow CRUD', () => {
     await page.getByRole('button', { name: 'Confirmar' }).click();
 
     await page.reload();
-    await expect(page.getByDisplayValue('Passo 1 — Renomeado')).not.toBeVisible();
+    await expect(page.locator('input[value="Passo 1 — Renomeado"]')).not.toBeVisible();
   });
 
   test('fluxo aparece na listagem após criação', async ({ page }) => {

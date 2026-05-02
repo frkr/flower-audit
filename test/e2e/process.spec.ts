@@ -19,9 +19,9 @@ test.describe('Process CRUD', () => {
     await page.getByLabel('Descrição').fill('Processo criado por teste automatizado');
     await page.getByRole('button', { name: 'Criar' }).click();
 
-    // Should stay on /process (no redirect on create for processes)
-    await page.waitForResponse((r) => r.url().includes('/process') && r.status() === 200);
-    await page.reload();
+    // After creation, should redirect to /process/:id
+    await page.waitForURL(/\/process\/.+/);
+    createdProcessUrl = page.url();
     await expect(page.getByText('Processo E2E Teste')).toBeVisible();
   });
 
@@ -43,12 +43,11 @@ test.describe('Process CRUD', () => {
     if (!createdProcessUrl) test.skip();
 
     await page.getByRole('button', { name: 'Editar dados' }).click();
-    const nameInput = page.getByRole('textbox').first();
+    const nameInput = page.getByLabel('Nome');
     await nameInput.fill('Processo E2E Atualizado');
     await page.getByRole('button', { name: 'Salvar dados do processo' }).click();
 
-    await page.reload();
-    await expect(page.getByText('Processo E2E Atualizado')).toBeVisible();
+    await expect(page.getByText('Processo E2E Atualizado').first()).toBeVisible();
   });
 
   test('pesquisa filtra processos', async ({ page }) => {
@@ -56,7 +55,7 @@ test.describe('Process CRUD', () => {
     await page.getByPlaceholder('Pesquisar processos…').fill('E2E Atualizado');
     await page.getByRole('button', { name: 'Buscar' }).click();
 
-    await expect(page.getByText('Processo E2E Atualizado')).toBeVisible();
+    await expect(page.getByText('Processo E2E Atualizado').first()).toBeVisible();
   });
 
   test('pesquisa sem resultados mostra mensagem', async ({ page }) => {
@@ -76,7 +75,7 @@ test.describe('Process CRUD', () => {
     await page.getByRole('button', { name: 'Confirmar' }).click();
 
     await page.waitForURL('/process');
-    await expect(page.getByText('Processo E2E Atualizado')).not.toBeVisible();
+    await expect(page.getByRole('link', { name: 'Processo E2E Atualizado' })).not.toBeVisible();
   });
 
   test('exclui processo diretamente da listagem', async ({ page }) => {
@@ -85,16 +84,16 @@ test.describe('Process CRUD', () => {
     await page.getByRole('button', { name: '+ Novo processo' }).click();
     await page.getByLabel('Nome do processo').fill('Processo Para Excluir');
     await page.getByRole('button', { name: 'Criar' }).click();
-    await page.waitForResponse((r) => r.url().includes('/process') && r.status() === 200);
-    await page.reload();
+    await page.waitForURL(/\/process\/.+/);
 
-    const row = page.locator('li').filter({ hasText: 'Processo Para Excluir' });
+    await page.goto('/process');
+    const row = page.locator('li').filter({ hasText: 'Processo Para Excluir' }).first();
     await row.getByRole('button', { name: 'excluir' }).click();
 
     await expect(page.getByText('Excluir este processo?')).toBeVisible();
     await page.getByRole('button', { name: 'Confirmar' }).click();
 
     await page.reload();
-    await expect(page.getByText('Processo Para Excluir')).not.toBeVisible();
+    await expect(page.getByRole('link', { name: 'Processo Para Excluir' })).not.toBeVisible();
   });
 });
