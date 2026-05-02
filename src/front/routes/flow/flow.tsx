@@ -55,16 +55,17 @@ export default function Fluxos() {
 						<Form method="post" className="space-y-4">
 							<input type="hidden" name="intent" value="create" />
 							<div className="space-y-1.5">
-								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+								<label htmlFor="flow-name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
 									Nome do Fluxo
 								</label>
-								<Input name="name" required placeholder="Ex: Onboarding de cliente" />
+								<Input id="flow-name" name="name" required placeholder="Ex: Onboarding de cliente" />
 							</div>
 							<div className="space-y-1.5">
-								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+								<label htmlFor="flow-desc" className="text-sm font-medium text-slate-700 dark:text-slate-300">
 									Descrição
 								</label>
 								<textarea
+									id="flow-desc"
 									name="description"
 									placeholder="Descreva o propósito deste fluxo…"
 									className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder:text-slate-500 dark:focus-visible:ring-slate-300"
@@ -74,7 +75,7 @@ export default function Fluxos() {
 								Os passos do fluxo são adicionados na próxima tela, depois que o fluxo for salvo.
 							</p>
 							<div className="flex gap-2">
-								<Button type="submit">Criar fluxo</Button>
+								<Button type="submit">Criar</Button>
 								<Button type="button" variant="outline" onClick={() => setCreating(false)}>
 									Cancelar
 								</Button>
