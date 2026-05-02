@@ -7,6 +7,11 @@ import randomHEX from "../../lib/randomHEX";
 import queries from "./database.json";
 
 const MAX_BYTES = 25 * 1024 * 1024;
+const HEX_RE = /^[0-9a-f]+$/i;
+
+function isValidHex(id: string): boolean {
+	return id.length > 0 && HEX_RE.test(id);
+}
 
 type FileRow = {
 	id: string;
@@ -88,6 +93,9 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		const file = form.get("file");
 		if (!stepId || !processId) {
 			return Response.json({ ok: false, error: "step_id and process_id required" }, { status: 400 });
+		}
+		if (!isValidHex(stepId) || !isValidHex(processId)) {
+			return Response.json({ ok: false, error: "invalid step_id or process_id" }, { status: 400 });
 		}
 		if (!(file instanceof File)) {
 			return Response.json({ ok: false, error: "file required" }, { status: 400 });
