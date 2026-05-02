@@ -3,7 +3,6 @@
   "include": [
     ".react-router/types/**/*",
     "src/**/*",
-    "src/front/.server/**/*",
     "worker-configuration.d.ts"
   ],
   "compilerOptions": {
