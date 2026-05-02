@@ -100,14 +100,27 @@
 - Variáveis de ambiente da Cloudflare (bindings) devem estar em MAIÚSCULO e os nomes dos recursos (bucket/queue) em minúsculo. Exemplo: (Queue) foi renomeada para `mqcfgateway` (Binding: `MQCFGATEWAY`).
 - Entrypoint de todas as request: "src/front/api/index.ts"
 - Todas as Rotas do React Router: "src/front/routes.ts"
-- Todas as rotas do React Router tem um arquivo de inicialização aqui: "src/front/routes"
-- O Arquivo de inicialização "src/front/routes" deve conter apenas um facade para referenciar funções externas. Use o exemplo "src/front/api/index.ts" para entender como fazer.
-- Os modulos do backend devem ficar em "src/front/.server".
+- Todas as rotas do React Router estão organizadas em módulos dentro de "src/front/routes/<modulo>/"
+- O Arquivo de inicialização de cada rota deve conter apenas um facade para referenciar funções do arquivo `.server` do mesmo módulo. Use o exemplo "src/front/api/index.ts" para entender como fazer.
+- Os utilitários compartilhados de backend ficam em "src/front/auth.server.ts" e "src/front/db.server.ts".
+- Módulos de rotas em "src/front/routes/":
+  - **FLOW** (`routes/flow/`): `flow.tsx`, `flow.id.tsx`, `flow.server.ts`, `flow.id.server.ts`, `database.json`
+  - **Landing** (`routes/landing/`): `landing.tsx`, `welcome.tsx`, `landing.server.ts`, `welcome.server.ts`, `database.json`
+  - **Login** (`routes/login/`): `login.ts`, `login.callback.ts`, `logout.ts`, `login.server.ts`, `login.callback.server.ts`, `logout.server.ts`
+  - **GO** (`routes/go/`): `go.tsx`, `go.server.ts` — rota URL `/go` (renomeada de `start`)
+  - **Setup** (`routes/setup/`): `setup.tsx`, `setup.server.ts`, `database.json`
+  - **Process** (`routes/process/`): `process.tsx`, `process.id.tsx`, `process.server.ts`, `process.id.server.ts`, `database.json`
+- Módulos de API em "src/front/api/":
+  - Cada módulo de API tem seu subdiretório: `calendar/`, `chat/`, `search/`, `files/`, `index/`
+  - Os arquivos de lógica backend usam o sufixo `.server.ts` (ex: `calendar.server.ts`)
+  - Os arquivos facade na raiz de `api/` re-exportam de seus submódulos
+- **Arquivos de lógica backend** (que executam somente no servidor) devem ter o sufixo `.server.ts` ou `.server.tsx`
+- A pasta "src/front/.server" não existe mais — toda lógica de backend foi movida para os módulos correspondentes com o sufixo `.server.ts`
 - **Nomes de rotas, paths de URL e nomes de arquivos de rota devem estar SEMPRE em inglês**, mesmo que os textos exibidos para o usuário estejam em português. Exemplos: `/flow` (não `/fluxos`), `/process` (não `/processos`), `/setup` (não `/configuracao`), `/api/index` (não `/api/mainroute`). Os módulos correspondentes em `src/front/.server/<nome>/` também seguem o mesmo nome em inglês. Apenas os rótulos visíveis na UI seguem a regra de tradução por idioma.
 - Ao criar ou modificar testes unitários, os resultados da execução desses testes devem ser incluídos no corpo do pull request. No entanto, arquivos `.log` ou `.txt` (como `pr_comments.txt` ou saídas de log) usados para armazenar temporariamente esses resultados NÃO devem ser "comitados", para não sujar o histórico do git.
 - Sempre deixe atualizado um arquivo chamado schema.md com o mermaidjs do arquivo schema.sql
 - **Formatação de datas exibidas para o usuário**: toda data renderizada na UI deve usar `dd/MM/yyyy`; toda data + hora deve usar `dd/MM/yyyy HH:mm`. As datas no banco continuam em ISO/UTC (`datetime('now')`) — a formatação acontece somente na camada de exibição. Centralize a formatação em um helper único (`src/front/lib/formatDate.ts`) para não espalhar `toLocaleString` pelas telas.
-- **SEMPRE que precisar fazer qualquer consulta SQL no banco de dados, extraia o SQL para um arquivo `database.json` colocado no MESMO diretório do arquivo `.ts`/`.tsx` que o usa.** Não deixe strings SQL espalhadas pelo código TypeScript. O `database.json` é um objeto cujas chaves nomeiam a query (em camelCase, descritivo) e os valores são as strings SQL parametrizadas (`?1`, `?2`, …). No código TS use `import queries from "./database.json"` e `conn.prepare(queries.nomeDaQuery)`. Cada diretório `src/front/.server/<modulo>/` que executa SQL deve ter o seu próprio `database.json`.
+- **SEMPRE que precisar fazer qualquer consulta SQL no banco de dados, extraia o SQL para um arquivo `database.json` colocado no MESMO diretório do arquivo `.ts`/`.tsx` que o usa.** Não deixe strings SQL espalhadas pelo código TypeScript. O `database.json` é um objeto cujas chaves nomeiam a query (em camelCase, descritivo) e os valores são as strings SQL parametrizadas (`?1`, `?2`, …). No código TS use `import queries from "./database.json"` e `conn.prepare(queries.nomeDaQuery)`. Cada módulo em `src/front/routes/<modulo>/` ou `src/front/api/<modulo>/` que executa SQL deve ter o seu próprio `database.json`.
 - **Para fazer deploy, sempre rode `pnpm run deploy`** — nunca `wrangler deploy` direto. O script `deploy` do `package.json` faz primeiro `pnpm run build` (que inclui `typecheck` + `react-router build`) e só então chama `wrangler deploy`, garantindo que o bundle compilado e os tipos estejam atualizados antes do upload.
 
 # Cloudflare Workers - Agents Section

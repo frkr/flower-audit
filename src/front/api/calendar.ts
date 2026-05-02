@@ -1,2 +1,2 @@
 // Resource route /api/calendar (sem default export).
-export { loader } from "../.server/calendar/calendar";
+export { loader } from "./calendar/calendar.server";

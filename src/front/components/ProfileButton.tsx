@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { SessionUser } from "../.server/auth";
+import type { SessionUser } from "../auth.server";
 
 export function ProfileButton({ user }: { user: SessionUser }) {
 	const [open, setOpen] = useState(false);

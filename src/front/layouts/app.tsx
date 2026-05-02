@@ -5,7 +5,7 @@ import { SearchProvider } from "@/SearchContext";
 import { CalendarPanel } from "@/CalendarPanel";
 import { ChatPanel } from "@/ChatPanel";
 import { ProfileButton } from "@/ProfileButton";
-import { getSettings, requireUser, type SessionUser } from "../.server/auth";
+import { getSettings, requireUser, type SessionUser } from "../auth.server";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	const user = await requireUser(request, context);
@@ -31,7 +31,7 @@ export default function AppLayout() {
 						<NavLink to="/" end className="font-semibold text-blue-600 mr-3">
 							{systemName}
 						</NavLink>
-						<NavLink to="/start" className={navLinkClass}>
+						<NavLink to="/go" className={navLinkClass}>
 							Começar
 						</NavLink>
 						<NavLink to="/flow" className={navLinkClass}>
