@@ -36,9 +36,9 @@ Otros idiomas: [English](./README.md) · [Português (Brasil)](./README.pt-br.md
 - **Idiomas soportados:** `en`, `pt-BR`, `es`, `de`, `ru`, `zh-TW`, `zh-CN`, `ja`, `ko`
 - **Detección:** `navigator.language` en el cliente; preferencia guardada en `localStorage` (clave: `flower_language`)
 - **Sin enrutamiento por URL** — el idioma se selecciona mediante la detección del navegador o el menú desplegable en el botón de Perfil
-- **Archivos de traducción:** `src/front/i18n/locales/<código>.ts`
-- **Configuración principal:** `src/front/i18n/i18n.ts`
-- **Provider:** `I18nextProvider` en `src/front/root.tsx`
+- **Archivos de traducción:** `src/i18n/locales/<código>.ts`
+- **Configuración principal:** `src/i18n/i18n.ts`
+- **Provider:** `I18nextProvider` en `src/root.tsx`
 - **Uso en componentes:** `const { t } = useTranslation()`
 
 ## Estructura

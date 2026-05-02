@@ -1,6 +1,6 @@
 -- Flower Audit - D1 Schema
 -- Source of truth: AGENTS.md
--- All record IDs use 16-byte hex (see src/front/lib/randomHEX.ts)
+-- All record IDs use 16-byte hex (see src/lib/randomHEX.ts)
 
 PRAGMA foreign_keys = ON;
 

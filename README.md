@@ -36,9 +36,9 @@ Translations: [Português (Brasil)](./README.pt-br.md) · [Español](./README.es
 - **Supported languages:** `en`, `pt-BR`, `es`, `de`, `ru`, `zh-TW`, `zh-CN`, `ja`, `ko`
 - **Detection:** `navigator.language` on the client; preference saved in `localStorage` (key: `flower_language`)
 - **No URL-based routing** — language is selected via browser detection or the dropdown in the Profile button
-- **Translation files:** `src/front/i18n/locales/<code>.ts`
-- **Main config:** `src/front/i18n/i18n.ts`
-- **Provider:** `I18nextProvider` in `src/front/root.tsx`
+- **Translation files:** `src/i18n/locales/<code>.ts`
+- **Main config:** `src/i18n/i18n.ts`
+- **Provider:** `I18nextProvider` in `src/root.tsx`
 - **Usage in components:** `const { t } = useTranslation()`
 
 ## Project layout

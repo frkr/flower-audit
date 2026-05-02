@@ -6,7 +6,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "flower-audit",
 	"compatibility_date": "2026-04-04",
-	"main": "./src/back/worker.ts",
+	"main": "./worker.ts",
 	"observability": {
 		"enabled": false
 	},

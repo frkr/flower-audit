@@ -258,7 +258,7 @@ erDiagram
 
 ## Convenções
 
-- Todos os PKs (`id`) são gerados via [`src/front/lib/randomHEX.ts`](./src/front/lib/randomHEX.ts) com 16 bytes (string hex).
+- Todos os PKs (`id`) são gerados via [`src/lib/randomHEX.ts`](./src/lib/randomHEX.ts) com 16 bytes (string hex).
 - Colunas de data (`created_at`, `updated_at`, `at`) usam `datetime('now')` do SQLite.
 - Soft delete via `active = 0`. A coluna `visible` controla se a linha aparece em listagens públicas.
 - Calendário (heatmap de "fluxos iniciados") consulta `process.created_at` agrupado por dia — não há tabela dedicada.

@@ -3,7 +3,7 @@ import type { Config } from "@react-router/dev/config";
 
 // @ts-ignore
 export default {
-  appDirectory: "src/front",
+  appDirectory: "src",
   ssr: true,
   future: {
     v8_viteEnvironmentApi: true,

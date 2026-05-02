@@ -19,7 +19,7 @@
     "rootDirs": [
       ".", "./.react-router/types"],
     "paths": {
-      "@/*": ["./src/front/components/*"]
+      "@/*": ["./src/components/*"]
     },
     "esModuleInterop": true,
     "resolveJsonModule": true

@@ -30,12 +30,12 @@
 - Os nomes dos arquivos "README" são um exemplo como toda documentação deve ser feita em arquivos Markdown (Gráficos em Mermaid JS) e traduzidas nessas línguas usando esse formato de arquivo.
 - wrangler.jsonc - tem os recursos e variáveis de ambiente desse projeto conectado na Cloudflare.
 - Variáveis de ambiente da Cloudflare (bindings) devem estar em MAIÚSCULO e os nomes dos recursos (bucket/queue) em minúsculo. Exemplo: (Queue) foi renomeada para `mqcfgateway` (Binding: `MQCFGATEWAY`).
-- Entrypoint de todas as request: `src/front/routes/go/api.ts`
-- Todas as Rotas do React Router: `src/front/routes.ts`
-- Todas as rotas do React Router tem um arquivo de inicialização em `src/front/routes/<modulo>/`
+- Entrypoint de todas as request: `src/routes/go/api.ts`
+- Todas as Rotas do React Router: `src/routes.ts`
+- Todas as rotas do React Router tem um arquivo de inicialização em `src/routes/<modulo>/`
 - O arquivo de inicialização de cada rota deve conter apenas um facade re-exportando funções do arquivo `*.server.ts` do mesmo módulo.
-- **Não existe mais a pasta `.server` nem a pasta `api`** — toda a lógica foi migrada para módulos em `src/front/routes/<modulo>/`.
-- Utilitários compartilhados de servidor ficam em `src/front/lib/` com sufixo `.server.ts` (ex: `auth.server.ts`, `db.server.ts`).
+- **Não existe mais a pasta `.server` nem a pasta `api`** — toda a lógica foi migrada para módulos em `src/routes/<modulo>/`.
+- Utilitários compartilhados de servidor ficam em `src/lib/` com sufixo `.server.ts` (ex: `auth.server.ts`, `db.server.ts`).
 
 ## Internacionalização (i18n)
 
@@ -45,15 +45,15 @@
 - Idiomas suportados: `en`, `pt-BR`, `es`, `de`, `ru`, `zh-TW`, `zh-CN`, `ja`, `ko`
 - Detecção: `navigator.language` no cliente; preferência salva em `localStorage` (chave: `flower_language`)
 - **Nunca use rotas de URL para idioma** — somente detecção do navegador + dropdown no perfil
-- Arquivos de tradução: `src/front/i18n/locales/<código>.ts`
-- Configuração principal: `src/front/i18n/i18n.ts`
-- Provider: `I18nextProvider` em `src/front/root.tsx`
+- Arquivos de tradução: `src/i18n/locales/<código>.ts`
+- Configuração principal: `src/i18n/i18n.ts`
+- Provider: `I18nextProvider` em `src/root.tsx`
 - Hook de uso: `const { t } = useTranslation()` nos componentes React
 - Seleção de idioma: dropdown no `ProfileButton` (clicando na foto de perfil)
 
-## Estrutura de Módulos (`src/front/routes/`)
+## Estrutura de Módulos (`src/routes/`)
 
-Cada módulo é uma pasta dentro de `src/front/routes/`. Arquivos de rota (facade) ficam na raiz do módulo. A lógica de backend fica em arquivos `*.server.ts` dentro do mesmo módulo.
+Cada módulo é uma pasta dentro de `src/routes/`. Arquivos de rota (facade) ficam na raiz do módulo. A lógica de backend fica em arquivos `*.server.ts` dentro do mesmo módulo.
 
 | Módulo | Pasta | Rotas UI | Arquivos de rota |
 |--------|-------|----------|-----------------|
@@ -69,11 +69,11 @@ Cada módulo é uma pasta dentro de `src/front/routes/`. Arquivos de rota (facad
 
 Arquivos `.server.ts` em cada módulo contêm toda a lógica de backend (loader, action, funções auxiliares). Arquivos sem `.server` são facades (re-exportam) ou componentes React.
 
-- **Nomes de rotas, paths de URL e nomes de arquivos de rota devem estar SEMPRE em inglês**, mesmo que os textos exibidos para o usuário estejam em português. Exemplos: `/flow` (não `/fluxos`), `/process` (não `/processos`), `/setup` (não `/configuracao`), `/api/index` (não `/api/mainroute`). Os módulos correspondentes em `src/front/routes/<nome>/` também seguem o mesmo nome em inglês. Apenas os rótulos visíveis na UI seguem a regra de tradução por idioma.
+- **Nomes de rotas, paths de URL e nomes de arquivos de rota devem estar SEMPRE em inglês**, mesmo que os textos exibidos para o usuário estejam em português. Exemplos: `/flow` (não `/fluxos`), `/process` (não `/processos`), `/setup` (não `/configuracao`), `/api/index` (não `/api/mainroute`). Os módulos correspondentes em `src/routes/<nome>/` também seguem o mesmo nome em inglês. Apenas os rótulos visíveis na UI seguem a regra de tradução por idioma.
 - Ao criar ou modificar testes unitários, os resultados da execução desses testes devem ser incluídos no corpo do pull request. No entanto, arquivos `.log` ou `.txt` (como `pr_comments.txt` ou saídas de log) usados para armazenar temporariamente esses resultados NÃO devem ser "comitados", para não sujar o histórico do git.
 - Sempre deixe atualizado um arquivo chamado schema.md com o mermaidjs do arquivo schema.sql
-- **Formatação de datas exibidas para o usuário**: toda data renderizada na UI deve usar `dd/MM/yyyy`; toda data + hora deve usar `dd/MM/yyyy HH:mm`. As datas no banco continuam em ISO/UTC (`datetime('now')`) — a formatação acontece somente na camada de exibição. Centralize a formatação em um helper único (`src/front/lib/formatDate.ts`) para não espalhar `toLocaleString` pelas telas.
-- **SEMPRE que precisar fazer qualquer consulta SQL no banco de dados, extraia o SQL para um arquivo `database.json` colocado no MESMO diretório do arquivo `.ts`/`.tsx` que o usa.** Não deixe strings SQL espalhadas pelo código TypeScript. O `database.json` é um objeto cujas chaves nomeiam a query (em camelCase, descritivo) e os valores são as strings SQL parametrizadas (`?1`, `?2`, …). No código TS use `import queries from "./database.json"` e `conn.prepare(queries.nomeDaQuery)`. Cada módulo em `src/front/routes/<modulo>/` que executa SQL deve ter o seu próprio `database.json`.
+- **Formatação de datas exibidas para o usuário**: toda data renderizada na UI deve usar `dd/MM/yyyy`; toda data + hora deve usar `dd/MM/yyyy HH:mm`. As datas no banco continuam em ISO/UTC (`datetime('now')`) — a formatação acontece somente na camada de exibição. Centralize a formatação em um helper único (`src/lib/formatDate.ts`) para não espalhar `toLocaleString` pelas telas.
+- **SEMPRE que precisar fazer qualquer consulta SQL no banco de dados, extraia o SQL para um arquivo `database.json` colocado no MESMO diretório do arquivo `.ts`/`.tsx` que o usa.** Não deixe strings SQL espalhadas pelo código TypeScript. O `database.json` é um objeto cujas chaves nomeiam a query (em camelCase, descritivo) e os valores são as strings SQL parametrizadas (`?1`, `?2`, …). No código TS use `import queries from "./database.json"` e `conn.prepare(queries.nomeDaQuery)`. Cada módulo em `src/routes/<modulo>/` que executa SQL deve ter o seu próprio `database.json`.
 - **Para fazer deploy, sempre rode `pnpm run deploy`** — nunca `wrangler deploy` direto. O script `deploy` do `package.json` faz primeiro `pnpm run build` (que inclui `typecheck` + `react-router build`) e só então chama `wrangler deploy`, garantindo que o bundle compilado e os tipos estejam atualizados antes do upload.
 
 # Cloudflare Workers - Agents Section
