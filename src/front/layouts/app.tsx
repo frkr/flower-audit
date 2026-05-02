@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useLoaderData } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { SearchProvider } from "@/SearchContext";
 import { CalendarPanel } from "@/CalendarPanel";
 import { ChatPanel } from "@/ChatPanel";
@@ -18,6 +19,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 export default function AppLayout() {
 	const { user, systemName } = useLoaderData() as { user: SessionUser; systemName: string };
 	const [sidebarHidden, setSidebarHidden] = useState(false);
+	const { t } = useTranslation();
 
 	return (
 		<SearchProvider>
@@ -57,7 +59,7 @@ export default function AppLayout() {
 								)
 							}
 						>
-							Começar
+							{t("nav.go")}
 						</NavLink>
 						<NavLink
 							to="/flow"
@@ -70,7 +72,7 @@ export default function AppLayout() {
 								)
 							}
 						>
-							Fluxos
+							{t("nav.flows")}
 						</NavLink>
 						<NavLink
 							to="/setup"
@@ -83,7 +85,7 @@ export default function AppLayout() {
 								)
 							}
 						>
-							Configuração
+							{t("nav.setup")}
 						</NavLink>
 					</nav>
 				</header>
@@ -98,8 +100,8 @@ export default function AppLayout() {
 					type="button"
 					onClick={() => setSidebarHidden(false)}
 					className="hidden md:flex fixed top-3 right-3 z-30 p-1.5 rounded-md border border-slate-200 shadow-sm bg-white hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800 transition-colors"
-					aria-label="Mostrar painel"
-					title="Mostrar painel"
+					aria-label={t("nav.showPanel")}
+					title={t("nav.showPanel")}
 				>
 					<svg
 						width="14"
@@ -119,7 +121,7 @@ export default function AppLayout() {
 				<aside className="hidden md:flex fixed top-0 right-0 bottom-0 w-64 border-l border-slate-200 dark:border-slate-800 flex-col bg-white dark:bg-slate-950 z-20 shadow-sm">
 					<div className="h-14 px-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
 						<span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-							Painel
+							{t("nav.panel")}
 						</span>
 						<div className="flex items-center gap-1">
 							<CalendarPanel />
@@ -127,8 +129,8 @@ export default function AppLayout() {
 								type="button"
 								onClick={() => setSidebarHidden(true)}
 								className="p-1.5 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-								aria-label="Esconder painel"
-								title="Esconder painel"
+								aria-label={t("nav.hidePanel")}
+								title={t("nav.hidePanel")}
 							>
 								<svg
 									width="12"

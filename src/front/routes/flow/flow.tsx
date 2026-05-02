@@ -1,4 +1,5 @@
 import { Form, Link, useLoaderData, useSearchParams, useSubmit } from "react-router";
+import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/flow";
 import { useState } from "react";
 import type { FluxRow } from "./flow.server";
@@ -13,7 +14,7 @@ import { cn } from "../../lib/utils";
 export { loader, action } from "./flow.server";
 
 export function meta({ matches }: Route.MetaArgs) {
-	return [{ title: `${systemNameFromMatches(matches)} — Fluxos` }];
+	return [{ title: `${systemNameFromMatches(matches)} — Flows` }];
 }
 
 type Data = { q: string; page: number; pageSize: number; total: number; items: FluxRow[] };
@@ -25,6 +26,7 @@ export default function Fluxos() {
 	const totalPages = Math.max(1, Math.ceil(data.total / data.pageSize));
 	const submit = useSubmit();
 	const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+	const { t } = useTranslation();
 
 	return (
 		<div className="max-w-4xl mx-auto space-y-4">
@@ -33,11 +35,11 @@ export default function Fluxos() {
 					<Input
 						name="q"
 						defaultValue={data.q}
-						placeholder="Pesquisar fluxos…"
+						placeholder={t("flow.searchPlaceholder")}
 						className="flex-1"
 					/>
 					<Button type="submit" variant="secondary">
-						Buscar
+						{t("flow.search")}
 					</Button>
 				</Form>
 				<Button
@@ -45,7 +47,7 @@ export default function Fluxos() {
 					onClick={() => setCreating((v) => !v)}
 					variant={creating ? "outline" : "default"}
 				>
-					{creating ? "Cancelar" : "+ Novo fluxo"}
+					{creating ? t("flow.cancel") : t("flow.newFlow")}
 				</Button>
 			</div>
 
@@ -55,29 +57,29 @@ export default function Fluxos() {
 						<Form method="post" className="space-y-4">
 							<input type="hidden" name="intent" value="create" />
 							<div className="space-y-1.5">
-								<label htmlFor="flow-name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-									Nome do Fluxo
+								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+									{t("flow.flowName")}
 								</label>
-								<Input id="flow-name" name="name" required placeholder="Ex: Onboarding de cliente" />
+								<Input name="name" required placeholder={t("flow.namePlaceholder")} />
 							</div>
 							<div className="space-y-1.5">
-								<label htmlFor="flow-desc" className="text-sm font-medium text-slate-700 dark:text-slate-300">
-									Descrição
+								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+									{t("flow.description")}
 								</label>
 								<textarea
 									id="flow-desc"
 									name="description"
-									placeholder="Descreva o propósito deste fluxo…"
+									placeholder={t("flow.descriptionPlaceholder")}
 									className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder:text-slate-500 dark:focus-visible:ring-slate-300"
 								/>
 							</div>
 							<p className="text-xs text-slate-500 dark:text-slate-400">
-								Os passos do fluxo são adicionados na próxima tela, depois que o fluxo for salvo.
+								{t("flow.stepsNote")}
 							</p>
 							<div className="flex gap-2">
-								<Button type="submit">Criar</Button>
+								<Button type="submit">{t("flow.createFlow")}</Button>
 								<Button type="button" variant="outline" onClick={() => setCreating(false)}>
-									Cancelar
+									{t("flow.cancel")}
 								</Button>
 							</div>
 						</Form>
@@ -101,8 +103,8 @@ export default function Fluxos() {
 							d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
 						/>
 					</svg>
-					<p className="text-sm">Nenhum fluxo encontrado.</p>
-					<p className="text-xs mt-1">Crie seu primeiro fluxo clicando em "+ Novo fluxo".</p>
+					<p className="text-sm">{t("flow.noFlows")}</p>
+					<p className="text-xs mt-1">{t("flow.createFirst")}</p>
 				</div>
 			) : (
 				<ul className="space-y-2">
@@ -124,7 +126,7 @@ export default function Fluxos() {
 									</p>
 								) : null}
 								<p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
-									Atualizado: {formatDateTime(f.updated_at)}
+									{t("flow.updated")} {formatDateTime(f.updated_at)}
 								</p>
 							</div>
 							<Button
@@ -134,7 +136,7 @@ export default function Fluxos() {
 								onClick={() => setPendingDelete(f.id)}
 								className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 opacity-0 group-hover:opacity-100 transition-opacity"
 							>
-								Excluir
+								{t("flow.delete")}
 							</Button>
 						</li>
 					))}
@@ -166,7 +168,7 @@ export default function Fluxos() {
 
 			{pendingDelete && (
 				<ConfirmModal
-					message="Excluir este fluxo?"
+					message={t("flow.deleteConfirm")}
 					onConfirm={() => {
 						submit({ intent: "delete", id: pendingDelete }, { method: "post" });
 						setPendingDelete(null);

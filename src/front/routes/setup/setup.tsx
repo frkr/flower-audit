@@ -1,5 +1,6 @@
 import { Form, useLoaderData, useSubmit } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "@/ConfirmModal";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
@@ -13,7 +14,7 @@ import { formatDateTime } from "../../lib/formatDate";
 export { loader, action } from "./setup.server";
 
 export function meta({ matches }: Route.MetaArgs) {
-	return [{ title: `${systemNameFromMatches(matches)} — Configuração` }];
+	return [{ title: `${systemNameFromMatches(matches)} — Setup` }];
 }
 
 type Data = { items: Setting[]; version: VersionInfo };
@@ -21,14 +22,15 @@ type Data = { items: Setting[]; version: VersionInfo };
 export default function Configuracao() {
 	const data = useLoaderData() as Data;
 	const [adding, setAdding] = useState(false);
+	const { t } = useTranslation();
 
 	return (
 		<div className="max-w-4xl mx-auto space-y-6">
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Configuração</h1>
+					<h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">{t("setup.title")}</h1>
 					<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-						Gerencie os parâmetros do sistema
+						{t("setup.subtitle")}
 					</p>
 				</div>
 				<Button
@@ -36,14 +38,14 @@ export default function Configuracao() {
 					onClick={() => setAdding((v) => !v)}
 					variant={adding ? "outline" : "default"}
 				>
-					{adding ? "Cancelar" : "+ Nova configuração"}
+					{adding ? t("setup.cancel") : t("setup.newConfig")}
 				</Button>
 			</div>
 
 			{adding ? (
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-base">Nova configuração</CardTitle>
+						<CardTitle className="text-base">{t("setup.newConfigTitle")}</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<Form method="post" className="space-y-4">
@@ -51,27 +53,27 @@ export default function Configuracao() {
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								<div className="space-y-1.5">
 									<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-										Chave
+										{t("setup.key")}
 									</label>
-									<Input name="name" required placeholder="ex: system_name" />
+									<Input name="name" required placeholder={t("setup.keyPlaceholder")} />
 								</div>
 								<div className="space-y-1.5">
 									<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-										Valor
+										{t("setup.value")}
 									</label>
-									<Input name="value" placeholder="Valor da configuração" />
+									<Input name="value" placeholder={t("setup.valuePlaceholder")} />
 								</div>
 							</div>
 							<div className="space-y-1.5">
 								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-									Descrição
+									{t("setup.description")}
 								</label>
-								<Input name="description" placeholder="Descreva esta configuração…" />
+								<Input name="description" placeholder={t("setup.descriptionPlaceholder")} />
 							</div>
 							<div className="flex gap-2">
-								<Button type="submit">Salvar</Button>
+								<Button type="submit">{t("setup.save")}</Button>
 								<Button type="button" variant="outline" onClick={() => setAdding(false)}>
-									Cancelar
+									{t("setup.cancel")}
 								</Button>
 							</div>
 						</Form>
@@ -96,8 +98,8 @@ export default function Configuracao() {
 						/>
 						<path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 					</svg>
-					<p className="text-sm font-medium">Sem configurações</p>
-					<p className="text-xs mt-1">Adicione sua primeira configuração.</p>
+					<p className="text-sm font-medium">{t("setup.noConfigs")}</p>
+					<p className="text-xs mt-1">{t("setup.addFirst")}</p>
 				</div>
 			) : (
 				<ul className="space-y-2">
@@ -131,7 +133,7 @@ function VersionFooter({ version }: { version: VersionInfo }) {
 				target="_blank"
 				rel="noopener noreferrer"
 				className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
-				aria-label="Repositório no GitHub"
+				aria-label="GitHub repository"
 			>
 				<GitHubIcon />
 				<span>GitHub</span>
@@ -157,6 +159,7 @@ function SettingRow({ item }: { item: Setting }) {
 	const [confirmDelete, setConfirmDelete] = useState(false);
 	const secret = isSecret(item.name);
 	const submit = useSubmit();
+	const { t } = useTranslation();
 
 	if (!editing) {
 		return (
@@ -173,7 +176,7 @@ function SettingRow({ item }: { item: Setting }) {
 						)}
 					</div>
 					<div className="text-sm font-mono text-slate-900 dark:text-slate-50 break-all">
-						{maskValue(item.name, item.value)}
+						{maskValue(item.name, item.value, t("setup.empty"))}
 					</div>
 					{item.description ? (
 						<p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{item.description}</p>
@@ -186,7 +189,7 @@ function SettingRow({ item }: { item: Setting }) {
 						variant="outline"
 						onClick={() => setEditing(true)}
 					>
-						Editar
+						{t("setup.edit")}
 					</Button>
 					<Button
 						type="button"
@@ -195,12 +198,12 @@ function SettingRow({ item }: { item: Setting }) {
 						onClick={() => setConfirmDelete(true)}
 						className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 opacity-0 group-hover:opacity-100 transition-opacity"
 					>
-						Excluir
+						{t("setup.delete")}
 					</Button>
 				</div>
 				{confirmDelete && (
 					<ConfirmModal
-						message={`Excluir "${item.name}"?`}
+						message={t("setup.deleteConfirm", { name: item.name })}
 						onConfirm={() => {
 							submit({ intent: "delete", id: item.id }, { method: "post" });
 							setConfirmDelete(false);
@@ -220,19 +223,19 @@ function SettingRow({ item }: { item: Setting }) {
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
 					<div className="space-y-1.5">
 						<label className="text-xs uppercase font-medium text-slate-500 dark:text-slate-400">
-							Nome (chave)
+							{t("setup.keyName")}
 						</label>
 						<Input name="name" defaultValue={item.name} required />
 					</div>
 					<div className="space-y-1.5">
 						<label className="text-xs uppercase font-medium text-slate-500 dark:text-slate-400">
-							Valor
+							{t("setup.valueLabel")}
 						</label>
 						<Input
 							name="value"
 							type={secret ? "password" : "text"}
 							defaultValue={secret ? "" : item.value}
-							placeholder={secret ? "(novo valor — atual oculto)" : undefined}
+							placeholder={secret ? t("setup.newValuePlaceholder") : undefined}
 							autoComplete={secret ? "new-password" : undefined}
 							className="font-mono"
 						/>
@@ -240,16 +243,16 @@ function SettingRow({ item }: { item: Setting }) {
 				</div>
 				<div className="space-y-1.5">
 					<label className="text-xs uppercase font-medium text-slate-500 dark:text-slate-400">
-						Descrição
+						{t("setup.description")}
 					</label>
 					<Input name="description" defaultValue={item.description} />
 				</div>
 				<div className="flex justify-end gap-2">
 					<Button type="button" variant="outline" size="sm" onClick={() => setEditing(false)}>
-						Cancelar
+						{t("setup.cancelEdit")}
 					</Button>
 					<Button type="submit" size="sm">
-						Salvar
+						{t("setup.save")}
 					</Button>
 				</div>
 			</Form>
@@ -261,8 +264,8 @@ function isSecret(name: string): boolean {
 	return /secret/i.test(name);
 }
 
-function maskValue(name: string, value: string): string {
-	if (!value) return "(vazio)";
+function maskValue(name: string, value: string, emptyLabel: string): string {
+	if (!value) return emptyLabel;
 	if (!isSecret(name)) return value;
 	return "*".repeat(Math.max(value.length, 8));
 }

@@ -1,7 +1,9 @@
+import { useTranslation } from "react-i18next";
 import { Modal } from "./Modal";
 import { Button } from "./ui/button";
 
 export function AlertModal({ message, onClose }: { message: string; onClose: () => void }) {
+	const { t } = useTranslation();
 	return (
 		<Modal onClose={onClose}>
 			<div className="flex items-start gap-3 mb-4">
@@ -22,13 +24,13 @@ export function AlertModal({ message, onClose }: { message: string; onClose: () 
 					</svg>
 				</div>
 				<div>
-					<h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">Aviso</h3>
+					<h3 className="text-sm font-semibold text-slate-900 dark:text-slate-50">{t("modal.warningTitle")}</h3>
 					<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{message}</p>
 				</div>
 			</div>
 			<div className="flex justify-end">
 				<Button type="button" size="sm" onClick={onClose} autoFocus>
-					OK
+					{t("modal.ok")}
 				</Button>
 			</div>
 		</Modal>
