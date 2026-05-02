@@ -26,7 +26,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, context }: ActionFunctionArgs) {
-	await requireUser(request, context);
+	const user = await requireUser(request, context);
 	const conn = db(context);
 	const form = await request.formData();
 	const intent = String(form.get("intent") ?? "upsert");
@@ -34,6 +34,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	if (intent === "delete") {
 		const id = String(form.get("id") ?? "");
 		if (!id) return Response.json({ ok: false }, { status: 422 });
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
 		await conn.prepare(queries.deleteById).bind(id).run();
 		return Response.json({ ok: true });
 	}
@@ -50,8 +51,11 @@ export async function action({ request, context }: ActionFunctionArgs) {
 		} else {
 			await conn.prepare(queries.updateById).bind(name, value, description, id).run();
 		}
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), id, user.email).run();
 	} else {
-		await conn.prepare(queries.upsertByName).bind(await randomHEX(16), name, value, description).run();
+		const newId = await randomHEX(16);
+		await conn.prepare(queries.upsertByName).bind(newId, name, value, description).run();
+		await conn.prepare(queries.insertAuthor).bind(await randomHEX(16), newId, user.email).run();
 	}
 	return Response.json({ ok: true });
 }

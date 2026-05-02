@@ -3,5 +3,6 @@
 	"deleteById": "DELETE FROM settings WHERE id = ?1",
 	"updateById": "UPDATE settings SET name = ?1, value = ?2, description = ?3, updated_at = datetime('now') WHERE id = ?4",
 	"updateByIdKeepValue": "UPDATE settings SET name = ?1, description = ?2, updated_at = datetime('now') WHERE id = ?3",
-	"upsertByName": "INSERT INTO settings (id, name, value, description) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(name) DO UPDATE SET value = excluded.value, description = excluded.description, updated_at = datetime('now')"
+	"upsertByName": "INSERT INTO settings (id, name, value, description) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(name) DO UPDATE SET value = excluded.value, description = excluded.description, updated_at = datetime('now')",
+	"insertAuthor": "INSERT INTO settings_authors (id, id_setting, author) VALUES (?1, ?2, ?3)"
 }

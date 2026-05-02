@@ -22,6 +22,8 @@ erDiagram
     process_steps ||--o{ process_step_authors : has
     process_steps ||--o{ process_step_files   : has
 
+    settings ||--o{ settings_authors : has
+
     flux {
         TEXT    id PK
         TEXT    name
@@ -112,6 +114,12 @@ erDiagram
         TEXT value
         TEXT description
         TEXT updated_at
+    }
+    settings_authors {
+        TEXT id PK
+        TEXT id_setting FK
+        TEXT author
+        TEXT at
     }
 ```
 
@@ -231,12 +239,20 @@ erDiagram
 
 ```mermaid
 erDiagram
+    settings ||--o{ settings_authors : has
+
     settings {
         TEXT id PK
         TEXT name UK
         TEXT value
         TEXT description
         TEXT updated_at
+    }
+    settings_authors {
+        TEXT id PK
+        TEXT id_setting FK
+        TEXT author
+        TEXT at
     }
 ```
 
@@ -260,3 +276,4 @@ erDiagram
 - `process_steps`: `idx_process_steps_process`, `idx_process_steps_flux`
 - `process_step_authors`: `idx_process_step_authors_step`
 - `process_step_files`: `idx_process_step_files_step`
+- `settings_authors`: `idx_settings_authors_setting`
