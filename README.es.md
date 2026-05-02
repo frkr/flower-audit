@@ -26,7 +26,7 @@ Otros idiomas: [English](./README.md) · [Português (Brasil)](./README.pt-br.md
 - Cloudflare Workers (smart placement)
 - Cloudflare D1 (binding `DB`, recurso `flower-audit`)
 - Cloudflare R2 (binding `FLOWER`, recurso `flower-audit`)
-- Tailwind CSS v4
+- Tailwind CSS v4 + [shadcn/ui](https://ui.shadcn.com/)
 - [Lexical](https://github.com/facebook/lexical) para el editor de texto enriquecido
 - [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/) para internacionalización (resources bundled — sin FS backend, compatible con Cloudflare Workers)
 

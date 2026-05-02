@@ -58,7 +58,7 @@ const DialogContent = React.forwardRef<
 				<button
 					type="button"
 					onClick={onClose}
-					className="absolute right-4 top-4 rounded-sm p-1 text-slate-500 opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 dark:text-slate-400 dark:ring-offset-slate-950 dark:focus:ring-slate-300"
+					className="absolute right-4 top-4 rounded-sm p-1 text-slate-500 opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 dark:text-slate-400 dark:ring-offset-slate-950 dark:focus:ring-blue-400"
 					aria-label="Fechar"
 				>
 					<svg
