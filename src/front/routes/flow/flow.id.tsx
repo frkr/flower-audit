@@ -30,13 +30,11 @@ export default function FluxoEdit() {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
-						{data.flux.name}
+						Editar fluxo
 					</h1>
-					{data.flux.description && (
-						<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-							{data.flux.description}
-						</p>
-					)}
+					<p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+						{data.flux.name}
+					</p>
 				</div>
 				<Form method="post" action="/process">
 					<input type="hidden" name="intent" value="startFromFlow" />
@@ -55,23 +53,24 @@ export default function FluxoEdit() {
 					<Form method="post" className="space-y-4">
 						<input type="hidden" name="intent" value="updateFlux" />
 						<div className="space-y-1.5">
-							<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+							<label htmlFor="flux-name" className="text-sm font-medium text-slate-700 dark:text-slate-300">
 								Nome do Fluxo
 							</label>
-							<Input name="name" required defaultValue={data.flux.name} />
+							<Input id="flux-name" name="name" required defaultValue={data.flux.name} />
 						</div>
 						<div className="space-y-1.5">
-							<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+							<label htmlFor="flux-desc" className="text-sm font-medium text-slate-700 dark:text-slate-300">
 								Descrição
 							</label>
 							<textarea
+								id="flux-desc"
 								name="description"
 								defaultValue={data.flux.description}
 								className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder:text-slate-500 dark:focus-visible:ring-slate-300"
 							/>
 						</div>
 						<div className="flex justify-between pt-1">
-							<Button type="submit">Salvar alterações</Button>
+							<Button type="submit">Salvar</Button>
 							<Button
 								type="button"
 								variant="destructive"
@@ -190,11 +189,11 @@ function AddStepForm() {
 				required
 				value={name}
 				onChange={(e) => setName(e.target.value)}
-				placeholder="Nome do novo passo…"
+				placeholder="Novo passo"
 				className="flex-1"
 			/>
 			<Button type="submit" disabled={!name.trim()}>
-				+ Adicionar
+				+ Adicionar passo
 			</Button>
 		</Form>
 	);
