@@ -37,19 +37,20 @@ src/
   front/
     routes.ts                   # Tabla de rutas de React Router
     layouts/app.tsx             # Layout principal (menú superior + barra lateral)
-    routes/                     # Facades — solo reexportan loader/action de .server/
-                                # start.tsx (/), flow.tsx, flow.id.tsx,
-                                # process.tsx, process.id.tsx, setup.tsx
-    api/                        # Resource routes (sin default export)
-      index.ts                  # /api/index (entrypoint según AGENTS.md)
-      calendar.ts, search.ts, chat.ts
-    .server/<modulo>/database.json  # SQL por módulo (obligatorio; ver AGENTS.md)
-    .server/                    # Módulos backend (uno por ruta)
-      db.ts                     # Helpers para los bindings D1/R2
-    components/                 # Componentes solo-cliente
-    lib/                        # Utilidades puras (randomHEX, isEmpty, httpcodes)
-schema.sql
-wrangler.jsonc
+    routes/                     # Un directorio por módulo; facade + *.server.ts + database.json
+      landing/                  # /landing (pública), / (índice tras login)
+      go/                       # /go, /api/search, /api/index
+      flow/                     # /flow, /flow/:id
+      process/                  # /process, /process/:id
+      setup/                    # /setup
+      login/                    # /login, /login/callback, /logout
+      calendar/                 # /api/calendar
+      chat/                     # /api/chat
+      files/                    # /api/files
+    components/                 # Componentes de UI (AlertModal, ConfirmModal, LexicalEditor, …)
+    lib/                        # Utilidades compartidas (auth.server.ts, db.server.ts, formatDate.ts, …)
+schema.sql                      # Esquema D1
+wrangler.jsonc                  # Bindings de Cloudflare
 ```
 
 ## Desarrollo
@@ -58,7 +59,7 @@ wrangler.jsonc
 pnpm install
 pnpm dev          # servidor local
 pnpm typecheck    # generar tipos + tsc
-pnpm test         # vitest con @cloudflare/vitest-pool-workers
+pnpm test         # vitest run
 ```
 
 ## Despliegue
