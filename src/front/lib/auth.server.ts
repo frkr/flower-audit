@@ -217,11 +217,15 @@ export function isPublicPath(pathname: string): boolean {
 }
 
 export function isLocalRedirect(url: string): boolean {
+	if (!url || typeof url !== "string") return false;
+	const trimmed = url.trim();
 	return (
-		url.startsWith("/") &&
-		!url.startsWith("//") &&
-		!url.startsWith("/\\") &&
-		!url.startsWith("\\")
+		trimmed.startsWith("/") &&
+		!trimmed.startsWith("//") &&
+		!trimmed.startsWith("/\\") &&
+		!trimmed.startsWith("\\") &&
+		!/^\/\//.test(trimmed) && // No protocol-relative URLs
+		!/^[a-z][a-z0-9+.-]*:/i.test(trimmed) // No absolute URLs with schemes
 	);
 }
 

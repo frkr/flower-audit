@@ -28,6 +28,14 @@ function isImageMime(mime: string) {
 	return /^image\//i.test(mime);
 }
 
+const SAFE_INLINE_MIMES = new Set([
+	"image/png",
+	"image/jpeg",
+	"image/gif",
+	"image/webp",
+	"application/pdf",
+]);
+
 export async function loader({ request, context }: LoaderFunctionArgs) {
 	await requireUser(request, context);
 	const url = new URL(request.url);
@@ -43,7 +51,8 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 		const headers = new Headers();
 		headers.set("Content-Type", row.mime_type || "application/octet-stream");
 		headers.set("Content-Length", String(row.size_bytes || 0));
-		const dispo = url.searchParams.get("download") === "1" ? "attachment" : "inline";
+		const isSafe = SAFE_INLINE_MIMES.has(row.mime_type);
+		const dispo = url.searchParams.get("download") === "1" || !isSafe ? "attachment" : "inline";
 		headers.set("Content-Disposition", `${dispo}; filename="${encodeURIComponent(row.name)}"`);
 		headers.set("Cache-Control", "private, max-age=3600");
 		return new Response(obj.body, { headers });
