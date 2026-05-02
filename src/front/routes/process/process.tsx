@@ -1,10 +1,14 @@
 import { Form, Link, useLoaderData, useSearchParams, useSubmit } from "react-router";
 import { useState } from "react";
 import { ConfirmModal } from "@/ConfirmModal";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Card, CardContent } from "@/ui/card";
 import type { Route } from "./+types/process";
 import type { ProcessRow } from "./process.server";
 import { systemNameFromMatches } from "../../lib/systemName";
 import { formatDateTime } from "../../lib/formatDate";
+import { cn } from "../../lib/utils";
 
 export { loader, action } from "./process.server";
 
@@ -30,83 +34,113 @@ export default function Processos() {
 	const [pendingDelete, setPendingDelete] = useState<string | null>(null);
 
 	return (
-		<div className="max-w-4xl mx-auto">
-			<div className="flex items-center gap-2 mb-4">
+		<div className="max-w-4xl mx-auto space-y-4">
+			<div className="flex items-center gap-3">
 				<Form method="get" className="flex-1 flex gap-2">
-					<input
-						name="q"
-						defaultValue={data.q}
-						placeholder="Pesquisar processos…"
-						className="flex-1 px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-					/>
-					<button className="px-3 py-2 rounded bg-blue-600 text-white">Buscar</button>
+					<Input name="q" defaultValue={data.q} placeholder="Pesquisar processos…" className="flex-1" />
+					<Button type="submit" variant="secondary">
+						Buscar
+					</Button>
 				</Form>
-				<button
+				<Button
 					type="button"
 					onClick={() => setCreating((v) => !v)}
-					className="px-3 py-2 rounded bg-green-600 text-white"
+					variant={creating ? "outline" : "default"}
 				>
 					{creating ? "Cancelar" : "+ Novo processo"}
-				</button>
+				</Button>
 			</div>
 
 			{creating ? (
-				<Form method="post" className="border border-gray-200 dark:border-gray-700 rounded p-4 space-y-3 mb-4">
-					<input type="hidden" name="intent" value="create" />
-					<div>
-						<label htmlFor="new-process-name" className="block text-sm mb-1">Nome do processo</label>
-						<input
-							id="new-process-name"
-							name="name"
-							required
-							className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
-						/>
-					</div>
-					<div>
-						<label htmlFor="new-process-description" className="block text-sm mb-1">Descrição</label>
-						<textarea id="new-process-description" name="description" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
-					</div>
-					<div>
-						<label className="block text-sm mb-1">Fluxo (opcional)</label>
-						<select name="id_fluxo" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900">
-							<option value="">— sem fluxo —</option>
-							{data.fluxes.map((f) => (
-								<option key={f.id} value={f.id}>
-									{f.name}
-								</option>
-							))}
-						</select>
-					</div>
-					<button className="px-3 py-2 rounded bg-blue-600 text-white">Criar</button>
-				</Form>
+				<Card>
+					<CardContent className="pt-6">
+						<Form method="post" className="space-y-4">
+							<input type="hidden" name="intent" value="create" />
+							<div className="space-y-1.5">
+								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+									Nome do processo
+								</label>
+								<Input name="name" required placeholder="Ex: Atendimento ao cliente #123" />
+							</div>
+							<div className="space-y-1.5">
+								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+									Descrição
+								</label>
+								<textarea
+									name="description"
+									className="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder:text-slate-500 dark:focus-visible:ring-slate-300"
+								/>
+							</div>
+							<div className="space-y-1.5">
+								<label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+									Fluxo (opcional)
+								</label>
+								<select
+									name="id_fluxo"
+									className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:focus-visible:ring-slate-300"
+								>
+									<option value="">— sem fluxo —</option>
+									{data.fluxes.map((f) => (
+										<option key={f.id} value={f.id}>
+											{f.name}
+										</option>
+									))}
+								</select>
+							</div>
+							<div className="flex gap-2">
+								<Button type="submit">Criar processo</Button>
+								<Button type="button" variant="outline" onClick={() => setCreating(false)}>
+									Cancelar
+								</Button>
+							</div>
+						</Form>
+					</CardContent>
+				</Card>
 			) : null}
 
-			<ul className="space-y-2">
-				{data.items.map((p) => (
-					<li key={p.id} className="border border-gray-200 dark:border-gray-700 rounded p-3 flex justify-between items-start">
-						<div className="min-w-0">
-							<Link to={`/process/${p.id}`} className="text-blue-600 hover:underline font-medium">
-								{p.name}
-							</Link>
-							{p.description ? (
-								<div className="text-sm text-gray-600 dark:text-gray-400 truncate">{p.description}</div>
-							) : null}
-							<div className="text-xs text-gray-500">Atualizado: {formatDateTime(p.updated_at)}</div>
-						</div>
-						<button
-							type="button"
-							onClick={() => setPendingDelete(p.id)}
-							className="text-xs text-red-600 hover:underline"
+			{data.items.length === 0 ? (
+				<div className="text-center py-12 text-slate-500 dark:text-slate-400">
+					<p className="text-sm">Nenhum processo encontrado.</p>
+				</div>
+			) : (
+				<ul className="space-y-2">
+					{data.items.map((p) => (
+						<li
+							key={p.id}
+							className="group border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 flex justify-between items-center bg-white dark:bg-slate-900 hover:shadow-sm transition-shadow"
 						>
-							excluir
-						</button>
-					</li>
-				))}
-				{data.items.length === 0 ? <li className="text-sm text-gray-500">Nenhum processo encontrado.</li> : null}
-			</ul>
+							<div className="min-w-0 flex-1">
+								<Link
+									to={`/process/${p.id}`}
+									className="font-medium text-slate-900 dark:text-slate-50 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+								>
+									{p.name}
+								</Link>
+								{p.description ? (
+									<p className="text-sm text-slate-500 dark:text-slate-400 truncate mt-0.5">
+										{p.description}
+									</p>
+								) : null}
+								<p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+									Atualizado: {formatDateTime(p.updated_at)}
+								</p>
+							</div>
+							<Button
+								type="button"
+								size="sm"
+								variant="ghost"
+								onClick={() => setPendingDelete(p.id)}
+								className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 opacity-0 group-hover:opacity-100 transition-opacity"
+							>
+								Excluir
+							</Button>
+						</li>
+					))}
+				</ul>
+			)}
 
 			{totalPages > 1 ? (
-				<div className="mt-4 flex justify-center gap-2 text-sm">
+				<div className="flex justify-center gap-1 pt-2">
 					{Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
 						<button
 							key={p}
@@ -115,10 +149,12 @@ export default function Processos() {
 								next.set("page", String(p));
 								setParams(next);
 							}}
-							className={
-								"px-2 py-1 rounded " +
-								(p === data.page ? "bg-blue-600 text-white" : "hover:bg-gray-100 dark:hover:bg-gray-800")
-							}
+							className={cn(
+								"h-8 w-8 rounded-md text-sm font-medium transition-colors",
+								p === data.page
+									? "bg-slate-900 text-white dark:bg-slate-50 dark:text-slate-900"
+									: "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+							)}
 						>
 							{p}
 						</button>
