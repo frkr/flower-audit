@@ -1,0 +1,152 @@
+{
+  "nav": {
+    "go": "Go",
+    "flows": "Flows",
+    "setup": "Setup"
+  },
+  "sidebar": {
+    "show": "Show panel",
+    "hide": "Hide panel"
+  },
+  "profile": {
+    "label": "Profile",
+    "logout": "Sign out",
+    "language": "Language"
+  },
+  "confirm": {
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "landing": {
+    "login": "Sign in",
+    "headline": "Flow and process auditing, plain and simple.",
+    "subheadline": "{{name}} helps you design flows, run processes and keep an auditable history of every step — all in one place.",
+    "cta": "Sign in",
+    "features": {
+      "go": { "title": "Go", "desc": "Centralized search box that finds your flows and processes in seconds." },
+      "flows": { "title": "Flows", "desc": "Simple CRUD to create flows with name, description and an editable list of steps." },
+      "processes": { "title": "Processes", "desc": "Start a process from a flow and edit each step's content in a WYSIWYG editor." },
+      "setup": { "title": "Setup", "desc": "System parameters (key/value) persisted in the database to customize your instance." },
+      "calendar": { "title": "Calendar", "desc": "Monthly view highlighting the days when processes were started, with volume intensity." },
+      "chat": { "title": "AI Chat", "desc": "Side panel ready to chat with an AI about the flows and processes in the system." }
+    }
+  },
+  "welcome": {
+    "recentFlows": "Recent Flows",
+    "viewAll": "View all →",
+    "recentProcesses": "Recent Processes",
+    "emptyFlows": "No flows yet.",
+    "emptyProcesses": "No processes started yet.",
+    "createFlow": "Create flow",
+    "startProcess": "▶ Start process",
+    "flowBadge": "Flow",
+    "processBadge": "Process",
+    "updated": "Updated: {{date}}"
+  },
+  "go": {
+    "placeholder": "Search flows and processes…",
+    "search": "Search",
+    "searchingFlows": "Searching flows…",
+    "searchingProcesses": "Searching processes…",
+    "results": "{{count}} result(s)",
+    "noResults": "No results.",
+    "flowBadge": "Flow",
+    "processBadge": "Process",
+    "startProcess": "▶ Start process"
+  },
+  "flow": {
+    "title": "Flows",
+    "searchPlaceholder": "Search flows…",
+    "search": "Search",
+    "newFlow": "+ New flow",
+    "cancel": "Cancel",
+    "flowName": "Flow Name",
+    "description": "Description",
+    "stepsNote": "Flow steps are added in the next screen, after the flow is saved.",
+    "create": "Create",
+    "updated": "Updated: {{date}}",
+    "delete": "delete",
+    "notFound": "No flows found.",
+    "deleteConfirm": "Delete this flow?"
+  },
+  "flowId": {
+    "title": "Edit flow",
+    "startProcess": "▶ Start process from this flow",
+    "flowData": "Flow data",
+    "flowName": "Flow Name",
+    "description": "Description",
+    "save": "Save",
+    "delete": "Delete",
+    "steps": "Steps",
+    "noSteps": "No steps yet. Add the first one below.",
+    "stepSave": "Save",
+    "removeStep": "Remove step",
+    "newStepPlaceholder": "New step",
+    "addStep": "+ Add step",
+    "deleteConfirm": "Delete this flow?",
+    "removeStepConfirm": "Remove this step?"
+  },
+  "process": {
+    "title": "Processes",
+    "searchPlaceholder": "Search processes…",
+    "search": "Search",
+    "newProcess": "+ New process",
+    "cancel": "Cancel",
+    "processName": "Process name",
+    "description": "Description",
+    "flowOptional": "Flow (optional)",
+    "noFlow": "— no flow —",
+    "create": "Create",
+    "updated": "Updated: {{date}}",
+    "delete": "delete",
+    "notFound": "No processes found.",
+    "deleteConfirm": "Delete this process?"
+  },
+  "processId": {
+    "noSteps": "This process has no steps yet. Use ▶ Start process from this flow on a flow to generate steps.",
+    "showMeta": "Edit data",
+    "hideMeta": "Hide data",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this process?",
+    "saveData": "Save process data",
+    "descriptionPlaceholder": "Description",
+    "flux": "Flow:",
+    "removed": "(removed)",
+    "readOnly": "(read-only)",
+    "completedAt": "✓ completed on {{date}}",
+    "reopen": "Reopen",
+    "goToCurrent": "Go to current step",
+    "saveDraft": "Save draft",
+    "completeStep": "Complete step →",
+    "stepPosition": "Step {{current}} of {{total}}",
+    "empty": "(empty)",
+    "reopenConfirm": "Reopen this step? You will have to complete it again.",
+    "allDone": "✓ All steps completed.",
+    "attachments": "Attachments ({{count}})",
+    "open": "Open",
+    "download": "Download",
+    "deleteFile": "Delete",
+    "failedDelete": "Failed to delete: {{error}}",
+    "deleteFileConfirm": "Delete file \"{{name}}\"?",
+    "binary": "binary",
+    "step": "step:"
+  },
+  "setup": {
+    "title": "Setup",
+    "newConfig": "+ New setting",
+    "cancel": "Cancel",
+    "nameKey": "Name (key)",
+    "value": "Value",
+    "description": "Description",
+    "save": "Save",
+    "noConfigs": "No settings registered.",
+    "name": "Name",
+    "editValue": "Value",
+    "editDesc": "Description",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Delete \"{{name}}\"?",
+    "hiddenValuePlaceholder": "(new value — current hidden)",
+    "emptyValue": "(empty)"
+  }
+}

@@ -1,5 +1,6 @@
 import { Form, Link, useLoaderData, useSearchParams, useSubmit } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "@/ConfirmModal";
 import type { Route } from "./+types/process";
 import type { ProcessRow } from "./process.server";
@@ -9,7 +10,7 @@ import { formatDateTime } from "../../lib/formatDate";
 export { loader, action } from "./process.server";
 
 export function meta({ matches }: Route.MetaArgs) {
-	return [{ title: `${systemNameFromMatches(matches)} — Processos` }];
+	return [{ title: `${systemNameFromMatches(matches)} — Processes` }];
 }
 
 type Data = {
@@ -22,6 +23,7 @@ type Data = {
 };
 
 export default function Processos() {
+	const { t } = useTranslation();
 	const data = useLoaderData() as Data;
 	const [params, setParams] = useSearchParams();
 	const [creating, setCreating] = useState(false);
@@ -36,17 +38,17 @@ export default function Processos() {
 					<input
 						name="q"
 						defaultValue={data.q}
-						placeholder="Pesquisar processos…"
+						placeholder={t("process.searchPlaceholder")}
 						className="flex-1 px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
 					/>
-					<button className="px-3 py-2 rounded bg-blue-600 text-white">Buscar</button>
+					<button className="px-3 py-2 rounded bg-blue-600 text-white">{t("process.search")}</button>
 				</Form>
 				<button
 					type="button"
 					onClick={() => setCreating((v) => !v)}
 					className="px-3 py-2 rounded bg-green-600 text-white"
 				>
-					{creating ? "Cancelar" : "+ Novo processo"}
+					{creating ? t("process.cancel") : t("process.newProcess")}
 				</button>
 			</div>
 
@@ -54,7 +56,7 @@ export default function Processos() {
 				<Form method="post" className="border border-gray-200 dark:border-gray-700 rounded p-4 space-y-3 mb-4">
 					<input type="hidden" name="intent" value="create" />
 					<div>
-						<label className="block text-sm mb-1">Nome do processo</label>
+						<label className="block text-sm mb-1">{t("process.processName")}</label>
 						<input
 							name="name"
 							required
@@ -62,13 +64,13 @@ export default function Processos() {
 						/>
 					</div>
 					<div>
-						<label className="block text-sm mb-1">Descrição</label>
+						<label className="block text-sm mb-1">{t("process.description")}</label>
 						<textarea name="description" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900" />
 					</div>
 					<div>
-						<label className="block text-sm mb-1">Fluxo (opcional)</label>
+						<label className="block text-sm mb-1">{t("process.flowOptional")}</label>
 						<select name="id_fluxo" className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900">
-							<option value="">— sem fluxo —</option>
+							<option value="">{t("process.noFlow")}</option>
 							{data.fluxes.map((f) => (
 								<option key={f.id} value={f.id}>
 									{f.name}
@@ -76,7 +78,7 @@ export default function Processos() {
 							))}
 						</select>
 					</div>
-					<button className="px-3 py-2 rounded bg-blue-600 text-white">Criar</button>
+					<button className="px-3 py-2 rounded bg-blue-600 text-white">{t("process.create")}</button>
 				</Form>
 			) : null}
 
@@ -90,18 +92,18 @@ export default function Processos() {
 							{p.description ? (
 								<div className="text-sm text-gray-600 dark:text-gray-400 truncate">{p.description}</div>
 							) : null}
-							<div className="text-xs text-gray-500">Atualizado: {formatDateTime(p.updated_at)}</div>
+							<div className="text-xs text-gray-500">{t("process.updated", { date: formatDateTime(p.updated_at) })}</div>
 						</div>
 						<button
 							type="button"
 							onClick={() => setPendingDelete(p.id)}
 							className="text-xs text-red-600 hover:underline"
 						>
-							excluir
+							{t("process.delete")}
 						</button>
 					</li>
 				))}
-				{data.items.length === 0 ? <li className="text-sm text-gray-500">Nenhum processo encontrado.</li> : null}
+				{data.items.length === 0 ? <li className="text-sm text-gray-500">{t("process.notFound")}</li> : null}
 			</ul>
 
 			{totalPages > 1 ? (
@@ -127,7 +129,7 @@ export default function Processos() {
 
 			{pendingDelete && (
 				<ConfirmModal
-					message="Excluir este processo?"
+					message={t("process.deleteConfirm")}
 					onConfirm={() => {
 						submit({ intent: "delete", id: pendingDelete }, { method: "post" });
 						setPendingDelete(null);

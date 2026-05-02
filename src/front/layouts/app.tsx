@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useLoaderData } from "react-router";
 import type { LoaderFunctionArgs } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { SearchProvider } from "@/SearchContext";
 import { CalendarPanel } from "@/CalendarPanel";
 import { ChatPanel } from "@/ChatPanel";
@@ -23,6 +24,8 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 export default function AppLayout() {
 	const { user, systemName } = useLoaderData() as { user: SessionUser; systemName: string };
 	const [sidebarHidden, setSidebarHidden] = useState(false);
+	const { t } = useTranslation();
+
 	return (
 		<SearchProvider>
 			<div className={"h-screen flex flex-col " + (sidebarHidden ? "" : "md:pr-64")}>
@@ -32,13 +35,13 @@ export default function AppLayout() {
 							{systemName}
 						</NavLink>
 						<NavLink to="/go" className={navLinkClass}>
-							Começar
+							{t("nav.go")}
 						</NavLink>
 						<NavLink to="/flow" className={navLinkClass}>
-							Fluxos
+							{t("nav.flows")}
 						</NavLink>
 						<NavLink to="/setup" className={navLinkClass}>
-							Configuração
+							{t("nav.setup")}
 						</NavLink>
 					</nav>
 				</header>
@@ -53,8 +56,8 @@ export default function AppLayout() {
 					type="button"
 					onClick={() => setSidebarHidden(false)}
 					className="hidden md:flex fixed top-2 right-2 z-30 p-1 rounded border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900"
-					aria-label="Mostrar painel"
-					title="Mostrar painel"
+					aria-label={t("sidebar.show")}
+					title={t("sidebar.show")}
 				>
 					<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 						<polyline points="15 18 9 12 15 6" />
@@ -67,8 +70,8 @@ export default function AppLayout() {
 							type="button"
 							onClick={() => setSidebarHidden(true)}
 							className="p-1 rounded border border-gray-200 dark:border-gray-700 shadow-sm bg-white dark:bg-gray-950 hover:bg-gray-100 dark:hover:bg-gray-900"
-							aria-label="Esconder painel"
-							title="Esconder painel"
+							aria-label={t("sidebar.hide")}
+							title={t("sidebar.hide")}
 						>
 							<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
 								<polyline points="9 18 15 12 9 6" />

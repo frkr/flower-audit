@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Modal } from "./Modal";
 
 export function ConfirmModal({
@@ -9,6 +10,7 @@ export function ConfirmModal({
 	onConfirm: () => void;
 	onCancel: () => void;
 }) {
+	const { t } = useTranslation();
 	return (
 		<Modal onClose={onCancel}>
 			<p className="text-sm mb-5">{message}</p>
@@ -19,14 +21,14 @@ export function ConfirmModal({
 					autoFocus
 					className="px-3 py-2 rounded border border-gray-300 dark:border-gray-700 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
 				>
-					Cancelar
+					{t("confirm.cancel")}
 				</button>
 				<button
 					type="button"
 					onClick={onConfirm}
 					className="px-3 py-2 rounded bg-red-600 text-white text-sm hover:bg-red-700"
 				>
-					Confirmar
+					{t("confirm.confirm")}
 				</button>
 			</div>
 		</Modal>

@@ -1,6 +1,6 @@
-// Facade para a rota "Começar".
 import { useEffect, useState } from "react";
 import { Form, Link } from "react-router";
+import { useTranslation } from "react-i18next";
 import type { Route } from "./+types/go";
 import { useSearch } from "@/SearchContext";
 import { systemNameFromMatches } from "../../lib/systemName";
@@ -9,14 +9,15 @@ export { loader } from "./go.server";
 
 export function meta({ matches }: Route.MetaArgs) {
 	return [
-		{ title: `${systemNameFromMatches(matches)} — Começar` },
-		{ name: "description", content: "Pesquise fluxos e processos" },
+		{ title: `${systemNameFromMatches(matches)} — Go` },
+		{ name: "description", content: "Search flows and processes" },
 	];
 }
 
 type Hit = { id: string; name: string; description: string; kind: "flux" | "process" };
 
 export default function Comecar({}: Route.ComponentProps) {
+	const { t } = useTranslation();
 	const { collapsed, setCollapsed, query, setQuery } = useSearch();
 	const [hits, setHits] = useState<Hit[]>([]);
 	const [phase, setPhase] = useState<"idle" | "flux" | "process" | "done">("idle");
@@ -62,7 +63,7 @@ export default function Comecar({}: Route.ComponentProps) {
 						autoFocus
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
-						placeholder="Pesquisar fluxos e processos…"
+						placeholder={t("go.placeholder")}
 						className={
 							"flex-1 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 outline-none focus:ring-2 focus:ring-blue-400 " +
 							(collapsed ? "text-xs px-3 py-1" : "text-lg px-5 py-3 shadow-sm")
@@ -75,7 +76,7 @@ export default function Comecar({}: Route.ComponentProps) {
 							(collapsed ? "text-xs px-3 py-1" : "px-5 py-3")
 						}
 					>
-						{collapsed ? "↑" : "Pesquisar"}
+						{collapsed ? "↑" : t("go.search")}
 					</button>
 				</div>
 			</form>
@@ -84,11 +85,11 @@ export default function Comecar({}: Route.ComponentProps) {
 				<section className="mt-6 max-w-3xl">
 					<div className="text-xs uppercase text-gray-500 mb-2">
 						{phase === "flux"
-							? "Buscando em fluxos…"
+							? t("go.searchingFlows")
 							: phase === "process"
-								? "Buscando em processos…"
+								? t("go.searchingProcesses")
 								: phase === "done"
-									? `${hits.length} resultado(s)`
+									? t("go.results", { count: hits.length })
 									: ""}
 					</div>
 					<ul className="space-y-2">
@@ -98,7 +99,9 @@ export default function Comecar({}: Route.ComponentProps) {
 								className="border border-gray-200 dark:border-gray-700 rounded p-3 flex justify-between items-start gap-3"
 							>
 								<div className="min-w-0">
-									<div className="text-xs uppercase text-gray-500">{h.kind === "flux" ? "Fluxo" : "Processo"}</div>
+									<div className="text-xs uppercase text-gray-500">
+										{h.kind === "flux" ? t("go.flowBadge") : t("go.processBadge")}
+									</div>
 									<Link
 										to={h.kind === "flux" ? `/flow/${h.id}` : `/process/${h.id}`}
 										className="text-blue-600 hover:underline font-medium"
@@ -114,14 +117,14 @@ export default function Comecar({}: Route.ComponentProps) {
 										<input type="hidden" name="intent" value="startFromFlow" />
 										<input type="hidden" name="id_fluxo" value={h.id} />
 										<button className="whitespace-nowrap text-xs px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">
-											▶ Iniciar processo
+											{t("go.startProcess")}
 										</button>
 									</Form>
 								) : null}
 							</li>
 						))}
 						{phase === "done" && hits.length === 0 ? (
-							<li className="text-sm text-gray-500">Sem resultados.</li>
+							<li className="text-sm text-gray-500">{t("go.noResults")}</li>
 						) : null}
 					</ul>
 				</section>

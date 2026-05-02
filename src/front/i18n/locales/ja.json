@@ -1,0 +1,152 @@
+{
+  "nav": {
+    "go": "はじめる",
+    "flows": "フロー",
+    "setup": "設定"
+  },
+  "sidebar": {
+    "show": "パネルを表示",
+    "hide": "パネルを非表示"
+  },
+  "profile": {
+    "label": "プロフィール",
+    "logout": "ログアウト",
+    "language": "言語"
+  },
+  "confirm": {
+    "cancel": "キャンセル",
+    "confirm": "確認"
+  },
+  "landing": {
+    "login": "ログイン",
+    "headline": "フローとプロセスの監査、シンプルに。",
+    "subheadline": "{{name}} はフローの設計、プロセスの実行、各ステップの監査可能な履歴の維持を支援します — すべて一か所で。",
+    "cta": "ログイン",
+    "features": {
+      "go": { "title": "はじめる", "desc": "フローとプロセスを数秒で見つける集中検索ボックス。" },
+      "flows": { "title": "フロー", "desc": "名前、説明、編集可能なステップリストでフローを作成するシンプルな CRUD。" },
+      "processes": { "title": "プロセス", "desc": "フローからプロセスを開始し、WYSIWYG エディターで各ステップの内容を編集。" },
+      "setup": { "title": "設定", "desc": "インスタンスをカスタマイズするためにデータベースに保存されたシステムパラメーター（キー/値）。" },
+      "calendar": { "title": "カレンダー", "desc": "プロセスが開始された日をボリュームの強度で強調表示する月次ビュー。" },
+      "chat": { "title": "AI チャット", "desc": "システムのフローとプロセスについて AI と会話できるサイドパネル。" }
+    }
+  },
+  "welcome": {
+    "recentFlows": "最近のフロー",
+    "viewAll": "すべて表示 →",
+    "recentProcesses": "最近のプロセス",
+    "emptyFlows": "まだフローがありません。",
+    "emptyProcesses": "まだプロセスが開始されていません。",
+    "createFlow": "フローを作成",
+    "startProcess": "▶ プロセスを開始",
+    "flowBadge": "フロー",
+    "processBadge": "プロセス",
+    "updated": "更新日時：{{date}}"
+  },
+  "go": {
+    "placeholder": "フローとプロセスを検索…",
+    "search": "検索",
+    "searchingFlows": "フローを検索中…",
+    "searchingProcesses": "プロセスを検索中…",
+    "results": "{{count}} 件の結果",
+    "noResults": "結果がありません。",
+    "flowBadge": "フロー",
+    "processBadge": "プロセス",
+    "startProcess": "▶ プロセスを開始"
+  },
+  "flow": {
+    "title": "フロー",
+    "searchPlaceholder": "フローを検索…",
+    "search": "検索",
+    "newFlow": "+ 新しいフロー",
+    "cancel": "キャンセル",
+    "flowName": "フロー名",
+    "description": "説明",
+    "stepsNote": "フローのステップは、フローが保存された後の次の画面で追加されます。",
+    "create": "作成",
+    "updated": "更新日時：{{date}}",
+    "delete": "削除",
+    "notFound": "フローが見つかりません。",
+    "deleteConfirm": "このフローを削除しますか？"
+  },
+  "flowId": {
+    "title": "フローを編集",
+    "startProcess": "▶ このフローからプロセスを開始",
+    "flowData": "フローデータ",
+    "flowName": "フロー名",
+    "description": "説明",
+    "save": "保存",
+    "delete": "削除",
+    "steps": "ステップ",
+    "noSteps": "まだステップがありません。下に最初のステップを追加してください。",
+    "stepSave": "保存",
+    "removeStep": "ステップを削除",
+    "newStepPlaceholder": "新しいステップ",
+    "addStep": "+ ステップを追加",
+    "deleteConfirm": "このフローを削除しますか？",
+    "removeStepConfirm": "このステップを削除しますか？"
+  },
+  "process": {
+    "title": "プロセス",
+    "searchPlaceholder": "プロセスを検索…",
+    "search": "検索",
+    "newProcess": "+ 新しいプロセス",
+    "cancel": "キャンセル",
+    "processName": "プロセス名",
+    "description": "説明",
+    "flowOptional": "フロー（任意）",
+    "noFlow": "— フローなし —",
+    "create": "作成",
+    "updated": "更新日時：{{date}}",
+    "delete": "削除",
+    "notFound": "プロセスが見つかりません。",
+    "deleteConfirm": "このプロセスを削除しますか？"
+  },
+  "processId": {
+    "noSteps": "このプロセスにはまだステップがありません。フローの「▶ このフローからプロセスを開始」を使用してステップを生成してください。",
+    "showMeta": "データを編集",
+    "hideMeta": "データを非表示",
+    "delete": "削除",
+    "deleteConfirm": "このプロセスを削除しますか？",
+    "saveData": "プロセスデータを保存",
+    "descriptionPlaceholder": "説明",
+    "flux": "フロー：",
+    "removed": "（削除済み）",
+    "readOnly": "（読み取り専用）",
+    "completedAt": "✓ {{date}} 完了",
+    "reopen": "再開する",
+    "goToCurrent": "現在のステップへ",
+    "saveDraft": "下書きを保存",
+    "completeStep": "ステップを完了 →",
+    "stepPosition": "ステップ {{current}} / {{total}}",
+    "empty": "（空）",
+    "reopenConfirm": "このステップを再開しますか？もう一度完了する必要があります。",
+    "allDone": "✓ すべてのステップが完了しました。",
+    "attachments": "添付ファイル ({{count}})",
+    "open": "開く",
+    "download": "ダウンロード",
+    "deleteFile": "削除",
+    "failedDelete": "削除に失敗しました：{{error}}",
+    "deleteFileConfirm": "ファイル「{{name}}」を削除しますか？",
+    "binary": "バイナリ",
+    "step": "ステップ："
+  },
+  "setup": {
+    "title": "設定",
+    "newConfig": "+ 新しい設定",
+    "cancel": "キャンセル",
+    "nameKey": "名前（キー）",
+    "value": "値",
+    "description": "説明",
+    "save": "保存",
+    "noConfigs": "設定が登録されていません。",
+    "name": "名前",
+    "editValue": "値",
+    "editDesc": "説明",
+    "edit": "編集",
+    "delete": "削除",
+    "deleteConfirm": "「{{name}}」を削除しますか？",
+    "hiddenValuePlaceholder": "（新しい値 — 現在の値は非表示）",
+    "emptyValue": "（空）"
+  }
+}

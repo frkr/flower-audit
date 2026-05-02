@@ -1,5 +1,6 @@
 import { Form, useLoaderData, useSubmit } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "@/ConfirmModal";
 
 import type { Route } from "./+types/flow.id";
@@ -8,7 +9,7 @@ import { systemNameFromMatches } from "../../lib/systemName";
 export { loader, action } from "./flow.id.server";
 
 export function meta({ matches }: Route.MetaArgs) {
-	return [{ title: `${systemNameFromMatches(matches)} — Fluxo` }];
+	return [{ title: `${systemNameFromMatches(matches)} — Flow` }];
 }
 
 type Step = { id: string; id_order: number; name: string };
@@ -18,6 +19,7 @@ type Data = {
 };
 
 export default function FluxoEdit() {
+	const { t } = useTranslation();
 	const data = useLoaderData() as Data;
 	const submit = useSubmit();
 	const [confirmDelete, setConfirmDelete] = useState(false);
@@ -25,22 +27,22 @@ export default function FluxoEdit() {
 	return (
 		<div className="max-w-4xl mx-auto space-y-6">
 			<div className="flex items-center justify-between">
-				<h1 className="text-xl font-semibold">Editar fluxo</h1>
+				<h1 className="text-xl font-semibold">{t("flowId.title")}</h1>
 				<Form method="post" action="/process">
 					<input type="hidden" name="intent" value="startFromFlow" />
 					<input type="hidden" name="id_fluxo" value={data.flux.id} />
 					<button className="text-sm px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700">
-						▶ Iniciar processo a partir deste fluxo
+						{t("flowId.startProcess")}
 					</button>
 				</Form>
 			</div>
 
 			<section className="border border-gray-200 dark:border-gray-700 rounded p-4">
-				<h2 className="text-sm font-semibold mb-3">Dados do fluxo</h2>
+				<h2 className="text-sm font-semibold mb-3">{t("flowId.flowData")}</h2>
 				<Form method="post" className="space-y-3">
 					<input type="hidden" name="intent" value="updateFlux" />
 					<div>
-						<label className="block text-sm mb-1">Nome do Fluxo</label>
+						<label className="block text-sm mb-1">{t("flowId.flowName")}</label>
 						<input
 							name="name"
 							required
@@ -49,7 +51,7 @@ export default function FluxoEdit() {
 						/>
 					</div>
 					<div>
-						<label className="block text-sm mb-1">Descrição</label>
+						<label className="block text-sm mb-1">{t("flowId.description")}</label>
 						<textarea
 							name="description"
 							defaultValue={data.flux.description}
@@ -57,22 +59,22 @@ export default function FluxoEdit() {
 						/>
 					</div>
 					<div className="flex justify-between">
-						<button className="px-3 py-2 rounded bg-blue-600 text-white">Salvar</button>
+						<button className="px-3 py-2 rounded bg-blue-600 text-white">{t("flowId.save")}</button>
 						<button
 							type="button"
 							onClick={() => setConfirmDelete(true)}
 							className="px-3 py-2 rounded bg-red-600 text-white"
 						>
-							Excluir
+							{t("flowId.delete")}
 						</button>
 					</div>
 				</Form>
 			</section>
 
 			<section className="border border-gray-200 dark:border-gray-700 rounded p-4">
-				<h2 className="text-sm font-semibold mb-3">Passos</h2>
+				<h2 className="text-sm font-semibold mb-3">{t("flowId.steps")}</h2>
 				{data.steps.length === 0 ? (
-					<p className="text-sm text-gray-500 mb-3">Nenhum passo ainda. Adicione o primeiro abaixo.</p>
+					<p className="text-sm text-gray-500 mb-3">{t("flowId.noSteps")}</p>
 				) : (
 					<ul className="space-y-2 mb-4">
 						{data.steps.map((s, i) => (
@@ -86,7 +88,7 @@ export default function FluxoEdit() {
 
 			{confirmDelete && (
 				<ConfirmModal
-					message="Excluir este fluxo?"
+					message={t("flowId.deleteConfirm")}
 					onConfirm={() => {
 						submit({ intent: "delete" }, { method: "post" });
 						setConfirmDelete(false);
@@ -99,6 +101,7 @@ export default function FluxoEdit() {
 }
 
 function StepRow({ step, index }: { step: Step; index: number }) {
+	const { t } = useTranslation();
 	const [name, setName] = useState(step.name);
 	const dirty = name !== step.name;
 	const submit = useSubmit();
@@ -120,21 +123,21 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 					disabled={!dirty || !name.trim()}
 					className="px-3 py-2 rounded bg-blue-600 text-white disabled:opacity-40"
 				>
-					Salvar
+					{t("flowId.stepSave")}
 				</button>
 			</Form>
 			<button
 				type="button"
 				onClick={() => setConfirmRemove(true)}
 				className="px-2 py-2 rounded bg-red-100 text-red-700"
-				aria-label="Remover passo"
-				title="Remover passo"
+				aria-label={t("flowId.removeStep")}
+				title={t("flowId.removeStep")}
 			>
 				×
 			</button>
 			{confirmRemove && (
 				<ConfirmModal
-					message="Remover este passo?"
+					message={t("flowId.removeStepConfirm")}
 					onConfirm={() => {
 						submit({ intent: "removeStep", stepId: step.id }, { method: "post" });
 						setConfirmRemove(false);
@@ -147,6 +150,7 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 }
 
 function AddStepForm() {
+	const { t } = useTranslation();
 	const [name, setName] = useState("");
 	return (
 		<Form
@@ -160,7 +164,7 @@ function AddStepForm() {
 				required
 				value={name}
 				onChange={(e) => setName(e.target.value)}
-				placeholder="Novo passo"
+				placeholder={t("flowId.newStepPlaceholder")}
 				className="flex-1 px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
 			/>
 			<button
@@ -168,7 +172,7 @@ function AddStepForm() {
 				disabled={!name.trim()}
 				className="px-3 py-2 rounded bg-green-600 text-white disabled:opacity-40"
 			>
-				+ Adicionar passo
+				{t("flowId.addStep")}
 			</button>
 		</Form>
 	);

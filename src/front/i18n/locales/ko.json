@@ -1,0 +1,152 @@
+{
+  "nav": {
+    "go": "시작",
+    "flows": "흐름",
+    "setup": "설정"
+  },
+  "sidebar": {
+    "show": "패널 표시",
+    "hide": "패널 숨기기"
+  },
+  "profile": {
+    "label": "프로필",
+    "logout": "로그아웃",
+    "language": "언어"
+  },
+  "confirm": {
+    "cancel": "취소",
+    "confirm": "확인"
+  },
+  "landing": {
+    "login": "로그인",
+    "headline": "흐름 및 프로세스 감사, 간단하게.",
+    "subheadline": "{{name}}은 흐름을 설계하고, 프로세스를 실행하며, 각 단계의 감사 가능한 기록을 유지하도록 돕습니다 — 모두 한 곳에서.",
+    "cta": "로그인",
+    "features": {
+      "go": { "title": "시작", "desc": "몇 초 안에 흐름과 프로세스를 찾는 중앙 검색 상자." },
+      "flows": { "title": "흐름", "desc": "이름, 설명 및 편집 가능한 단계 목록으로 흐름을 만드는 간단한 CRUD." },
+      "processes": { "title": "프로세스", "desc": "흐름에서 프로세스를 시작하고 WYSIWYG 편집기에서 각 단계의 내용을 편집." },
+      "setup": { "title": "설정", "desc": "인스턴스를 사용자 지정하기 위해 데이터베이스에 저장된 시스템 매개변수 (키/값)." },
+      "calendar": { "title": "캘린더", "desc": "볼륨 강도로 프로세스가 시작된 날짜를 강조하는 월간 보기." },
+      "chat": { "title": "AI 채팅", "desc": "시스템의 흐름과 프로세스에 대해 AI와 채팅할 수 있는 사이드 패널." }
+    }
+  },
+  "welcome": {
+    "recentFlows": "최근 흐름",
+    "viewAll": "모두 보기 →",
+    "recentProcesses": "최근 프로세스",
+    "emptyFlows": "아직 흐름이 없습니다.",
+    "emptyProcesses": "아직 시작된 프로세스가 없습니다.",
+    "createFlow": "흐름 만들기",
+    "startProcess": "▶ 프로세스 시작",
+    "flowBadge": "흐름",
+    "processBadge": "프로세스",
+    "updated": "업데이트됨: {{date}}"
+  },
+  "go": {
+    "placeholder": "흐름 및 프로세스 검색…",
+    "search": "검색",
+    "searchingFlows": "흐름 검색 중…",
+    "searchingProcesses": "프로세스 검색 중…",
+    "results": "{{count}}개 결과",
+    "noResults": "결과 없음.",
+    "flowBadge": "흐름",
+    "processBadge": "프로세스",
+    "startProcess": "▶ 프로세스 시작"
+  },
+  "flow": {
+    "title": "흐름",
+    "searchPlaceholder": "흐름 검색…",
+    "search": "검색",
+    "newFlow": "+ 새 흐름",
+    "cancel": "취소",
+    "flowName": "흐름 이름",
+    "description": "설명",
+    "stepsNote": "흐름 단계는 흐름이 저장된 후 다음 화면에서 추가됩니다.",
+    "create": "만들기",
+    "updated": "업데이트됨: {{date}}",
+    "delete": "삭제",
+    "notFound": "흐름을 찾을 수 없습니다.",
+    "deleteConfirm": "이 흐름을 삭제하시겠습니까?"
+  },
+  "flowId": {
+    "title": "흐름 편집",
+    "startProcess": "▶ 이 흐름에서 프로세스 시작",
+    "flowData": "흐름 데이터",
+    "flowName": "흐름 이름",
+    "description": "설명",
+    "save": "저장",
+    "delete": "삭제",
+    "steps": "단계",
+    "noSteps": "아직 단계가 없습니다. 아래에 첫 번째 단계를 추가하세요.",
+    "stepSave": "저장",
+    "removeStep": "단계 제거",
+    "newStepPlaceholder": "새 단계",
+    "addStep": "+ 단계 추가",
+    "deleteConfirm": "이 흐름을 삭제하시겠습니까?",
+    "removeStepConfirm": "이 단계를 제거하시겠습니까?"
+  },
+  "process": {
+    "title": "프로세스",
+    "searchPlaceholder": "프로세스 검색…",
+    "search": "검색",
+    "newProcess": "+ 새 프로세스",
+    "cancel": "취소",
+    "processName": "프로세스 이름",
+    "description": "설명",
+    "flowOptional": "흐름 (선택 사항)",
+    "noFlow": "— 흐름 없음 —",
+    "create": "만들기",
+    "updated": "업데이트됨: {{date}}",
+    "delete": "삭제",
+    "notFound": "프로세스를 찾을 수 없습니다.",
+    "deleteConfirm": "이 프로세스를 삭제하시겠습니까?"
+  },
+  "processId": {
+    "noSteps": "이 프로세스에는 아직 단계가 없습니다. 흐름에서 「▶ 이 흐름에서 프로세스 시작」을 사용하여 단계를 생성하세요.",
+    "showMeta": "데이터 편집",
+    "hideMeta": "데이터 숨기기",
+    "delete": "삭제",
+    "deleteConfirm": "이 프로세스를 삭제하시겠습니까?",
+    "saveData": "프로세스 데이터 저장",
+    "descriptionPlaceholder": "설명",
+    "flux": "흐름:",
+    "removed": "(제거됨)",
+    "readOnly": "(읽기 전용)",
+    "completedAt": "✓ {{date}} 완료",
+    "reopen": "다시 열기",
+    "goToCurrent": "현재 단계로 이동",
+    "saveDraft": "초안 저장",
+    "completeStep": "단계 완료 →",
+    "stepPosition": "단계 {{current}} / {{total}}",
+    "empty": "(비어 있음)",
+    "reopenConfirm": "이 단계를 다시 여시겠습니까? 다시 완료해야 합니다.",
+    "allDone": "✓ 모든 단계가 완료되었습니다.",
+    "attachments": "첨부 파일 ({{count}})",
+    "open": "열기",
+    "download": "다운로드",
+    "deleteFile": "삭제",
+    "failedDelete": "삭제 실패: {{error}}",
+    "deleteFileConfirm": "파일 \"{{name}}\"을 삭제하시겠습니까?",
+    "binary": "바이너리",
+    "step": "단계:"
+  },
+  "setup": {
+    "title": "설정",
+    "newConfig": "+ 새 설정",
+    "cancel": "취소",
+    "nameKey": "이름 (키)",
+    "value": "값",
+    "description": "설명",
+    "save": "저장",
+    "noConfigs": "등록된 설정이 없습니다.",
+    "name": "이름",
+    "editValue": "값",
+    "editDesc": "설명",
+    "edit": "편집",
+    "delete": "삭제",
+    "deleteConfirm": "\"{{name}}\"을 삭제하시겠습니까?",
+    "hiddenValuePlaceholder": "(새 값 — 현재 값은 숨겨져 있음)",
+    "emptyValue": "(비어 있음)"
+  }
+}

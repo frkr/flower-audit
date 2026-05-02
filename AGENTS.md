@@ -22,6 +22,21 @@
 - O campo 'Conteúdo' de `process` deve usar um campo de editor WYSIWYG (https://github.com/facebook/lexical) que deverá ser bem grande com um botão que possa maximizar para ocupar a tela inteira.
 - As IA's devem executar o `pnpm run build` para saber se o projeto esta compilando antes de commitar.
 
+## Internacionalização (i18n)
+
+O sistema usa **[remix-i18next](https://github.com/sergiodxa/remix-i18next)** + `i18next` + `react-i18next` para suporte multi-idioma.
+
+- **Idiomas suportados**: `en` (padrão), `pt-BR`, `es`, `de`, `ru`, `zh`, `zh-CN`, `ja`, `ko`
+- **Detecção de idioma**: via header `Accept-Language` do navegador (automático) + cookie `flower_lang` (preferência do usuário)
+- **Sem rotas de URL por idioma** — apenas detecção de browser e dropdown no perfil
+- **Seletor de idioma**: disponível no menu de perfil (botão de foto/iniciais no canto inferior direito do painel)
+- **Arquivos de tradução**: `src/front/i18n/locales/<locale>.json`
+- **Configuração**: `src/front/i18n/i18n.ts` (locales, fallback, nome do cookie)
+- **Servidor**: `src/front/i18n/i18next.server.ts` (detecção via `RemixI18Next`)
+- **Recursos**: `src/front/i18n/resources.ts` (agrega todos os JSON de tradução)
+- **Inicialização**: em `src/front/root.tsx` — o locale detectado no loader é passado ao cliente; o `I18nextProvider` envolve toda a aplicação
+- Para adicionar novas strings traduzíveis: adicione a chave em **todos** os arquivos `locales/*.json` e use `useTranslation()` no componente React
+
 
 
 - Eu vou escrever muitas coisas em português do Brasil porque é minha lingua nativa, mas toda documentação que esteja fora do AGENTS.md, por favor deixe assim:

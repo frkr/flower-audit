@@ -1,0 +1,152 @@
+{
+  "nav": {
+    "go": "Comenzar",
+    "flows": "Flujos",
+    "setup": "Configuración"
+  },
+  "sidebar": {
+    "show": "Mostrar panel",
+    "hide": "Ocultar panel"
+  },
+  "profile": {
+    "label": "Perfil",
+    "logout": "Salir",
+    "language": "Idioma"
+  },
+  "confirm": {
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
+  },
+  "landing": {
+    "login": "Entrar",
+    "headline": "Auditoría de flujos y procesos, simple así.",
+    "subheadline": "{{name}} te ayuda a diseñar flujos, ejecutar procesos y mantener un historial auditable de cada paso — todo en un solo lugar.",
+    "cta": "Entrar",
+    "features": {
+      "go": { "title": "Comenzar", "desc": "Caja de búsqueda centralizada que encuentra tus flujos y procesos en segundos." },
+      "flows": { "title": "Flujos", "desc": "CRUD simple para crear flujos con nombre, descripción y una lista editable de pasos." },
+      "processes": { "title": "Procesos", "desc": "Inicia un proceso desde un flujo y edita el contenido de cada paso en un editor WYSIWYG." },
+      "setup": { "title": "Configuración", "desc": "Parámetros del sistema (clave/valor) persistidos en la base de datos para personalizar tu instancia." },
+      "calendar": { "title": "Calendario", "desc": "Vista mensual que destaca los días en que se iniciaron procesos, con intensidad por volumen." },
+      "chat": { "title": "Chat IA", "desc": "Panel lateral listo para conversar con una IA sobre los flujos y procesos del sistema." }
+    }
+  },
+  "welcome": {
+    "recentFlows": "Flujos recientes",
+    "viewAll": "Ver todos →",
+    "recentProcesses": "Procesos recientes",
+    "emptyFlows": "Sin flujos todavía.",
+    "emptyProcesses": "Sin procesos iniciados todavía.",
+    "createFlow": "Crear flujo",
+    "startProcess": "▶ Iniciar proceso",
+    "flowBadge": "Flujo",
+    "processBadge": "Proceso",
+    "updated": "Actualizado: {{date}}"
+  },
+  "go": {
+    "placeholder": "Buscar flujos y procesos…",
+    "search": "Buscar",
+    "searchingFlows": "Buscando flujos…",
+    "searchingProcesses": "Buscando procesos…",
+    "results": "{{count}} resultado(s)",
+    "noResults": "Sin resultados.",
+    "flowBadge": "Flujo",
+    "processBadge": "Proceso",
+    "startProcess": "▶ Iniciar proceso"
+  },
+  "flow": {
+    "title": "Flujos",
+    "searchPlaceholder": "Buscar flujos…",
+    "search": "Buscar",
+    "newFlow": "+ Nuevo flujo",
+    "cancel": "Cancelar",
+    "flowName": "Nombre del Flujo",
+    "description": "Descripción",
+    "stepsNote": "Los pasos del flujo se agregan en la siguiente pantalla, después de guardar el flujo.",
+    "create": "Crear",
+    "updated": "Actualizado: {{date}}",
+    "delete": "eliminar",
+    "notFound": "Ningún flujo encontrado.",
+    "deleteConfirm": "¿Eliminar este flujo?"
+  },
+  "flowId": {
+    "title": "Editar flujo",
+    "startProcess": "▶ Iniciar proceso desde este flujo",
+    "flowData": "Datos del flujo",
+    "flowName": "Nombre del Flujo",
+    "description": "Descripción",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "steps": "Pasos",
+    "noSteps": "Sin pasos todavía. Agrega el primero a continuación.",
+    "stepSave": "Guardar",
+    "removeStep": "Eliminar paso",
+    "newStepPlaceholder": "Nuevo paso",
+    "addStep": "+ Agregar paso",
+    "deleteConfirm": "¿Eliminar este flujo?",
+    "removeStepConfirm": "¿Eliminar este paso?"
+  },
+  "process": {
+    "title": "Procesos",
+    "searchPlaceholder": "Buscar procesos…",
+    "search": "Buscar",
+    "newProcess": "+ Nuevo proceso",
+    "cancel": "Cancelar",
+    "processName": "Nombre del proceso",
+    "description": "Descripción",
+    "flowOptional": "Flujo (opcional)",
+    "noFlow": "— sin flujo —",
+    "create": "Crear",
+    "updated": "Actualizado: {{date}}",
+    "delete": "eliminar",
+    "notFound": "Ningún proceso encontrado.",
+    "deleteConfirm": "¿Eliminar este proceso?"
+  },
+  "processId": {
+    "noSteps": "Este proceso aún no tiene pasos. Usa ▶ Iniciar proceso desde este flujo en un flujo para generar los pasos.",
+    "showMeta": "Editar datos",
+    "hideMeta": "Ocultar datos",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar este proceso?",
+    "saveData": "Guardar datos del proceso",
+    "descriptionPlaceholder": "Descripción",
+    "flux": "Flujo:",
+    "removed": "(eliminado)",
+    "readOnly": "(solo lectura)",
+    "completedAt": "✓ completado el {{date}}",
+    "reopen": "Reabrir",
+    "goToCurrent": "Ir al paso actual",
+    "saveDraft": "Guardar borrador",
+    "completeStep": "Completar paso →",
+    "stepPosition": "Paso {{current}} de {{total}}",
+    "empty": "(vacío)",
+    "reopenConfirm": "¿Reabrir este paso? Tendrás que completarlo de nuevo.",
+    "allDone": "✓ Todos los pasos completados.",
+    "attachments": "Adjuntos ({{count}})",
+    "open": "Abrir",
+    "download": "Descargar",
+    "deleteFile": "Eliminar",
+    "failedDelete": "Error al eliminar: {{error}}",
+    "deleteFileConfirm": "¿Eliminar el archivo \"{{name}}\"?",
+    "binary": "binario",
+    "step": "paso:"
+  },
+  "setup": {
+    "title": "Configuración",
+    "newConfig": "+ Nueva configuración",
+    "cancel": "Cancelar",
+    "nameKey": "Nombre (clave)",
+    "value": "Valor",
+    "description": "Descripción",
+    "save": "Guardar",
+    "noConfigs": "Sin configuraciones registradas.",
+    "name": "Nombre",
+    "editValue": "Valor",
+    "editDesc": "Descripción",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "deleteConfirm": "¿Eliminar \"{{name}}\"?",
+    "hiddenValuePlaceholder": "(nuevo valor — actual oculto)",
+    "emptyValue": "(vacío)"
+  }
+}

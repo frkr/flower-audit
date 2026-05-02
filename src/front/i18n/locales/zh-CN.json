@@ -1,0 +1,152 @@
+{
+  "nav": {
+    "go": "开始",
+    "flows": "流程",
+    "setup": "设置"
+  },
+  "sidebar": {
+    "show": "显示面板",
+    "hide": "隐藏面板"
+  },
+  "profile": {
+    "label": "个人资料",
+    "logout": "退出",
+    "language": "语言"
+  },
+  "confirm": {
+    "cancel": "取消",
+    "confirm": "确认"
+  },
+  "landing": {
+    "login": "登录",
+    "headline": "流程与程序审计，简单直接。",
+    "subheadline": "{{name}} 帮助您设计流程、执行程序，并保留每个步骤的可审计历史记录——一切尽在一处。",
+    "cta": "登录",
+    "features": {
+      "go": { "title": "开始", "desc": "集中搜索框，可在几秒钟内找到您的流程和程序。" },
+      "flows": { "title": "流程", "desc": "简单的 CRUD，可创建具有名称、描述和可编辑步骤列表的流程。" },
+      "processes": { "title": "程序", "desc": "从流程启动程序，并在 WYSIWYG 编辑器中编辑每个步骤的内容。" },
+      "setup": { "title": "设置", "desc": "系统参数（键/值），保存在数据库中以自定义您的实例。" },
+      "calendar": { "title": "日历", "desc": "月度视图，以量强度突出显示程序启动的日期。" },
+      "chat": { "title": "AI 聊天", "desc": "侧面板，可与 AI 聊天，讨论系统中的流程和程序。" }
+    }
+  },
+  "welcome": {
+    "recentFlows": "最近流程",
+    "viewAll": "查看全部 →",
+    "recentProcesses": "最近程序",
+    "emptyFlows": "尚无流程。",
+    "emptyProcesses": "尚未启动任何程序。",
+    "createFlow": "创建流程",
+    "startProcess": "▶ 启动程序",
+    "flowBadge": "流程",
+    "processBadge": "程序",
+    "updated": "已更新：{{date}}"
+  },
+  "go": {
+    "placeholder": "搜索流程和程序…",
+    "search": "搜索",
+    "searchingFlows": "正在搜索流程…",
+    "searchingProcesses": "正在搜索程序…",
+    "results": "{{count}} 个结果",
+    "noResults": "无结果。",
+    "flowBadge": "流程",
+    "processBadge": "程序",
+    "startProcess": "▶ 启动程序"
+  },
+  "flow": {
+    "title": "流程",
+    "searchPlaceholder": "搜索流程…",
+    "search": "搜索",
+    "newFlow": "+ 新流程",
+    "cancel": "取消",
+    "flowName": "流程名称",
+    "description": "描述",
+    "stepsNote": "流程步骤将在流程保存后的下一个界面中添加。",
+    "create": "创建",
+    "updated": "已更新：{{date}}",
+    "delete": "删除",
+    "notFound": "未找到流程。",
+    "deleteConfirm": "删除此流程？"
+  },
+  "flowId": {
+    "title": "编辑流程",
+    "startProcess": "▶ 从此流程启动程序",
+    "flowData": "流程数据",
+    "flowName": "流程名称",
+    "description": "描述",
+    "save": "保存",
+    "delete": "删除",
+    "steps": "步骤",
+    "noSteps": "尚无步骤。请在下方添加第一个步骤。",
+    "stepSave": "保存",
+    "removeStep": "移除步骤",
+    "newStepPlaceholder": "新步骤",
+    "addStep": "+ 添加步骤",
+    "deleteConfirm": "删除此流程？",
+    "removeStepConfirm": "移除此步骤？"
+  },
+  "process": {
+    "title": "程序",
+    "searchPlaceholder": "搜索程序…",
+    "search": "搜索",
+    "newProcess": "+ 新程序",
+    "cancel": "取消",
+    "processName": "程序名称",
+    "description": "描述",
+    "flowOptional": "流程（可选）",
+    "noFlow": "— 无流程 —",
+    "create": "创建",
+    "updated": "已更新：{{date}}",
+    "delete": "删除",
+    "notFound": "未找到程序。",
+    "deleteConfirm": "删除此程序？"
+  },
+  "processId": {
+    "noSteps": "此程序尚无步骤。请在流程中使用「▶ 从此流程启动程序」来生成步骤。",
+    "showMeta": "编辑数据",
+    "hideMeta": "隐藏数据",
+    "delete": "删除",
+    "deleteConfirm": "删除此程序？",
+    "saveData": "保存程序数据",
+    "descriptionPlaceholder": "描述",
+    "flux": "流程：",
+    "removed": "（已移除）",
+    "readOnly": "（只读）",
+    "completedAt": "✓ 完成于 {{date}}",
+    "reopen": "重新开启",
+    "goToCurrent": "前往当前步骤",
+    "saveDraft": "保存草稿",
+    "completeStep": "完成步骤 →",
+    "stepPosition": "步骤 {{current}} / {{total}}",
+    "empty": "（空）",
+    "reopenConfirm": "重新开启此步骤？您需要再次完成它。",
+    "allDone": "✓ 所有步骤已完成。",
+    "attachments": "附件 ({{count}})",
+    "open": "打开",
+    "download": "下载",
+    "deleteFile": "删除",
+    "failedDelete": "删除失败：{{error}}",
+    "deleteFileConfirm": "删除文件「{{name}}」？",
+    "binary": "二进制",
+    "step": "步骤："
+  },
+  "setup": {
+    "title": "设置",
+    "newConfig": "+ 新设置",
+    "cancel": "取消",
+    "nameKey": "名称（键）",
+    "value": "值",
+    "description": "描述",
+    "save": "保存",
+    "noConfigs": "无已登记设置。",
+    "name": "名称",
+    "editValue": "值",
+    "editDesc": "描述",
+    "edit": "编辑",
+    "delete": "删除",
+    "deleteConfirm": "删除「{{name}}」？",
+    "hiddenValuePlaceholder": "（新值 — 当前已隐藏）",
+    "emptyValue": "（空）"
+  }
+}

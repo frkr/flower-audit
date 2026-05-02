@@ -1,5 +1,6 @@
 import { Form, useLoaderData, useSubmit } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "@/ConfirmModal";
 import type { Route } from "./+types/setup";
 import type { Setting, VersionInfo } from "./setup.server";
@@ -9,25 +10,26 @@ import { formatDateTime } from "../../lib/formatDate";
 export { loader, action } from "./setup.server";
 
 export function meta({ matches }: Route.MetaArgs) {
-	return [{ title: `${systemNameFromMatches(matches)} — Configuração` }];
+	return [{ title: `${systemNameFromMatches(matches)} — Setup` }];
 }
 
 type Data = { items: Setting[]; version: VersionInfo };
 
 export default function Configuracao() {
+	const { t } = useTranslation();
 	const data = useLoaderData() as Data;
 	const [adding, setAdding] = useState(false);
 
 	return (
 		<div className="max-w-4xl mx-auto">
 			<div className="flex items-center justify-between mb-4">
-				<h1 className="text-xl font-semibold">Configuração</h1>
+				<h1 className="text-xl font-semibold">{t("setup.title")}</h1>
 				<button
 					type="button"
 					onClick={() => setAdding((v) => !v)}
 					className="px-3 py-2 rounded bg-green-600 text-white text-sm"
 				>
-					{adding ? "Cancelar" : "+ Nova configuração"}
+					{adding ? t("setup.cancel") : t("setup.newConfig")}
 				</button>
 			</div>
 
@@ -39,7 +41,7 @@ export default function Configuracao() {
 					<input type="hidden" name="intent" value="upsert" />
 					<div className="grid grid-cols-2 gap-3">
 						<div>
-							<label className="block text-sm mb-1">Nome (chave)</label>
+							<label className="block text-sm mb-1">{t("setup.nameKey")}</label>
 							<input
 								name="name"
 								required
@@ -47,7 +49,7 @@ export default function Configuracao() {
 							/>
 						</div>
 						<div>
-							<label className="block text-sm mb-1">Valor</label>
+							<label className="block text-sm mb-1">{t("setup.value")}</label>
 							<input
 								name="value"
 								className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
@@ -55,20 +57,20 @@ export default function Configuracao() {
 						</div>
 					</div>
 					<div>
-						<label className="block text-sm mb-1">Descrição</label>
+						<label className="block text-sm mb-1">{t("setup.description")}</label>
 						<input
 							name="description"
 							className="w-full px-3 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
 						/>
 					</div>
-					<button className="px-3 py-2 rounded bg-blue-600 text-white">Salvar</button>
+					<button className="px-3 py-2 rounded bg-blue-600 text-white">{t("setup.save")}</button>
 				</Form>
 			) : null}
 
 			<ul className="space-y-2">
 				{data.items.length === 0 ? (
 					<li className="text-sm text-gray-500 border border-dashed border-gray-300 dark:border-gray-700 rounded p-4 text-center">
-						Sem configurações cadastradas.
+						{t("setup.noConfigs")}
 					</li>
 				) : (
 					data.items.map((s) => <SettingRow key={s.id} item={s} />)
@@ -101,8 +103,8 @@ function VersionFooter({ version }: { version: VersionInfo }) {
 				target="_blank"
 				rel="noopener noreferrer"
 				className="inline-flex items-center text-gray-500 hover:text-gray-900 dark:hover:text-gray-100"
-				aria-label="Repositório no GitHub"
-				title="Repositório no GitHub"
+				aria-label="GitHub Repository"
+				title="GitHub Repository"
 			>
 				<GitHubIcon />
 			</a>
@@ -129,6 +131,7 @@ function GitHubIcon() {
 }
 
 function SettingRow({ item }: { item: Setting }) {
+	const { t } = useTranslation();
 	const [editing, setEditing] = useState(false);
 	const [confirmDelete, setConfirmDelete] = useState(false);
 	const secret = isSecret(item.name);
@@ -143,7 +146,7 @@ function SettingRow({ item }: { item: Setting }) {
 						className="text-sm font-mono break-all"
 						title={secret ? undefined : item.value}
 					>
-						{maskValue(item.name, item.value)}
+						{maskValue(t, item.name, item.value)}
 					</div>
 					{item.description ? (
 						<div className="text-xs text-gray-500 mt-1">{item.description}</div>
@@ -155,19 +158,19 @@ function SettingRow({ item }: { item: Setting }) {
 						onClick={() => setEditing(true)}
 						className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
 					>
-						Editar
+						{t("setup.edit")}
 					</button>
 					<button
 						type="button"
 						onClick={() => setConfirmDelete(true)}
 						className="w-full text-xs px-2 py-1 rounded bg-red-600 text-white"
 					>
-						Excluir
+						{t("setup.delete")}
 					</button>
 				</div>
 				{confirmDelete && (
 					<ConfirmModal
-						message={`Excluir "${item.name}"?`}
+						message={t("setup.deleteConfirm", { name: item.name })}
 						onConfirm={() => {
 							submit({ intent: "delete", id: item.id }, { method: "post" });
 							setConfirmDelete(false);
@@ -186,7 +189,7 @@ function SettingRow({ item }: { item: Setting }) {
 				<input type="hidden" name="id" value={item.id} />
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-2">
 					<label className="text-sm">
-						<span className="block text-xs uppercase text-gray-500 mb-1">Nome</span>
+						<span className="block text-xs uppercase text-gray-500 mb-1">{t("setup.name")}</span>
 						<input
 							name="name"
 							defaultValue={item.name}
@@ -195,19 +198,19 @@ function SettingRow({ item }: { item: Setting }) {
 						/>
 					</label>
 					<label className="text-sm">
-						<span className="block text-xs uppercase text-gray-500 mb-1">Valor</span>
+						<span className="block text-xs uppercase text-gray-500 mb-1">{t("setup.editValue")}</span>
 						<input
 							name="value"
 							type={secret ? "password" : "text"}
 							defaultValue={secret ? "" : item.value}
-							placeholder={secret ? "(novo valor — atual oculto)" : undefined}
+							placeholder={secret ? t("setup.hiddenValuePlaceholder") : undefined}
 							autoComplete={secret ? "new-password" : undefined}
 							className="w-full px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 font-mono"
 						/>
 					</label>
 				</div>
 				<label className="text-sm block">
-					<span className="block text-xs uppercase text-gray-500 mb-1">Descrição</span>
+					<span className="block text-xs uppercase text-gray-500 mb-1">{t("setup.editDesc")}</span>
 					<input
 						name="description"
 						defaultValue={item.description}
@@ -220,13 +223,13 @@ function SettingRow({ item }: { item: Setting }) {
 						onClick={() => setEditing(false)}
 						className="text-xs px-3 py-1 rounded border border-gray-300 dark:border-gray-700"
 					>
-						Cancelar
+						{t("setup.cancel")}
 					</button>
 					<button
 						type="submit"
 						className="text-xs px-3 py-1 rounded bg-blue-600 text-white"
 					>
-						Salvar
+						{t("setup.save")}
 					</button>
 				</div>
 			</Form>
@@ -238,8 +241,8 @@ function isSecret(name: string): boolean {
 	return /secret/i.test(name);
 }
 
-function maskValue(name: string, value: string): string {
-	if (!value) return "(vazio)";
+function maskValue(t: (key: string) => string, name: string, value: string): string {
+	if (!value) return t("setup.emptyValue");
 	if (!isSecret(name)) return value;
 	return "*".repeat(Math.max(value.length, 8));
 }

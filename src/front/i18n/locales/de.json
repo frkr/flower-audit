@@ -1,0 +1,152 @@
+{
+  "nav": {
+    "go": "Starten",
+    "flows": "Abläufe",
+    "setup": "Einstellungen"
+  },
+  "sidebar": {
+    "show": "Panel anzeigen",
+    "hide": "Panel ausblenden"
+  },
+  "profile": {
+    "label": "Profil",
+    "logout": "Abmelden",
+    "language": "Sprache"
+  },
+  "confirm": {
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen"
+  },
+  "landing": {
+    "login": "Anmelden",
+    "headline": "Ablauf- und Prozessauditing, ganz einfach.",
+    "subheadline": "{{name}} hilft Ihnen, Abläufe zu gestalten, Prozesse auszuführen und eine prüfbare Historie jedes Schritts zu führen — alles an einem Ort.",
+    "cta": "Anmelden",
+    "features": {
+      "go": { "title": "Starten", "desc": "Zentrales Suchfeld, das Ihre Abläufe und Prozesse in Sekunden findet." },
+      "flows": { "title": "Abläufe", "desc": "Einfaches CRUD zum Erstellen von Abläufen mit Name, Beschreibung und bearbeitbarer Schritteliste." },
+      "processes": { "title": "Prozesse", "desc": "Starten Sie einen Prozess aus einem Ablauf und bearbeiten Sie den Inhalt jedes Schritts in einem WYSIWYG-Editor." },
+      "setup": { "title": "Einstellungen", "desc": "Systemparameter (Schlüssel/Wert) in der Datenbank gespeichert, um Ihre Instanz anzupassen." },
+      "calendar": { "title": "Kalender", "desc": "Monatliche Ansicht, die die Tage hervorhebt, an denen Prozesse gestartet wurden, mit Volumenintensität." },
+      "chat": { "title": "KI-Chat", "desc": "Seitliches Panel, bereit mit einer KI über Abläufe und Prozesse des Systems zu sprechen." }
+    }
+  },
+  "welcome": {
+    "recentFlows": "Zuletzt verwendete Abläufe",
+    "viewAll": "Alle anzeigen →",
+    "recentProcesses": "Zuletzt verwendete Prozesse",
+    "emptyFlows": "Noch keine Abläufe.",
+    "emptyProcesses": "Noch keine Prozesse gestartet.",
+    "createFlow": "Ablauf erstellen",
+    "startProcess": "▶ Prozess starten",
+    "flowBadge": "Ablauf",
+    "processBadge": "Prozess",
+    "updated": "Aktualisiert: {{date}}"
+  },
+  "go": {
+    "placeholder": "Abläufe und Prozesse suchen…",
+    "search": "Suchen",
+    "searchingFlows": "Abläufe werden gesucht…",
+    "searchingProcesses": "Prozesse werden gesucht…",
+    "results": "{{count}} Ergebnis(se)",
+    "noResults": "Keine Ergebnisse.",
+    "flowBadge": "Ablauf",
+    "processBadge": "Prozess",
+    "startProcess": "▶ Prozess starten"
+  },
+  "flow": {
+    "title": "Abläufe",
+    "searchPlaceholder": "Abläufe suchen…",
+    "search": "Suchen",
+    "newFlow": "+ Neuer Ablauf",
+    "cancel": "Abbrechen",
+    "flowName": "Ablaufname",
+    "description": "Beschreibung",
+    "stepsNote": "Ablaufschritte werden im nächsten Bildschirm hinzugefügt, nachdem der Ablauf gespeichert wurde.",
+    "create": "Erstellen",
+    "updated": "Aktualisiert: {{date}}",
+    "delete": "löschen",
+    "notFound": "Keine Abläufe gefunden.",
+    "deleteConfirm": "Diesen Ablauf löschen?"
+  },
+  "flowId": {
+    "title": "Ablauf bearbeiten",
+    "startProcess": "▶ Prozess aus diesem Ablauf starten",
+    "flowData": "Ablaufdaten",
+    "flowName": "Ablaufname",
+    "description": "Beschreibung",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "steps": "Schritte",
+    "noSteps": "Noch keine Schritte. Fügen Sie unten den ersten hinzu.",
+    "stepSave": "Speichern",
+    "removeStep": "Schritt entfernen",
+    "newStepPlaceholder": "Neuer Schritt",
+    "addStep": "+ Schritt hinzufügen",
+    "deleteConfirm": "Diesen Ablauf löschen?",
+    "removeStepConfirm": "Diesen Schritt entfernen?"
+  },
+  "process": {
+    "title": "Prozesse",
+    "searchPlaceholder": "Prozesse suchen…",
+    "search": "Suchen",
+    "newProcess": "+ Neuer Prozess",
+    "cancel": "Abbrechen",
+    "processName": "Prozessname",
+    "description": "Beschreibung",
+    "flowOptional": "Ablauf (optional)",
+    "noFlow": "— kein Ablauf —",
+    "create": "Erstellen",
+    "updated": "Aktualisiert: {{date}}",
+    "delete": "löschen",
+    "notFound": "Keine Prozesse gefunden.",
+    "deleteConfirm": "Diesen Prozess löschen?"
+  },
+  "processId": {
+    "noSteps": "Dieser Prozess hat noch keine Schritte. Verwenden Sie ▶ Prozess aus diesem Ablauf starten in einem Ablauf, um Schritte zu generieren.",
+    "showMeta": "Daten bearbeiten",
+    "hideMeta": "Daten ausblenden",
+    "delete": "Löschen",
+    "deleteConfirm": "Diesen Prozess löschen?",
+    "saveData": "Prozessdaten speichern",
+    "descriptionPlaceholder": "Beschreibung",
+    "flux": "Ablauf:",
+    "removed": "(entfernt)",
+    "readOnly": "(schreibgeschützt)",
+    "completedAt": "✓ abgeschlossen am {{date}}",
+    "reopen": "Wieder öffnen",
+    "goToCurrent": "Zum aktuellen Schritt",
+    "saveDraft": "Entwurf speichern",
+    "completeStep": "Schritt abschließen →",
+    "stepPosition": "Schritt {{current}} von {{total}}",
+    "empty": "(leer)",
+    "reopenConfirm": "Diesen Schritt wieder öffnen? Sie müssen ihn erneut abschließen.",
+    "allDone": "✓ Alle Schritte abgeschlossen.",
+    "attachments": "Anhänge ({{count}})",
+    "open": "Öffnen",
+    "download": "Herunterladen",
+    "deleteFile": "Löschen",
+    "failedDelete": "Fehler beim Löschen: {{error}}",
+    "deleteFileConfirm": "Datei \"{{name}}\" löschen?",
+    "binary": "binär",
+    "step": "Schritt:"
+  },
+  "setup": {
+    "title": "Einstellungen",
+    "newConfig": "+ Neue Einstellung",
+    "cancel": "Abbrechen",
+    "nameKey": "Name (Schlüssel)",
+    "value": "Wert",
+    "description": "Beschreibung",
+    "save": "Speichern",
+    "noConfigs": "Keine Einstellungen registriert.",
+    "name": "Name",
+    "editValue": "Wert",
+    "editDesc": "Beschreibung",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "deleteConfirm": "\"{{name}}\" löschen?",
+    "hiddenValuePlaceholder": "(neuer Wert — aktueller verborgen)",
+    "emptyValue": "(leer)"
+  }
+}

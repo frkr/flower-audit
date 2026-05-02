@@ -1,5 +1,6 @@
 import { Form, useLoaderData, useRevalidator, useSearchParams, useSubmit } from "react-router";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ConfirmModal } from "@/ConfirmModal";
 import { AlertModal } from "@/AlertModal";
 import type { Route } from "./+types/process.id";
@@ -11,7 +12,7 @@ import { formatDateTime } from "../../lib/formatDate";
 export { loader, action } from "./process.id.server";
 
 export function meta({ matches }: Route.MetaArgs) {
-	return [{ title: `${systemNameFromMatches(matches)} — Processo` }];
+	return [{ title: `${systemNameFromMatches(matches)} — Process` }];
 }
 
 type Data = {
@@ -29,6 +30,7 @@ type Data = {
 };
 
 export default function ProcessoEdit() {
+	const { t } = useTranslation();
 	const data = useLoaderData() as Data;
 	const revalidator = useRevalidator();
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -60,8 +62,7 @@ export default function ProcessoEdit() {
 			<div className="max-w-3xl mx-auto">
 				<ProcessHeader data={data} showMeta={showMeta} setShowMeta={setShowMeta} />
 				<div className="border border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20 rounded p-4 text-sm">
-					Este processo ainda não tem passos. Use{" "}
-					<span className="font-mono">▶ Iniciar processo a partir deste fluxo</span> em um fluxo para gerar os passos.
+					{t("processId.noSteps")}
 				</div>
 			</div>
 		);
@@ -79,13 +80,13 @@ export default function ProcessoEdit() {
 							key={viewing.id}
 							step={viewing}
 							processId={data.process.id}
-							positionLabel={`Passo ${viewIdx + 1} de ${total}`}
+							positionLabel={t("processId.stepPosition", { current: viewIdx + 1, total })}
 							onUploaded={() => revalidator.revalidate()}
 						/>
 					) : (
 						<ReadOnlyStep
 							step={viewing}
-							positionLabel={`Passo ${viewIdx + 1} de ${total}`}
+							positionLabel={t("processId.stepPosition", { current: viewIdx + 1, total })}
 							isCurrent={viewIdx === currentIdx}
 							onJumpToCurrent={() => goTo(currentIdx)}
 						/>
@@ -95,7 +96,7 @@ export default function ProcessoEdit() {
 
 			{allDone ? (
 				<div className="mt-3 text-sm text-green-700 dark:text-green-400">
-					✓ Todos os passos concluídos.
+					{t("processId.allDone")}
 				</div>
 			) : null}
 
@@ -110,7 +111,7 @@ export default function ProcessoEdit() {
 
 function fluxName(data: Data) {
 	if (!data.process.id_fluxo) return "";
-	return data.fluxes.find((f) => f.id === data.process.id_fluxo)?.name ?? "(removido)";
+	return data.fluxes.find((f) => f.id === data.process.id_fluxo)?.name ?? "(removed)";
 }
 
 function ProcessHeader({
@@ -122,6 +123,7 @@ function ProcessHeader({
 	showMeta: boolean;
 	setShowMeta: (v: boolean) => void;
 }) {
+	const { t } = useTranslation();
 	const submit = useSubmit();
 	const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -135,20 +137,20 @@ function ProcessHeader({
 						onClick={() => setShowMeta(!showMeta)}
 						className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
 					>
-						{showMeta ? "Ocultar dados" : "Editar dados"}
+						{showMeta ? t("processId.hideMeta") : t("processId.showMeta")}
 					</button>
 					<button
 						type="button"
 						onClick={() => setConfirmDelete(true)}
 						className="text-xs px-2 py-1 rounded bg-red-600 text-white"
 					>
-						Excluir
+						{t("processId.delete")}
 					</button>
 				</div>
 			</div>
 			{confirmDelete && (
 				<ConfirmModal
-					message="Excluir este processo?"
+					message={t("processId.deleteConfirm")}
 					onConfirm={() => {
 						submit({ intent: "delete" }, { method: "post" });
 						setConfirmDelete(false);
@@ -161,7 +163,7 @@ function ProcessHeader({
 			) : null}
 			{data.process.id_fluxo ? (
 				<div className="text-xs text-gray-500 mt-1">
-					Fluxo: <span className="font-medium">{fluxName(data)}</span>
+					{t("processId.flux")} <span className="font-medium">{fluxName(data)}</span>
 				</div>
 			) : null}
 			{showMeta ? (
@@ -175,11 +177,11 @@ function ProcessHeader({
 					<input
 						name="description"
 						defaultValue={data.process.description}
-						placeholder="Descrição"
+						placeholder={t("processId.descriptionPlaceholder")}
 						className="px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900"
 					/>
 					<button className="md:col-span-2 text-sm px-3 py-1 rounded bg-blue-600 text-white">
-						Salvar dados do processo
+						{t("processId.saveData")}
 					</button>
 				</Form>
 			) : null}
@@ -245,6 +247,7 @@ function CurrentStepForm({
 	positionLabel: string;
 	onUploaded: () => void;
 }) {
+	const { t } = useTranslation();
 	return (
 		<Form method="post" className="flex flex-col h-full min-h-0">
 			<input type="hidden" name="step_id" value={step.id} />
@@ -260,7 +263,7 @@ function CurrentStepForm({
 						value="saveDraft"
 						className="text-sm px-3 py-2 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
 					>
-						Salvar rascunho
+						{t("processId.saveDraft")}
 					</button>
 					<button
 						type="submit"
@@ -268,14 +271,14 @@ function CurrentStepForm({
 						value="completeStep"
 						className="text-sm px-3 py-2 rounded bg-green-600 text-white hover:bg-green-700"
 					>
-						Concluir passo →
+						{t("processId.completeStep")}
 					</button>
 				</div>
 			</div>
 			<LexicalEditor
 				name="content"
 				defaultHtml={step.content ?? ""}
-				placeholder={`Conteúdo do passo "${step.name}"…`}
+				placeholder={`${step.name}…`}
 				tall
 				uploadContext={{ processId, stepId: step.id }}
 				onUploaded={onUploaded}
@@ -294,6 +297,7 @@ function AttachmentsList({
 	steps: StepRow[];
 	onChanged: () => void;
 }) {
+	const { t } = useTranslation();
 	const [confirmFile, setConfirmFile] = useState<{ id: string; name: string } | null>(null);
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -307,7 +311,7 @@ function AttachmentsList({
 		return `${(b / (1024 * 1024)).toFixed(1)} MB`;
 	}
 
-	function openInPopup(id: string, name: string) {
+	function openInPopup(id: string) {
 		const url = `/api/files?id=${encodeURIComponent(id)}&download=1`;
 		const w = window.open(url, `flower-file-${id}`, "width=520,height=320");
 		if (!w) window.location.href = url;
@@ -317,7 +321,7 @@ function AttachmentsList({
 		const res = await fetch(`/api/files?id=${encodeURIComponent(id)}`, { method: "DELETE" });
 		const json = (await res.json()) as { ok: boolean; error?: string };
 		if (!json.ok) {
-			setErrorMsg("Falha ao excluir: " + (json.error ?? "desconhecido"));
+			setErrorMsg(t("processId.failedDelete", { error: json.error ?? "unknown" }));
 			return;
 		}
 		onChanged();
@@ -326,7 +330,7 @@ function AttachmentsList({
 	return (
 		<>
 			<section className="mt-6 border-t border-gray-200 dark:border-gray-800 pt-3">
-				<h3 className="text-sm font-semibold mb-2">Anexos ({files.length})</h3>
+				<h3 className="text-sm font-semibold mb-2">{t("processId.attachments", { count: files.length })}</h3>
 				<ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
 					{files.map((f) => (
 						<li
@@ -349,7 +353,7 @@ function AttachmentsList({
 									{f.name}
 								</div>
 								<div className="text-xs text-gray-500 truncate">
-									{f.mime_type || "binário"} · {fmtSize(f.size_bytes)} · passo: {stepName(f.id_step)}
+									{f.mime_type || t("processId.binary")} · {fmtSize(f.size_bytes)} · {t("processId.step")} {stepName(f.id_step)}
 								</div>
 							</div>
 							<div className="flex gap-1">
@@ -359,25 +363,25 @@ function AttachmentsList({
 										target="_blank"
 										rel="noreferrer"
 										className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-										title="Abrir imagem"
+										title={t("processId.open")}
 									>
-										Abrir
+										{t("processId.open")}
 									</a>
 								) : (
 									<button
 										type="button"
-										onClick={() => openInPopup(f.id, f.name)}
+										onClick={() => openInPopup(f.id)}
 										className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-										title="Baixar arquivo"
+										title={t("processId.download")}
 									>
-										Baixar
+										{t("processId.download")}
 									</button>
 								)}
 								<button
 									type="button"
 									onClick={() => setConfirmFile({ id: f.id, name: f.name })}
 									className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700"
-									title="Excluir"
+									title={t("processId.deleteFile")}
 								>
 									✕
 								</button>
@@ -389,7 +393,7 @@ function AttachmentsList({
 
 			{confirmFile && (
 				<ConfirmModal
-					message={`Excluir o arquivo "${confirmFile.name}"?`}
+					message={t("processId.deleteFileConfirm", { name: confirmFile.name })}
 					onConfirm={() => {
 						const f = confirmFile;
 						setConfirmFile(null);
@@ -414,6 +418,7 @@ function ReadOnlyStep({
 	isCurrent: boolean;
 	onJumpToCurrent: () => void;
 }) {
+	const { t } = useTranslation();
 	const submit = useSubmit();
 	const [confirmReopen, setConfirmReopen] = useState(false);
 
@@ -421,11 +426,13 @@ function ReadOnlyStep({
 		<div className="flex flex-col h-full min-h-0">
 			<div className="flex items-center justify-between mb-2">
 				<div>
-					<div className="text-xs uppercase text-gray-500">{positionLabel} (somente leitura)</div>
+					<div className="text-xs uppercase text-gray-500">
+						{positionLabel} {t("processId.readOnly")}
+					</div>
 					<h2 className="text-base font-medium">{step.name}</h2>
 					{step.completed_at ? (
 						<div className="text-xs text-green-700 dark:text-green-400">
-							✓ concluído em {formatDateTime(step.completed_at)}
+							{t("processId.completedAt", { date: formatDateTime(step.completed_at) })}
 						</div>
 					) : null}
 				</div>
@@ -436,7 +443,7 @@ function ReadOnlyStep({
 							onClick={() => setConfirmReopen(true)}
 							className="text-xs px-2 py-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
 						>
-							Reabrir
+							{t("processId.reopen")}
 						</button>
 					) : null}
 					{!isCurrent ? (
@@ -445,18 +452,18 @@ function ReadOnlyStep({
 							onClick={onJumpToCurrent}
 							className="text-xs px-2 py-1 rounded bg-blue-600 text-white"
 						>
-							Ir para passo atual
+							{t("processId.goToCurrent")}
 						</button>
 					) : null}
 				</div>
 			</div>
 			<div
 				className="flex-1 min-h-0 overflow-auto border border-gray-200 dark:border-gray-700 rounded px-3 py-2 prose dark:prose-invert max-w-none bg-gray-50 dark:bg-gray-900"
-				dangerouslySetInnerHTML={{ __html: step.content || "<p class='text-gray-400'>(vazio)</p>" }}
+				dangerouslySetInnerHTML={{ __html: step.content || `<p class='text-gray-400'>${t("processId.empty")}</p>` }}
 			/>
 			{confirmReopen && (
 				<ConfirmModal
-					message="Reabrir este passo? Você terá que concluí-lo novamente."
+					message={t("processId.reopenConfirm")}
 					onConfirm={() => {
 						submit({ intent: "reopenStep", step_id: step.id }, { method: "post" });
 						setConfirmReopen(false);
