@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isSecret, maskValue } from "./setup";
+import { isSecret, maskValue } from "../src/routes/setup/setup";
 
 describe("Setup Masking Logic", () => {
 	it("should identify secret names correctly", () => {
