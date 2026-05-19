@@ -21,7 +21,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 		...item,
 		name: item.name.toUpperCase(),
 		value:
-			/secret/i.test(item.name) && item.value
+			/secret|token|key|password|pass|cred/i.test(item.name) && item.value
 				? "********"
 				: item.value,
 	}));
@@ -57,7 +57,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
 	if (!/^[A-Z0-9_-]+$/.test(name)) return Response.json({ ok: false, error: "invalid name format" }, { status: 422 });
 
 	if (id) {
-		if (!value && /secret/i.test(name)) {
+		if (!value && /secret|token|key|password|pass|cred/i.test(name)) {
 			await conn.prepare(queries.updateByIdKeepValue).bind(name, description, id).run();
 		} else {
 			await conn.prepare(queries.updateById).bind(name, value, description, id).run();
