@@ -271,7 +271,7 @@ function SettingRow({ item }: { item: Setting }) {
 }
 
 export function isSecret(name: string): boolean {
-	return /secret/i.test(name);
+	return /secret|token|key|password|pass|cred/i.test(name);
 }
 
 export function maskValue(name: string, value: string, emptyLabel: string): string {
