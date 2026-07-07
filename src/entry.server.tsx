@@ -41,6 +41,7 @@ export default async function handleRequest(
   responseHeaders.set("X-Content-Type-Options", "nosniff");
   responseHeaders.set("X-Frame-Options", "DENY");
   responseHeaders.set("X-XSS-Protection", "1; mode=block");
+  responseHeaders.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
 
   return new Response(body, {
     headers: responseHeaders,
